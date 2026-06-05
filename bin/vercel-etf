@@ -8,4 +8,4 @@ cd "$PROJECT_ROOT"
 # Vercel usa automáticamente .vercel/ del directorio actual
 # Solo aseguramos que estemos en el directorio correcto
 
-exec vercel "$@"
+exec npx vercel "$@"
