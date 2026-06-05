@@ -1,0 +1,306 @@
+/* ETF Nexo - Corporate Design System */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* Importar variables y componentes */
+@import './styles/base/variables.css';
+@import './styles/components/header.css';
+@import './styles/components/buttons.css';
+@import './styles/components/cards.css';
+@import './styles/components/progress-bars.css';
+@import './styles/components/rankings.css';
+@import './styles/components/etf-detail.css';
+@import './styles/components/gestoras.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Typography */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Editorial Content Spacing */
+    --content-spacing-sm: 1rem;
+    --content-spacing-md: 1.5rem;
+    --content-spacing-lg: 2rem;
+    --content-spacing-xl: 2.5rem;
+    --content-spacing-2xl: 3rem;
+
+    /* Image Sizes */
+    --image-height-sm: 10rem;
+    --image-height-md: 16rem;
+    --image-height-lg: 24rem;
+    --image-height-xl: 32rem;
+    --image-height-featured: 28rem;
+
+    /* Content Max Width */
+    --content-max-width: 65ch;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* Container */
+  .container {
+    @apply w-full max-w-7xl mx-auto px-6;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white border border-slate-200 rounded-lg p-6 shadow-sm;
+  }
+
+  /* Typography */
+  .heading-1 {
+    @apply text-4xl md:text-5xl font-bold tracking-tight;
+  }
+
+  .heading-2 {
+    @apply text-3xl md:text-4xl font-bold tracking-tight;
+  }
+
+  .heading-3 {
+    @apply text-2xl md:text-3xl font-semibold;
+  }
+
+  .heading-4 {
+    @apply text-xl md:text-2xl font-semibold;
+  }
+
+  .body-large {
+    @apply text-lg leading-relaxed;
+  }
+
+  .body-base {
+    @apply text-base leading-relaxed;
+  }
+
+  .body-small {
+    @apply text-sm leading-relaxed;
+  }
+
+  .financial-number {
+    @apply font-mono font-semibold tabular-nums;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-white border-2 border-slate-300 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-50 transition-colors;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center px-6 py-3 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-100 transition-colors;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full border border-blue-200;
+  }
+
+  /* Article Images - Standardized Sizes */
+  .article-image {
+    @apply w-full rounded-lg overflow-hidden;
+  }
+
+  .article-image--sm {
+    height: var(--image-height-sm);
+  }
+
+  .article-image--md {
+    height: var(--image-height-md);
+  }
+
+  .article-image--lg {
+    height: var(--image-height-lg);
+  }
+
+  .article-image--xl {
+    height: var(--image-height-xl);
+  }
+
+  .article-image--featured {
+    height: var(--image-height-featured);
+  }
+
+  .article-image img {
+    @apply w-full h-full object-cover;
+  }
+
+  /* News Card Images - Reusable */
+  .news-card-image {
+    @apply relative bg-slate-100;
+    height: var(--image-height-md);
+  }
+
+  .news-card-image--sm {
+    height: var(--image-height-sm);
+  }
+
+  .news-card-image--lg {
+    height: var(--image-height-lg);
+  }
+
+  .news-card-image img {
+    @apply w-full h-full object-cover;
+  }
+
+  .news-card-image__placeholder {
+    @apply w-full h-full flex items-center justify-center text-slate-400;
+  }
+
+  /* Editorial Content - Professional Typography */
+  .article-content {
+    @apply text-lg leading-relaxed text-slate-700;
+  }
+
+  .article-content p {
+    margin-bottom: var(--content-spacing-md);
+  }
+
+  .article-content h2 {
+    @apply text-3xl font-bold text-slate-900 leading-tight;
+    margin-top: var(--content-spacing-2xl);
+    margin-bottom: var(--content-spacing-md);
+  }
+
+  .article-content h3 {
+    @apply text-2xl font-bold text-slate-900 leading-snug;
+    margin-top: var(--content-spacing-xl);
+    margin-bottom: var(--content-spacing-sm);
+  }
+
+  .article-content h4 {
+    @apply text-xl font-semibold text-slate-900 leading-snug;
+    margin-top: var(--content-spacing-lg);
+    margin-bottom: var(--content-spacing-sm);
+  }
+
+  .article-content ul,
+  .article-content ol {
+    margin-bottom: var(--content-spacing-md);
+    padding-left: 1.5rem;
+  }
+
+  .article-content li {
+    margin-bottom: 0.5rem;
+  }
+
+  .article-content strong {
+    @apply font-bold text-slate-900;
+  }
+
+  .article-content a {
+    @apply text-blue-600 underline hover:text-blue-700;
+  }
+
+  .article-content blockquote {
+    @apply border-l-4 border-blue-600 pl-6 italic text-slate-600;
+    margin: var(--content-spacing-lg) 0;
+  }
+
+  .article-content code {
+    @apply bg-slate-100 px-2 py-1 rounded text-sm font-mono;
+  }
+
+  .article-content pre {
+    @apply bg-slate-100 p-6 rounded-lg overflow-x-auto;
+    margin-bottom: var(--content-spacing-md);
+  }
+
+  .article-content pre code {
+    @apply bg-transparent p-0;
+  }
+
+  .article-content img {
+    @apply rounded-lg;
+    margin: var(--content-spacing-lg) 0;
+  }
+
+  .article-content table {
+    @apply w-full border-collapse;
+    margin: var(--content-spacing-lg) 0;
+  }
+
+  .article-content th,
+  .article-content td {
+    @apply border border-slate-200 px-3 py-2 text-left;
+  }
+
+  .article-content th {
+    @apply bg-slate-50 font-semibold;
+  }
+
+  /* Social Share Buttons */
+  .share-button {
+    @apply flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors;
+  }
+
+  .share-button svg {
+    @apply w-4 h-4;
+  }
+}
+
+@layer utilities {
+  /* Scroll Animation for Rankings */
+  @keyframes scroll-left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-scroll {
+    animation: scroll-left 90s linear infinite;
+    will-change: transform;
+  }
+
+  .animate-scroll:hover {
+    animation-play-state: paused;
+  }
+
+  /* Progress Bars - Reusable */
+  .progress-bar {
+    @apply h-2 bg-slate-200 rounded-full overflow-hidden;
+  }
+
+  .progress-bar__fill {
+    @apply h-full rounded-full transition-all duration-1000;
+  }
+
+  .progress-bar__fill--performance {
+    @apply bg-blue-600;
+  }
+
+  .progress-bar__fill--cost {
+    @apply bg-emerald-600;
+  }
+
+  .progress-bar__fill--liquidity {
+    @apply bg-cyan-600;
+  }
+
+  .progress-bar__fill--community {
+    @apply bg-purple-600;
+  }
+}

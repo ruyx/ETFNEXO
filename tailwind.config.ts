@@ -1,0 +1,116 @@
+import type { Config } from 'tailwindcss'
+
+const config: Config = {
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          blue: '#235D87',
+          teal: '#5DABB8',
+          orange: '#F95602',
+        },
+        neutral: {
+          0: '#FFFFFF',
+          50: '#FAF9F6',
+          100: '#F3F4F6',
+          200: '#E5E7EB',
+          300: '#D1D5DB',
+          400: '#9CA3AF',
+          500: '#6B7280',
+          600: '#4B5563',
+          700: '#374151',
+          800: '#1F2937',
+          900: '#111827',
+        },
+        blue: {
+          50: '#EFF6FB',
+          100: '#D4E8F5',
+          200: '#A9D1EB',
+          300: '#7EBAE1',
+          400: '#5393C7',
+          500: '#235D87',
+          600: '#1C4A6B',
+          700: '#15384F',
+          800: '#0E2534',
+          900: '#07131A',
+        },
+        teal: {
+          50: '#EFFBFC',
+          100: '#D4F3F6',
+          200: '#A9E7ED',
+          300: '#7EDBE4',
+          400: '#5DABB8',
+          500: '#4A8A94',
+          600: '#3A6D75',
+          700: '#2B5157',
+          800: '#1C3638',
+          900: '#0E1B1C',
+        },
+        orange: {
+          50: '#FEF3E9',
+          100: '#FDE0C7',
+          200: '#FCC18F',
+          300: '#FAA257',
+          400: '#F95602',
+          500: '#C74502',
+          600: '#953301',
+          700: '#642201',
+          800: '#321100',
+          900: '#190800',
+        },
+      },
+      fontFamily: {
+        sans: ['Archivo', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        heading: ['Archivo', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+      },
+      fontSize: {
+        'display': ['4.5rem', { lineHeight: '1.1', letterSpacing: '-0.025em' }],
+        'display-mobile': ['3rem', { lineHeight: '1.1', letterSpacing: '-0.025em' }],
+        'h1': ['3.5rem', { lineHeight: '1.2', letterSpacing: '-0.025em' }],
+        'h1-mobile': ['2.5rem', { lineHeight: '1.2', letterSpacing: '-0.025em' }],
+        'h2': ['2.5rem', { lineHeight: '1.25', letterSpacing: '-0.025em' }],
+        'h2-mobile': ['2rem', { lineHeight: '1.25', letterSpacing: '-0.025em' }],
+        'h3': ['2rem', { lineHeight: '1.3' }],
+        'h3-mobile': ['1.5rem', { lineHeight: '1.3' }],
+        'h4': ['1.5rem', { lineHeight: '1.4' }],
+        'h4-mobile': ['1.25rem', { lineHeight: '1.4' }],
+        'h5': ['1.25rem', { lineHeight: '1.5' }],
+        'h5-mobile': ['1.125rem', { lineHeight: '1.5' }],
+        'body-lg': ['1.125rem', { lineHeight: '1.75' }],
+        'body-base': ['1rem', { lineHeight: '1.5' }],
+        'body-sm': ['0.875rem', { lineHeight: '1.5' }],
+        'body-xs': ['0.75rem', { lineHeight: '1.5' }],
+      },
+      boxShadow: {
+        'blue': '0 10px 30px -10px rgba(35, 93, 135, 0.3)',
+        'teal': '0 10px 30px -10px rgba(93, 171, 184, 0.3)',
+        'orange': '0 10px 30px -10px rgba(249, 86, 2, 0.3)',
+      },
+      backgroundImage: {
+        'gradient-primary': 'linear-gradient(135deg, #235D87 0%, #5DABB8 100%)',
+        'gradient-secondary': 'linear-gradient(135deg, #5DABB8 0%, #F95602 100%)',
+        'gradient-subtle': 'linear-gradient(180deg, #FAF9F6 0%, #FFFFFF 100%)',
+        'gradient-overlay-dark': 'linear-gradient(180deg, rgba(17, 24, 39, 0) 0%, rgba(17, 24, 39, 0.8) 100%)',
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '128': '32rem',
+      },
+      borderRadius: {
+        '2xl': '1.5rem',
+      },
+    },
+  },
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/forms'),
+  ],
+}
+
+export default config

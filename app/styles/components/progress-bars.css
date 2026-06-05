@@ -1,0 +1,58 @@
+/* ============================================
+   PROGRESS BARS - Barras de progreso
+   ============================================ */
+
+/* ==================== BASE ==================== */
+.progress-bar {
+  height: var(--progress-height);
+  background-color: var(--progress-bg);
+  border-radius: var(--progress-radius);
+  overflow: hidden;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  border-radius: var(--progress-radius);
+  transition: width var(--transition-slower);
+}
+
+/* ==================== VARIANTES DE COLOR ==================== */
+.progress-bar__fill--performance {
+  background-color: var(--progress-performance);
+}
+
+.progress-bar__fill--cost {
+  background-color: var(--progress-cost);
+}
+
+.progress-bar__fill--liquidity {
+  background-color: var(--progress-liquidity);
+}
+
+.progress-bar__fill--community {
+  background-color: var(--progress-community);
+}
+
+/* ==================== TAMAÑOS ==================== */
+.progress-bar--sm {
+  height: 0.25rem; /* 4px */
+}
+
+.progress-bar--lg {
+  height: 0.75rem; /* 12px */
+}
+
+/* ==================== ANIMACIONES ==================== */
+@keyframes progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.progress-bar__fill--indeterminate {
+  width: 50% !important;
+  animation: progress-indeterminate 1.5s ease-in-out infinite;
+}
