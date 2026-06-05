@@ -31,28 +31,35 @@ interface NewsSource {
 // Configuración de fuentes RSS
 // ============================================
 const NEWS_SOURCES: NewsSource[] = [
-  // Google News - ETF en español
+  // Google News - ETF tradicionales (EXCLUYE crypto)
   {
     name: 'Google News ETF España',
-    url: 'https://news.google.com/rss/search?q=ETF+OR+fondos+cotizados+when:7d&hl=es&gl=ES&ceid=ES:es',
+    url: 'https://news.google.com/rss/search?q=ETF+OR+"fondos+cotizados"+-Bitcoin+-crypto+-criptomonedas+-blockchain+-BTC+-ETH+when:7d&hl=es&gl=ES&ceid=ES:es',
     category: 'etfs',
     language: 'es'
   },
-  // Google News - Gestoras
+  // Google News - Gestoras (EXCLUYE crypto)
   {
     name: 'Google News Gestoras',
-    url: 'https://news.google.com/rss/search?q=BlackRock+OR+Vanguard+OR+iShares+OR+Amundi+when:7d&hl=es&gl=ES&ceid=ES:es',
+    url: 'https://news.google.com/rss/search?q=(BlackRock+OR+Vanguard+OR+iShares+OR+Amundi+OR+Invesco+OR+SPDR)+ETF+-Bitcoin+-crypto+-criptomonedas+when:7d&hl=es&gl=ES&ceid=ES:es',
     category: 'gestoras',
     language: 'es'
   },
-  // Google News - Mercados
+  // Google News - ETFs Renta Variable
   {
-    name: 'Google News Mercados',
-    url: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtVnpHZ0pGVXlnQVAB?hl=es&gl=ES&ceid=ES%3Aes',
-    category: 'mercados',
+    name: 'Google News ETF Renta Variable',
+    url: 'https://news.google.com/rss/search?q="ETF+renta+variable"+OR+"ETF+acciones"+OR+"ETF+bolsa"+-Bitcoin+-crypto+when:7d&hl=es&gl=ES&ceid=ES:es',
+    category: 'etfs',
     language: 'es'
   },
-  // Finect - RSS Feed (si tienen)
+  // Google News - ETFs Renta Fija
+  {
+    name: 'Google News ETF Renta Fija',
+    url: 'https://news.google.com/rss/search?q="ETF+renta+fija"+OR+"ETF+bonos"+OR+"ETF+deuda"+-Bitcoin+-crypto+when:7d&hl=es&gl=ES&ceid=ES:es',
+    category: 'etfs',
+    language: 'es'
+  },
+  // Finect - RSS Feed
   {
     name: 'Finect ETFs',
     url: 'https://www.finect.com/rss/etfs',
@@ -60,6 +67,24 @@ const NEWS_SOURCES: NewsSource[] = [
     language: 'es'
   }
 ];
+
+// ============================================
+// Filtros Anti-Crypto
+// ============================================
+// Lista de palabras clave relacionadas con crypto a EXCLUIR
+const CRYPTO_KEYWORDS = [
+  'bitcoin', 'btc', 'ethereum', 'eth', 'crypto', 'criptomoneda', 'criptomonedas',
+  'blockchain', 'cripto', 'criptodivisa', 'altcoin', 'defi', 'nft',
+  'binance', 'coinbase', 'solana', 'cardano', 'ripple', 'xrp',
+  'dogecoin', 'doge', 'shiba', 'token', 'web3', 'metaverse', 'metaverso',
+  'stablecoin', 'usdt', 'usdc', 'mining', 'minería', 'wallet', 'monedero digital'
+];
+
+// Función para verificar si un artículo contiene keywords de crypto
+function containsCryptoKeywords(text: string): boolean {
+  const lowerText = text.toLowerCase();
+  return CRYPTO_KEYWORDS.some(keyword => lowerText.includes(keyword));
+}
 
 // ============================================
 // Utilidades
@@ -142,6 +167,7 @@ async function processNews(supabaseClient: any) {
     total: 0,
     inserted: 0,
     skipped: 0,
+    filteredCrypto: 0,
     errors: 0
   };
 
@@ -161,7 +187,14 @@ async function processNews(supabaseClient: any) {
 
     for (const item of items) {
       try {
-        // Verificar si ya existe (por source_url)
+        // FILTRO 1: Excluir artículos con keywords de crypto
+        if (containsCryptoKeywords(item.title) || containsCryptoKeywords(item.description)) {
+          results.filteredCrypto++;
+          console.log(`✗ Filtered (crypto): ${item.title.substring(0, 50)}...`);
+          continue;
+        }
+
+        // FILTRO 2: Verificar si ya existe (por source_url)
         const { data: existing } = await supabaseClient
           .from('news_articles')
           .select('id')

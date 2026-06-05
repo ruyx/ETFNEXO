@@ -8,11 +8,18 @@ Sistema completo de publicación de noticias automática que obtiene contenido d
 
 **Sistema completo y funcionando en producción:**
 - ✅ Base de datos configurada con tablas y vistas
-- ✅ Edge Function desplegada en Supabase
+- ✅ Edge Function desplegada en Supabase con **filtros anti-crypto**
 - ✅ Endpoints API implementados y funcionando
-- ✅ **257 noticias** importadas desde Google News
-- ✅ **20 noticias** publicadas en el sitio
+- ✅ **266 noticias** importadas (76 artículos crypto eliminados)
+- ✅ **16 noticias** publicadas en el sitio
+- ✅ **Filtrado automático**: 30+ keywords de crypto excluidas
+- ✅ **5 fuentes RSS** especializadas en ETFs tradicionales
 - ✅ Desplegado en producción: https://etfnexo.vercel.app
+
+**Referencias de calidad documentadas:**
+- ETFdb.com - Base de datos completa de ETFs
+- Morningstar Global - Ratings y análisis institucional
+- Ver documentación completa: `docs/NEWS_SOURCES.md`
 
 ## Arquitectura del Sistema
 
@@ -49,18 +56,26 @@ Migración: `supabase/migrations/20260604000001_create_news_system.sql`
 
 **Función:** Obtener y procesar noticias automáticamente
 
-**Fuentes Configuradas:**
-- Google News RSS - ETF España
-- Google News RSS - Gestoras (BlackRock, Vanguard, iShares, Amundi)
-- Google News RSS - Mercados
-- Finect RSS (si está disponible)
+**Fuentes Configuradas (5 fuentes especializadas):**
+1. Google News ETF España - Fondos cotizados tradicionales
+2. Google News Gestoras - BlackRock, Vanguard, iShares, Amundi, Invesco, SPDR
+3. Google News ETF Renta Variable - Acciones y bolsa
+4. Google News ETF Renta Fija - Bonos y deuda
+5. Finect ETFs - Red social financiera española
+
+**Filtros Anti-Crypto Implementados:**
+- 30+ palabras clave excluidas (bitcoin, ethereum, crypto, blockchain, etc.)
+- Filtrado en URL de Google News (-Bitcoin -crypto -criptomonedas)
+- Filtrado en Edge Function (verificación de título y descripción)
+- Ver lista completa: `docs/NEWS_SOURCES.md`
 
 **Proceso:**
 1. Obtiene noticias de cada fuente RSS
 2. Parse de XML a JSON
-3. Verifica duplicados por `source_url`
-4. Genera slug único
-5. Inserta en `news_articles` con status `'draft'`
+3. **NUEVO:** Filtra artículos con keywords de crypto
+4. Verifica duplicados por `source_url`
+5. Genera slug único
+6. Inserta en `news_articles` con status `'draft'`
 
 **Cómo ejecutar manualmente:**
 ```bash
@@ -69,9 +84,11 @@ curl -X POST 'https://utvioubcqkwwzvufhups.supabase.co/functions/v1/fetch-news' 
 ```
 
 **Resultado última ejecución:**
-- Total procesado: 269 artículos
-- Insertados: 257 artículos
-- Duplicados: 12 artículos
+- Total procesado: 145 artículos
+- Insertados: 85 artículos nuevos
+- Duplicados: 50 artículos
+- **Filtrados (crypto)**: 10 artículos excluidos ✅
+- Errores: 0
 
 ### 3. API Endpoints
 

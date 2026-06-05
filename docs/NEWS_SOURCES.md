@@ -1,0 +1,312 @@
+# Fuentes de Noticias ETF Nexo
+
+Documentación completa de fuentes de noticias para el sistema automatizado de ETF Nexo.
+
+## 🎯 Objetivo
+
+Proporcionar noticias de alta calidad sobre **ETFs tradicionales**, excluyendo completamente contenido relacionado con criptomonedas, blockchain y activos digitales.
+
+## 📊 Estado Actual
+
+- **Total de artículos**: 266
+- **Publicados**: 16
+- **Borradores**: 250
+- **Artículos crypto eliminados**: 76
+- **Última actualización**: 2026-06-05
+
+## 🔍 Fuentes RSS Activas
+
+### 1. Google News ETF España
+
+**URL**: `https://news.google.com/rss/search?q=ETF+OR+"fondos+cotizados"+-Bitcoin+-crypto+-criptomonedas+-blockchain+-BTC+-ETH+when:7d&hl=es&gl=ES&ceid=ES:es`
+
+- **Categoría**: ETFs
+- **Idioma**: Español
+- **Frecuencia**: Últimos 7 días
+- **Exclusiones**: Bitcoin, crypto, criptomonedas, blockchain, BTC, ETH
+
+**Contenido típico**:
+- Noticias generales de ETFs en España
+- Lanzamientos de nuevos fondos cotizados
+- Análisis de rentabilidad
+- Cambios regulatorios
+
+### 2. Google News Gestoras
+
+**URL**: `https://news.google.com/rss/search?q=(BlackRock+OR+Vanguard+OR+iShares+OR+Amundi+OR+Invesco+OR+SPDR)+ETF+-Bitcoin+-crypto+-criptomonedas+when:7d&hl=es&gl=ES&ceid=ES:es`
+
+- **Categoría**: Gestoras
+- **Idioma**: Español
+- **Frecuencia**: Últimos 7 días
+- **Gestoras cubiertas**: BlackRock, Vanguard, iShares, Amundi, Invesco, SPDR
+
+**Contenido típico**:
+- Anuncios de gestoras de ETFs
+- Nuevos productos y estrategias
+- Movimientos corporativos
+- Reportes de flujos de capital
+
+### 3. Google News ETF Renta Variable
+
+**URL**: `https://news.google.com/rss/search?q="ETF+renta+variable"+OR+"ETF+acciones"+OR+"ETF+bolsa"+-Bitcoin+-crypto+when:7d&hl=es&gl=ES&ceid=ES:es`
+
+- **Categoría**: ETFs
+- **Idioma**: Español
+- **Frecuencia**: Últimos 7 días
+- **Enfoque**: ETFs de acciones y renta variable
+
+**Contenido típico**:
+- Análisis de ETFs de acciones
+- Performance de índices bursátiles
+- Estrategias de inversión en renta variable
+- Sectores y geografías específicas
+
+### 4. Google News ETF Renta Fija
+
+**URL**: `https://news.google.com/rss/search?q="ETF+renta+fija"+OR+"ETF+bonos"+OR+"ETF+deuda"+-Bitcoin+-crypto+when:7d&hl=es&gl=ES&ceid=ES:es`
+
+- **Categoría**: ETFs
+- **Idioma**: Español
+- **Frecuencia**: Últimos 7 días
+- **Enfoque**: ETFs de bonos y renta fija
+
+**Contenido típico**:
+- Noticias de ETFs de bonos
+- Política monetaria y tipos de interés
+- Mercado de deuda soberana y corporativa
+- Estrategias de renta fija
+
+### 5. Finect ETFs
+
+**URL**: `https://www.finect.com/rss/etfs`
+
+- **Categoría**: ETFs
+- **Idioma**: Español
+- **Frecuencia**: Continua
+- **Fuente**: Finect (red social financiera española)
+
+**Contenido típico**:
+- Análisis de expertos
+- Comparativas de ETFs
+- Opiniones de inversores
+- Guías educativas
+
+## 🚫 Filtros Anti-Crypto
+
+El sistema implementa filtros automáticos para **excluir** cualquier contenido relacionado con:
+
+### Palabras clave excluidas (30+):
+
+- `bitcoin`, `btc`
+- `ethereum`, `eth`
+- `crypto`, `criptomoneda`, `criptomonedas`
+- `blockchain`, `cripto`, `criptodivisa`
+- `altcoin`, `defi`, `nft`
+- `binance`, `coinbase`
+- `solana`, `cardano`, `ripple`, `xrp`
+- `dogecoin`, `doge`, `shiba`
+- `token`, `web3`
+- `metaverse`, `metaverso`
+- `stablecoin`, `usdt`, `usdc`
+- `mining`, `minería`
+- `wallet`, `monedero digital`
+
+### Niveles de filtrado:
+
+1. **Nivel RSS** (Google News): Exclusiones en la URL de búsqueda
+2. **Nivel Parser** (Edge Function): Verificación de título y descripción
+3. **Nivel Base de Datos**: Queries de limpieza periódica
+
+## 📚 Fuentes de Referencia (Consulta Manual)
+
+Estas fuentes no tienen RSS público pero son referencias valiosas para curación manual:
+
+### ETFdb.com
+
+**URL**: https://etfdb.com
+
+- **Descripción**: Base de datos completa de ETFs con análisis detallados
+- **Cobertura**: Global (énfasis en mercado estadounidense)
+- **Características**:
+  - Comparador de ETFs
+  - Screener avanzado
+  - Holdings y composición
+  - Performance histórica
+  - Ratings y análisis
+
+**Uso recomendado**:
+- Verificación de datos de ETFs
+- Análisis de composición
+- Benchmarking de performance
+- Research de nuevos productos
+
+### Morningstar Global
+
+**URL**: https://global.morningstar.com/es/etfs
+
+**Secciones relevantes**:
+- https://global.morningstar.com/es/etfs/los-etfs-ms-rentables-del-mes-2
+- https://global.morningstar.com/es/etf/screener
+
+- **Descripción**: Plataforma líder de análisis financiero
+- **Cobertura**: Global con versión en español
+- **Características**:
+  - Ratings de Morningstar (estrellas)
+  - Rankings mensuales de rentabilidad
+  - Análisis cualitativo y cuantitativo
+  - Screener de ETFs
+  - Research institucional
+
+**Uso recomendado**:
+- Validación de ratings
+- Comparativas de rentabilidad
+- Análisis de riesgo
+- Datos de flujos de capital
+
+### Otras Fuentes de Referencia
+
+1. **JustETF.com** (https://www.justetf.com/es/)
+   - Plataforma europea especializada
+   - Screener y comparador
+   - Planes de inversión
+
+2. **Bolsas de Valores**
+   - BME (España): https://www.bolsasymercados.es
+   - Euronext: https://www.euronext.com
+   - London Stock Exchange (LSE)
+
+3. **Reguladores**
+   - CNMV (España): https://www.cnmv.es
+   - ESMA (Europa): https://www.esma.europa.eu
+   - SEC (USA): https://www.sec.gov
+
+## 🔄 Proceso de Scraping
+
+### Automatizado (Edge Function)
+
+1. **Frecuencia**: Cada 6 horas (configurable)
+2. **Comando manual**:
+   ```bash
+   bash -c 'SERVICE_KEY=$(grep SUPABASE_SERVICE_ROLE_KEY .env.local | cut -d= -f2); curl -X POST "https://utvioubcqkwwzvufhups.supabase.co/functions/v1/fetch-news" -H "Authorization: Bearer ${SERVICE_KEY}" -H "Content-Type: application/json"'
+   ```
+
+### Flujo de Procesamiento
+
+```
+1. Fetch RSS → 2. Parse XML → 3. Filter Crypto → 4. Check Duplicates → 5. Insert Draft
+```
+
+### Estadísticas del Último Scraping
+
+- **Total encontradas**: 145 noticias
+- **Insertadas**: 85 nuevas
+- **Saltadas**: 50 duplicadas
+- **Filtradas (crypto)**: 10 excluidas ✅
+- **Errores**: 0
+
+## ✅ Calidad de Contenido
+
+### Criterios de Inclusión
+
+✅ **Incluir**:
+- ETFs de renta variable (acciones)
+- ETFs de renta fija (bonos)
+- ETFs sectoriales (tecnología, salud, energía, etc.)
+- ETFs geográficos (Europa, Asia, emergentes, etc.)
+- ETFs temáticos (ESG, dividendos, value, growth, etc.)
+- Gestoras de fondos cotizados
+- Análisis de mercados financieros tradicionales
+- Regulación de fondos de inversión
+
+❌ **Excluir**:
+- Cualquier mención a criptomonedas
+- Bitcoin ETFs o productos relacionados
+- Blockchain y tecnologías cripto
+- NFTs y activos digitales
+- Exchanges de crypto
+- DeFi y Web3
+
+### Proceso de Publicación
+
+1. **Scraping automático** → Estado: `draft`
+2. **Revisión manual/automática** → Verificar calidad y relevancia
+3. **Publicación** → Cambiar status a `published`:
+   ```sql
+   UPDATE news_articles
+   SET status = 'published', published_at = NOW()
+   WHERE id = 'xxx';
+   ```
+
+## 📈 Métricas de Rendimiento
+
+### Cobertura por Categoría
+
+| Categoría | Artículos | %  |
+|-----------|-----------|-----|
+| ETFs      | 210       | 79% |
+| Gestoras  | 35        | 13% |
+| Mercados  | 21        | 8%  |
+
+### Idioma
+
+- **Español**: 100%
+
+### Fuentes Más Productivas
+
+1. Google News ETF España: ~40%
+2. Google News Gestoras: ~25%
+3. Google News Renta Variable: ~20%
+4. Google News Renta Fija: ~10%
+5. Finect ETFs: ~5%
+
+## 🔮 Futuras Fuentes
+
+Fuentes potenciales para agregar (si publican RSS):
+
+1. **Expansión**: Sección de Mercados/ETFs
+2. **El Economista**: Sección de Fondos
+3. **Financial Times**: ETF Section (inglés)
+4. **Bloomberg**: ETF News (inglés)
+5. **Reuters**: Fund News (inglés)
+
+## 🛠️ Mantenimiento
+
+### Tareas Regulares
+
+- **Diaria**: Scraping automático
+- **Semanal**: Revisión de calidad de fuentes
+- **Mensual**: Limpieza de artículos obsoletos
+- **Trimestral**: Evaluación de nuevas fuentes
+
+### Queries de Mantenimiento
+
+```sql
+-- Ver últimos artículos
+SELECT title, source_name, created_at
+FROM news_articles
+ORDER BY created_at DESC
+LIMIT 20;
+
+-- Estadísticas por fuente
+SELECT source_name, COUNT(*) as total
+FROM news_articles
+GROUP BY source_name
+ORDER BY total DESC;
+
+-- Buscar posibles artículos crypto que pasaron el filtro
+SELECT title FROM news_articles
+WHERE LOWER(title) LIKE '%crypto%'
+   OR LOWER(title) LIKE '%bitcoin%';
+```
+
+## 📞 Contacto y Contribuciones
+
+Para sugerir nuevas fuentes o reportar problemas de calidad:
+
+- **Email**: info@artigence.net
+- **GitHub**: https://github.com/ruyx/ETFNEXO/issues
+
+---
+
+**Última actualización**: 2026-06-05
+**Versión**: 2.0 (con filtros anti-crypto)
