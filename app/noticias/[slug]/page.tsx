@@ -9,14 +9,21 @@ interface PageProps {
 
 // Fetch article data
 async function getArticle(slug: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:5000';
+  // Use absolute URL in production, relative in development
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:5000';
 
   try {
     const res = await fetch(`${baseUrl}/api/v1/noticias/${slug}`, {
-      next: { revalidate: 300 } // Revalidate every 5 minutes
+      next: { revalidate: 300 }, // Revalidate every 5 minutes
+      headers: {
+        'Content-Type': 'application/json',
+      }
     });
 
     if (!res.ok) {
+      console.error(`Failed to fetch article ${slug}: ${res.status} ${res.statusText}`);
       return null;
     }
 

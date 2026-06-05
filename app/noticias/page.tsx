@@ -23,14 +23,21 @@ interface NewsArticle {
 
 // Fetch news articles
 async function getNews(limit = 20) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:5000';
+  // Use absolute URL in production, relative in development
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:5000';
 
   try {
     const res = await fetch(`${baseUrl}/api/v1/noticias?limit=${limit}`, {
-      next: { revalidate: 300 } // Revalidate every 5 minutes
+      next: { revalidate: 300 }, // Revalidate every 5 minutes
+      headers: {
+        'Content-Type': 'application/json',
+      }
     });
 
     if (!res.ok) {
+      console.error(`Failed to fetch news: ${res.status} ${res.statusText}`);
       return { data: [], count: 0 };
     }
 
