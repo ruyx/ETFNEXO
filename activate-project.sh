@@ -36,7 +36,14 @@ alias dev-etf='cd "$PROJECT_ROOT" && pnpm dev'
 alias build-etf='cd "$PROJECT_ROOT" && pnpm build'
 alias deploy-etf='cd "$PROJECT_ROOT" && vercel --prod'
 
-echo "✓ Aliases creados: supabase-etf, vercel-etf, dev-etf, build-etf, deploy-etf"
+# Engram aliases
+alias mem-search-etf='engram search --project etfnexo'
+alias mem-save-etf='engram save --project etfnexo'
+alias mem-context-etf='engram context etfnexo'
+alias mem-stats-etf='engram stats'
+
+echo "✓ Aliases creados: dev-etf, build-etf, deploy-etf, supabase-etf, vercel-etf"
+echo "✓ Engram aliases: mem-search-etf, mem-save-etf, mem-context-etf, mem-stats-etf"
 
 # 5. Mostrar información del proyecto
 echo ""
@@ -55,6 +62,15 @@ echo "   deploy-etf   → Deploy a producción"
 echo "   supabase-etf → Comandos Supabase"
 echo "   vercel-etf   → Comandos Vercel"
 echo ""
+echo "🧠 Engram (memoria del proyecto):"
+echo "   mem-search-etf <query>  → Buscar en memoria"
+echo "   mem-save-etf <título> <contenido> --type <tipo>"
+echo "   mem-context-etf         → Ver contexto reciente"
+echo "   mem-stats-etf           → Estadísticas"
+echo ""
+echo "📚 Memorias recientes guardadas:"
+engram search "" --project etfnexo --limit 3 2>/dev/null | grep -E "^\[|ETF Nexo" | head -6 || echo "   (Ejecuta 'mem-search-etf \"\"' para ver todas)"
+echo ""
 echo "Para desactivar: cd a otro directorio o ejecuta 'deactivate-etf'"
 
 # 6. Función de desactivación
@@ -67,6 +83,10 @@ deactivate-etf() {
     unalias dev-etf 2>/dev/null
     unalias build-etf 2>/dev/null
     unalias deploy-etf 2>/dev/null
+    unalias mem-search-etf 2>/dev/null
+    unalias mem-save-etf 2>/dev/null
+    unalias mem-context-etf 2>/dev/null
+    unalias mem-stats-etf 2>/dev/null
     echo "✓ Contexto ETF Nexo desactivado"
 }
 

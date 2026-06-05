@@ -269,8 +269,8 @@ pnpm type-check   # TypeScript type checking
 
 Este proyecto usa herramientas avanzadas de desarrollo con IA:
 
+- **Engram**: Sistema de memoria persistente para el proyecto (ver sección abajo)
 - **UI/UX Pro Max**: Generador de sistemas de diseño con IA
-- **Claude-Mem**: Memoria persistente entre sesiones
 - **ECC Skills**: 62+ skills para desarrollo (frontend, backend, python, testing)
 - **LightRAG**: RAG con grafos (Fase 2, para chatbot)
 
@@ -299,6 +299,58 @@ Ver documentación completa: [`docs/NEWS_SYSTEM.md`](./docs/NEWS_SYSTEM.md)
 2. Vercel inicia build automáticamente
 3. Build completa en ~2 minutos
 4. Deploy aliased a production URL
+
+## 🧠 Engram - Memoria del Proyecto
+
+Sistema de memoria persistente que permite a Claude Code recordar información entre sesiones:
+
+### Estado Actual
+
+- **Proyecto**: etfnexo
+- **Memorias guardadas**: 7 observaciones
+- **Base de datos**: `~/.engram/engram.db` (SQLite + FTS5)
+
+### Información Almacenada
+
+1. ✅ Arquitectura del proyecto (stack, repositorio, estructura)
+2. ✅ Sistema de noticias automatizado (base de datos, Edge Functions, APIs)
+3. ✅ Configuración de accesos (Supabase, Vercel, GitHub, SSH keys)
+4. ✅ Sistema multi-proyecto (aislamiento, wrappers, activate-project.sh)
+5. ✅ Flujos de trabajo y comandos frecuentes
+6. ✅ Problemas comunes y soluciones (troubleshooting)
+7. ✅ API endpoints y estructura
+
+### Comandos Rápidos
+
+```bash
+# Activar contexto del proyecto (incluye aliases de Engram)
+source activate-project.sh
+
+# Buscar en memoria
+mem-search-etf "noticias"
+mem-search-etf "supabase"
+
+# Guardar nueva información
+mem-save-etf "Título" "Contenido detallado..." --type <tipo>
+
+# Ver contexto reciente
+mem-context-etf
+
+# Estadísticas
+mem-stats-etf
+```
+
+### Tipos de Memoria
+
+- `architecture`: Arquitectura y stack
+- `feature`: Características y funcionalidades
+- `config`: Configuración y credenciales
+- `workflow`: Flujos de trabajo
+- `troubleshooting`: Soluciones a problemas
+- `api`: APIs y endpoints
+- `decision`: Decisiones técnicas
+
+Ver documentación completa: [`docs/ENGRAM_USAGE.md`](./docs/ENGRAM_USAGE.md)
 
 ## 📧 Contacto
 
