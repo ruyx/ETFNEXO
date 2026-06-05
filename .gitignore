@@ -48,3 +48,10 @@ stack de cuentas*
 *.key
 *.pem
 
+
+# Project-specific configurations
+.supabase-config/access_token
+.vercel/.env*
+
+# Wrappers ejecutables (opcional - commitear o no según preferencia)
+# bin/

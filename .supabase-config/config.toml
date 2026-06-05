@@ -1,0 +1,15 @@
+# Configuración local de Supabase para ETF Nexo
+# Esta configuración es específica de este proyecto
+
+[auth]
+enabled = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+
+[auth.external.google]
+enabled = false
+
+# Project-specific settings
+project_id = "utvioubcqkwwzvufhups"

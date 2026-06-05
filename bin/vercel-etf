@@ -1,0 +1,11 @@
+#!/bin/bash
+# Wrapper para Vercel CLI - ETF Nexo
+# Usa configuración local del proyecto
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$PROJECT_ROOT"
+
+# Vercel usa automáticamente .vercel/ del directorio actual
+# Solo aseguramos que estemos en el directorio correcto
+
+exec vercel "$@"

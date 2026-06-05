@@ -1,0 +1,13 @@
+#!/bin/bash
+# Wrapper para Supabase CLI - ETF Nexo
+# Usa configuración local del proyecto
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$PROJECT_ROOT"
+
+# Configurar variables específicas del proyecto
+export SUPABASE_ACCESS_TOKEN_FILE="$PROJECT_ROOT/.supabase-config/access_token"
+export SUPABASE_PROJECT_REF="utvioubcqkwwzvufhups"
+
+# Ejecutar Supabase CLI con workdir del proyecto
+exec supabase --workdir "$PROJECT_ROOT" "$@"
