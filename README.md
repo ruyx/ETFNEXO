@@ -276,13 +276,40 @@ Este proyecto usa herramientas avanzadas de desarrollo con IA:
 
 Ver guía completa en: [`.claude/skills/GUIA_MAESTRA_HERRAMIENTAS_AVANZADAS.md`](./.claude/skills/GUIA_MAESTRA_HERRAMIENTAS_AVANZADAS.md)
 
+## 📰 Sistema de Noticias Automatizado
+
+Sistema completo de scraping y publicación de noticias:
+
+- **Fuentes**: Google News RSS (ETFs, gestoras, mercados)
+- **Estado**: ✅ 257 noticias importadas, 20 publicadas
+- **Frecuencia**: Automático cada 6 horas (configurable)
+- **Edge Function**: Desplegada en Supabase
+
+Ver documentación completa: [`docs/NEWS_SYSTEM.md`](./docs/NEWS_SYSTEM.md)
+
+## 🚀 CI/CD y Deployment
+
+### GitHub + Vercel
+- **Repositorio**: https://github.com/ruyx/ETFNEXO
+- **Producción**: https://etfnexo.vercel.app
+- **Deployments**: Automáticos en cada push a `main`
+
+### Workflow
+1. `git push origin main` → GitHub detecta cambios
+2. Vercel inicia build automáticamente
+3. Build completa en ~2 minutos
+4. Deploy aliased a production URL
+
 ## 📧 Contacto
 
 - **Email**: info@artigence.net
 - **Proyecto**: ETF Nexo MVP
 - **Versión**: 0.1.0
 - **Fecha**: Junio 2026
+- **GitHub**: https://github.com/ruyx/ETFNEXO
 
 ---
 
 **Hecho con ❤️ usando Next.js 14, Supabase y Claude Code**
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
