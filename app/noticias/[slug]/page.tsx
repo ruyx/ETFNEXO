@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import Header from '@/components/Header';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 interface PageProps {
@@ -70,7 +71,9 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
     : 'Fecha no disponible';
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <>
+      <Header />
+      <div className="min-h-screen bg-neutral-50">
       {/* Breadcrumb */}
       <div className="bg-white border-b border-neutral-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -245,6 +248,7 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
           </Link>
         </div>
       </article>
-    </div>
+      </div>
+    </>
   );
 }

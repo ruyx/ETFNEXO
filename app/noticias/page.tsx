@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import Header from '@/components/Header';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 export const metadata: Metadata = {
@@ -59,8 +60,10 @@ export default async function NoticiasPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <>
+      <Header />
+      <div className="min-h-screen bg-neutral-50 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <header className="mb-12">
           <h1 className="heading-1 text-primary-blue mb-4">
@@ -168,7 +171,8 @@ export default async function NoticiasPage() {
             </button>
           </div>
         )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
