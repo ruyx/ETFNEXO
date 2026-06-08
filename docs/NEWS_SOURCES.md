@@ -259,15 +259,137 @@ Estas fuentes no tienen RSS público pero son referencias valiosas para curació
 4. Google News Renta Fija: ~10%
 5. Finect ETFs: ~5%
 
-## 🔮 Futuras Fuentes
+## 📚 CATÁLOGO COMPLETO DE FUENTES DE REFERENCIA
 
-Fuentes potenciales para agregar (si publican RSS):
+### Medios Españoles (15 fuentes)
 
-1. **Expansión**: Sección de Mercados/ETFs
-2. **El Economista**: Sección de Fondos
-3. **Financial Times**: ETF Section (inglés)
-4. **Bloomberg**: ETF News (inglés)
-5. **Reuters**: Fund News (inglés)
+1. **Expansión** - Mercados y finanzas
+   - https://www.expansion.com/mercados.html
+
+2. **Morningstar España** - Análisis de ETFs y fondos ⭐
+   - https://global.morningstar.com/es/etfs
+   - Calidad: ⭐⭐⭐⭐⭐ (Ratings profesionales)
+
+3. **Rankia** - Comunidad financiera
+   - https://www.rankia.com/categorias/etfs
+   - Tiene RSS: Posible integración futura
+
+4. **RankiaPro** - Análisis profesional
+   - https://rankiapro.com/es/
+
+5. **Finect** - Red social financiera ✅
+   - https://www.finect.com/etfs
+   - https://www.finect.com/articulos-financieros/noticias
+   - **ACTIVA** - Integrada en RSS scraping
+
+6. **Cinco Días (El País)** - Fondos y planes
+   - https://cincodias.elpais.com/fondos-y-planes/
+
+7. **El Economista** - Mercados y cotizaciones
+   - https://www.eleconomista.es/mercados-cotizaciones/
+
+8. **El Español - Invertia** - Finanzas personales
+   - https://www.elespanol.com/invertia/mis-finanzas/
+
+9. **Intereconomía** - Fondos de inversión
+   - https://www.intereconomia.com/tag/fondos-de-inversion/
+
+10. **Capital Radio** - Noticias de fondos
+    - https://www.capitalradio.es/noticias/fondos
+
+11. **Estrategias de Inversión** - Especializado en fondos
+    - https://www.estrategiasdeinversion.com/fondos/
+
+12. **Citywire España** - Gestión de activos
+    - https://citywire.com/es
+
+13. **Que Fondos** - Comparador y noticias
+    - https://www.quefondos.com/es/fondos/
+
+14. **Funds Society** - ETF category ⭐
+    - https://www.fundssociety.com/es/categoria/etf/
+    - Calidad: ⭐⭐⭐⭐ (Especializado en gestión de activos)
+
+15. **Investing.com** - Noticias financieras
+    - https://es.investing.com/news
+
+### Medios Internacionales (11 fuentes)
+
+1. **Bloomberg** - ETFs Markets ⭐
+   - https://www.bloomberg.com/markets/etfs
+   - Calidad: ⭐⭐⭐⭐⭐ (Líder mundial en datos financieros)
+
+2. **Reuters** - ETF Market News ⭐
+   - https://www.reuters.com/markets/etf/
+   - Calidad: ⭐⭐⭐⭐⭐ (Agencia de noticias global)
+
+3. **Europa Press** - Economía y finanzas
+   - https://www.europapress.es/economia/finanzas-00340/
+
+4. **ETF.com** - Especialista en ETFs ⭐
+   - https://www.etf.com/
+   - Calidad: ⭐⭐⭐⭐⭐ (Referencia mundial en ETFs)
+
+5. **ETF Trends** - Tendencias del sector ⭐
+   - https://www.etftrends.com/
+   - Calidad: ⭐⭐⭐⭐ (Análisis de tendencias)
+
+6. **ETF Stream** - Europa-focused ⭐
+   - https://www.etfstream.com/
+   - Calidad: ⭐⭐⭐⭐ (Especializado en mercado europeo)
+
+7. **Financial Times (FT)** - ETF Hub ⭐
+   - https://www.ft.com/etf-hub
+   - Calidad: ⭐⭐⭐⭐⭐ (Líder en finanzas)
+
+8. **Ignites** - ETF Industry News
+   - https://www.ignites.com/
+   - Calidad: ⭐⭐⭐⭐ (Información de la industria)
+
+9. **ETFGI** - Research & Analytics ⭐
+   - https://etfgi.com/news
+   - Calidad: ⭐⭐⭐⭐⭐ (Research institucional)
+
+10. **EY (Ernst & Young)** - ETF Reports
+    - https://www.ey.com/en_lu/exchange-traded-funds-etfs-active-and-passive
+    - Calidad: ⭐⭐⭐⭐ (Análisis de Big Four)
+
+11. **ETFdb.com** - Base de datos completa ⭐
+    - https://etfdb.com
+    - Calidad: ⭐⭐⭐⭐⭐ (La más completa)
+
+## 📰 CÓMO SE CITAN LAS FUENTES
+
+### En la Base de Datos
+
+Cada artículo almacena:
+```sql
+source_name     → Nombre del medio (ej: "Google News ETF España")
+source_url      → URL original del artículo
+source_published_at → Fecha de publicación en la fuente original
+```
+
+### En la API
+
+```json
+{
+  "title": "Las luces y sombras de un ETF de innovación",
+  "source_name": "Morningstar",
+  "source_url": "https://global.morningstar.com/...",
+  "source_published_at": "2026-06-04T19:15:16+00:00"
+}
+```
+
+### En el Frontend
+
+**Página de detalle** (`/noticias/[slug]`):
+- Muestra enlace a fuente original al final del artículo
+- Formato: "Fuente original: [Nombre del medio] ↗"
+- El enlace abre en nueva pestaña (`target="_blank"`)
+
+**Grid de noticias** (`/noticias`):
+- Meta info incluye fecha de publicación original
+- Se respeta la autoría de la fuente
 
 ## 🛠️ Mantenimiento
 
