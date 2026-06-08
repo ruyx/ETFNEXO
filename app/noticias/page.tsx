@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export const metadata: Metadata = {
   title: 'Noticias ETF | ETF Nexo',
@@ -25,7 +25,7 @@ interface NewsArticle {
 // Fetch news articles directly from Supabase
 async function getNews(limit = 20) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const { data, error, count } = await supabase
       .from('news_articles_with_metadata')

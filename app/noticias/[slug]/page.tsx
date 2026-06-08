@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 interface PageProps {
   params: { slug: string };
@@ -11,7 +11,7 @@ interface PageProps {
 // Fetch article data directly from Supabase
 async function getArticle(slug: string) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const { data: article, error } = await supabase
       .from('news_articles_with_metadata')
