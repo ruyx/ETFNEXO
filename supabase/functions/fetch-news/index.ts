@@ -102,8 +102,33 @@ function slugify(text: string): string {
 }
 
 function extractExcerpt(html: string, maxLength = 200): string {
-  // Remove HTML tags
-  const text = html.replace(/<[^>]*>/g, '');
+  // Remove HTML tags and entities
+  let text = html
+    .replace(/<[^>]*>/g, '') // Remove HTML tags
+    .replace(/&lt;/g, '<')   // Decode &lt;
+    .replace(/&gt;/g, '>')   // Decode &gt;
+    .replace(/&amp;/g, '&')  // Decode &amp;
+    .replace(/&quot;/g, '"') // Decode &quot;
+    .replace(/&nbsp;/g, ' ') // Decode &nbsp;
+    .replace(/&hellip;/g, '...') // Decode &hellip;
+    .replace(/<\/?[^>]+(>|$)/g, '') // Remove any remaining tags
+    .trim();
+
+  // If still contains HTML-like content, extract only readable text
+  if (text.includes('<') || text.includes('href=')) {
+    // Try to extract text after "target="_blank">" pattern
+    const match = text.match(/target="_blank">([^<]+)</);
+    if (match && match[1]) {
+      text = match[1].trim();
+    }
+  }
+
+  // Remove URLs
+  text = text.replace(/https?:\/\/[^\s]+/g, '');
+
+  // Clean up multiple spaces
+  text = text.replace(/\s+/g, ' ').trim();
+
   // Truncate
   return text.length > maxLength
     ? text.substring(0, maxLength) + '...'

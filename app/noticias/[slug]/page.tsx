@@ -43,10 +43,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `${article.title} | ETF Nexo`,
-    description: article.excerpt,
+    description: article.excerpt || undefined,
     openGraph: {
-      title: article.title,
-      description: article.excerpt,
+      title: article.title || undefined,
+      description: article.excerpt || undefined,
       images: article.featured_image_url ? [article.featured_image_url] : [],
     },
   };
@@ -60,17 +60,14 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
   }
 
   // Format date
-  const publishedDate = article.published_at
-    ? new Date(article.published_at).toLocaleDateString('es-ES', {
+  const dateToFormat = article.published_at || article.source_published_at;
+  const publishedDate = dateToFormat
+    ? new Date(dateToFormat).toLocaleDateString('es-ES', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       })
-    : new Date(article.source_published_at).toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
+    : 'Fecha no disponible';
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -122,11 +119,11 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <time dateTime={article.published_at || article.source_published_at}>
+            <time dateTime={dateToFormat || undefined}>
               {publishedDate}
             </time>
           </div>
-          {article.views_count > 0 && (
+          {article.views_count !== null && article.views_count > 0 && (
             <div className="flex items-center space-x-2">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -142,7 +139,7 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
           <div className="mb-8 rounded-lg overflow-hidden">
             <Image
               src={article.featured_image_url}
-              alt={article.title}
+              alt={article.title || 'Imagen destacada'}
               width={800}
               height={450}
               className="w-full h-auto"
@@ -164,7 +161,7 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
         <div className="prose prose-lg max-w-none">
           <div
             className="text-neutral-700 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{ __html: article.content || '' }}
           />
         </div>
 
@@ -189,7 +186,7 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
         )}
 
         {/* Tags */}
-        {article.tags && article.tags.length > 0 && (
+        {article.tags && Array.isArray(article.tags) && article.tags.length > 0 && (
           <div className="mt-8 pt-8 border-t border-neutral-200">
             <h3 className="text-sm font-semibold text-neutral-900 mb-4">
               Etiquetas:
@@ -208,7 +205,7 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
         )}
 
         {/* Related ETFs */}
-        {article.related_etfs && article.related_etfs.length > 0 && (
+        {article.related_etfs && Array.isArray(article.related_etfs) && article.related_etfs.length > 0 && (
           <div className="mt-8 pt-8 border-t border-neutral-200">
             <h3 className="text-sm font-semibold text-neutral-900 mb-4">
               ETFs relacionados:
