@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import { createClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = {
   title: 'Noticias ETF | ETF Nexo',
@@ -21,27 +22,24 @@ interface NewsArticle {
   views_count: number;
 }
 
-// Fetch news articles
+// Fetch news articles directly from Supabase
 async function getNews(limit = 20) {
-  // Use absolute URL in production, relative in development
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:5000';
-
   try {
-    const res = await fetch(`${baseUrl}/api/v1/noticias?limit=${limit}`, {
-      next: { revalidate: 300 }, // Revalidate every 5 minutes
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
+    const supabase = await createClient();
 
-    if (!res.ok) {
-      console.error(`Failed to fetch news: ${res.status} ${res.statusText}`);
+    const { data, error, count } = await supabase
+      .from('news_articles_with_metadata')
+      .select('*', { count: 'exact' })
+      .eq('status', 'published')
+      .order('published_at', { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.error('Error fetching news:', error);
       return { data: [], count: 0 };
     }
 
-    return await res.json();
+    return { data: data || [], count: count || 0 };
   } catch (error) {
     console.error('Error fetching news:', error);
     return { data: [], count: 0 };

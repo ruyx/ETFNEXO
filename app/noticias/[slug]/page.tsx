@@ -2,33 +2,30 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { createClient } from '@/lib/supabase/server';
 
 interface PageProps {
   params: { slug: string };
 }
 
-// Fetch article data
+// Fetch article data directly from Supabase
 async function getArticle(slug: string) {
-  // Use absolute URL in production, relative in development
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:5000';
-
   try {
-    const res = await fetch(`${baseUrl}/api/v1/noticias/${slug}`, {
-      next: { revalidate: 300 }, // Revalidate every 5 minutes
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
+    const supabase = await createClient();
 
-    if (!res.ok) {
-      console.error(`Failed to fetch article ${slug}: ${res.status} ${res.statusText}`);
+    const { data: article, error } = await supabase
+      .from('news_articles_with_metadata')
+      .select('*')
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .single();
+
+    if (error || !article) {
+      console.error(`Failed to fetch article ${slug}:`, error);
       return null;
     }
 
-    const data = await res.json();
-    return data.data;
+    return article;
   } catch (error) {
     console.error('Error fetching article:', error);
     return null;
