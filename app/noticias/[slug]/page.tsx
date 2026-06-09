@@ -160,42 +160,28 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
                 </div>
               )}
 
-              {/* Content - Only show if it's real content (not just a Google News link) */}
-              {article.content && !article.content.includes('news.google.com') && article.content.length > 500 && (
+              {/* Content - Always show */}
+              {article.content && (
                 <div
                   className="article-content"
                   dangerouslySetInnerHTML={{ __html: article.content || '' }}
                 />
               )}
 
-              {/* No content available message */}
-              {(!article.content || article.content.includes('news.google.com') || article.content.length <= 500) && (
-                <div className="article-detail__no-content">
-                  <div className="article-detail__no-content-icon">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="48" height="48">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <h3 className="article-detail__no-content-title">
-                    Contenido disponible en la fuente original
-                  </h3>
-                  <p className="article-detail__no-content-text">
-                    Esta noticia proviene de un feed RSS externo. Para leer el artículo completo, visita la fuente original haciendo clic en el botón de abajo.
-                  </p>
-                </div>
-              )}
-
-              {/* Source Link - Prominent CTA */}
+              {/* Source Link - At the bottom */}
               {article.source_url && article.source_name && (
                 <div className="article-detail__source">
+                  <p className="article-detail__source-label">
+                    Fuente original:
+                  </p>
                   <a
                     href={article.source_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="article-detail__source-cta"
+                    className="article-detail__source-link"
                   >
-                    <span>Leer artículo completo en {article.source_name}</span>
-                    <svg className="article-detail__source-cta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span>{article.source_name}</span>
+                    <svg className="article-detail__source-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
