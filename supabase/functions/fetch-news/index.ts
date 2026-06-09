@@ -430,20 +430,21 @@ async function processNews(supabaseClient: any) {
           continue;
         }
 
-        // FILTRO 2: Verificar si ya existe
+        // SCRAPE del contenido completo primero para obtener URL real
+        const scrapedData = await scrapeArticleContent(item.link);
+
+        // FILTRO 2: Verificar duplicados por URL final (después de redirects)
         const { data: existing } = await supabaseClient
           .from('news_articles')
           .select('id')
-          .eq('source_url', item.link)
+          .eq('source_url', scrapedData.finalUrl)
           .single();
 
         if (existing) {
           results.skipped++;
+          console.log(`✗ Skipped (duplicate): ${item.title.substring(0, 50)}...`);
           continue;
         }
-
-        // SCRAPE del contenido completo
-        const scrapedData = await scrapeArticleContent(item.link);
 
         if (scrapedData.content && scrapedData.content.length > 500) {
           results.scrapedFull++;
