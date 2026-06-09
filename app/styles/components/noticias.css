@@ -521,11 +521,38 @@
   margin: 0;
 }
 
+/* No Content Message */
+.article-detail__no-content {
+  text-align: center;
+  padding: var(--spacing-16) var(--spacing-8);
+  background-color: var(--color-slate-50);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-8);
+}
+
+.article-detail__no-content-icon {
+  margin: 0 auto var(--spacing-6);
+  color: var(--color-slate-400);
+}
+
+.article-detail__no-content-title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-slate-900);
+  margin-bottom: var(--spacing-3);
+}
+
+.article-detail__no-content-text {
+  font-size: var(--font-size-base);
+  color: var(--color-slate-600);
+  max-width: 32rem;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
 /* Source */
 .article-detail__source {
-  margin-top: var(--spacing-12);
-  padding-top: var(--spacing-8);
-  border-top: 1px solid var(--color-slate-200);
+  margin-top: var(--spacing-8);
 }
 
 .article-detail__source-label {
@@ -550,6 +577,39 @@
 .article-detail__source-icon {
   width: 1rem;
   height: 1rem;
+}
+
+/* Source CTA Button - Prominent */
+.article-detail__source-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3);
+  width: 100%;
+  padding: var(--spacing-4) var(--spacing-6);
+  background: linear-gradient(135deg, var(--color-blue-600) 0%, var(--color-blue-700) 100%);
+  color: var(--color-white);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3), 0 2px 4px -1px rgba(59, 130, 246, 0.2);
+  transition: all var(--transition-base);
+}
+
+.article-detail__source-cta:hover {
+  background: linear-gradient(135deg, var(--color-blue-700) 0%, var(--color-blue-800) 100%);
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4), 0 4px 6px -2px rgba(59, 130, 246, 0.3);
+  transform: translateY(-2px);
+}
+
+.article-detail__source-cta-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  transition: transform var(--transition-base);
+}
+
+.article-detail__source-cta:hover .article-detail__source-cta-icon {
+  transform: translateX(4px);
 }
 
 /* Tags */
