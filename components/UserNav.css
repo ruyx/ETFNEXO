@@ -51,8 +51,8 @@
   border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
-  background: white;
-  color: #667eea;
+  background: var(--color-white);
+  color: var(--color-primary);
   text-decoration: none;
   transition: all 0.2s;
 }
@@ -89,11 +89,11 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 700;
 }
