@@ -13,24 +13,30 @@ export default function UserNav() {
   const [loading, setLoading] = useState(true)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
-  const supabase = createClient()
 
   useEffect(() => {
+    const supabase = createClient()
+
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        setUser(user)
 
-      if (user) {
-        const { data: profile } = await supabase
-          .from('user_profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single()
+        if (user) {
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single()
 
-        setProfile(profile)
+          setProfile(profile)
+        }
+
+        setLoading(false)
+      } catch (err) {
+        console.error('[UserNav] Error:', err)
+        setLoading(false)
       }
-
-      setLoading(false)
     }
 
     getUser()
@@ -70,6 +76,7 @@ export default function UserNav() {
   }, [isOpen])
 
   const handleSignOut = async () => {
+    const supabase = createClient()
     await supabase.auth.signOut()
     setIsOpen(false)
     router.push('/')
