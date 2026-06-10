@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import Header from '@/components/Header';
 import { createAdminClient } from '@/lib/supabase/admin';
 
@@ -144,11 +143,10 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
               {/* Featured Image */}
               {article.featured_image_url && (
                 <div className="article-image article-image--featured">
-                  <Image
+                  <img
                     src={article.featured_image_url}
                     alt={article.title || 'Imagen destacada'}
-                    fill
-                    priority
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </div>
               )}
