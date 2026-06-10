@@ -508,7 +508,6 @@
 .article-image {
   position: relative;
   width: 100%;
-  max-height: 400px;
   overflow: hidden;
   border-radius: var(--radius-lg);
   margin-bottom: var(--spacing-8);
@@ -516,8 +515,14 @@
 
 .article-image--featured {
   aspect-ratio: 16 / 9;
-  min-height: 300px; /* IMPORTANTE: Necesario para Next.js Image con fill */
+  height: 450px; /* IMPORTANTE: Altura fija para Next.js Image con fill */
   background-color: var(--color-slate-100);
+}
+
+@media (max-width: 768px) {
+  .article-image--featured {
+    height: 300px;
+  }
 }
 
 .article-image img {
