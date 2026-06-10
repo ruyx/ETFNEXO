@@ -1,105 +1,111 @@
+/* ============================================
+   LOGIN PAGE - Diseño Corporativo 2026
+   ============================================ */
+
 .login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  justify-center: center;
+  padding: var(--spacing-4);
+  background-color: var(--color-slate-50);
 }
 
 .login-card {
-  background: white;
-  border-radius: 20px;
-  padding: 40px;
   width: 100%;
-  max-width: 450px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--card-radius);
+  padding: var(--spacing-8);
+  box-shadow: var(--card-shadow);
 }
 
+/* ==================== HEADER ==================== */
 .login-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: var(--spacing-8);
 }
 
 .login-header h1 {
-  font-size: 32px;
+  font-size: var(--font-size-2xl);
   font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 8px;
+  color: var(--color-slate-900);
+  margin: 0 0 var(--spacing-2) 0;
 }
 
 .login-header p {
-  font-size: 16px;
-  color: #666;
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-600);
+  margin: 0;
 }
 
+/* ==================== ERROR ==================== */
 .login-error {
-  background: #fee;
-  border: 1px solid #fcc;
-  color: #c33;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  font-size: 14px;
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: #FEF2F2;
+  border: 1px solid #FEE2E2;
+  border-radius: var(--btn-radius);
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-6);
 }
 
+/* ==================== FORM ==================== */
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--spacing-5);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-2);
 }
 
 .form-group label {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   font-weight: 600;
-  color: #333;
+  color: var(--color-slate-700);
 }
 
 .form-group input {
-  padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: all 0.2s;
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-900);
+  background-color: var(--color-white);
+  border: 2px solid var(--color-slate-300);
+  border-radius: var(--btn-radius);
+  transition: border-color var(--transition-base);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
 }
 
 .form-group input:disabled {
-  background: #f5f5f5;
+  background-color: var(--color-slate-50);
   cursor: not-allowed;
 }
 
+/* ==================== BUTTONS ==================== */
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 14px 24px;
-  border-radius: 8px;
-  font-size: 16px;
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-sm);
   font-weight: 600;
+  color: var(--color-white);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--btn-radius);
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  margin-top: 8px;
+  transition: background-color var(--transition-base);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-}
-
-.btn-primary:active:not(:disabled) {
-  transform: translateY(0);
+  background-color: var(--color-primary-dark);
 }
 
 .btn-primary:disabled {
@@ -107,56 +113,48 @@
   cursor: not-allowed;
 }
 
+/* ==================== DIVIDER ==================== */
 .divider {
-  text-align: center;
-  margin: 24px 0;
-  position: relative;
+  display: flex;
+  align-items: center;
+  margin: var(--spacing-6) 0;
+  color: var(--color-slate-500);
+  font-size: var(--font-size-sm);
 }
 
 .divider::before,
 .divider::after {
   content: '';
-  position: absolute;
-  top: 50%;
-  width: 40%;
+  flex: 1;
   height: 1px;
-  background: #ddd;
-}
-
-.divider::before {
-  left: 0;
-}
-
-.divider::after {
-  right: 0;
+  background-color: var(--color-slate-300);
 }
 
 .divider span {
-  background: white;
-  padding: 0 12px;
-  color: #999;
-  font-size: 14px;
+  padding: 0 var(--spacing-4);
 }
 
+/* ==================== GOOGLE BUTTON ==================== */
 .btn-google {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  background: white;
-  border: 1px solid #ddd;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-slate-700);
+  background-color: var(--color-white);
+  border: 2px solid var(--color-slate-300);
+  border-radius: var(--btn-radius);
   cursor: pointer;
-  transition: all 0.2s;
-  width: 100%;
+  transition: all var(--transition-base);
 }
 
 .btn-google:hover:not(:disabled) {
-  background: #f9f9f9;
-  border-color: #ccc;
+  background-color: var(--color-slate-50);
+  border-color: var(--color-slate-400);
 }
 
 .btn-google:disabled {
@@ -164,36 +162,41 @@
   cursor: not-allowed;
 }
 
+/* ==================== FOOTER ==================== */
 .login-footer {
+  margin-top: var(--spacing-6);
   text-align: center;
-  margin-top: 24px;
-  font-size: 14px;
-  color: #666;
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-600);
+}
+
+.login-footer p {
+  margin: 0 0 var(--spacing-3) 0;
 }
 
 .login-footer a {
-  color: #667eea;
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: 600;
+  transition: color var(--transition-base);
 }
 
 .login-footer a:hover {
-  text-decoration: underline;
+  color: var(--color-primary-dark);
 }
 
 .forgot-link {
   display: block;
-  margin-top: 12px;
-  color: #999;
-  font-size: 13px;
+  font-size: var(--font-size-xs);
 }
 
-@media (max-width: 600px) {
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 640px) {
   .login-card {
-    padding: 32px 24px;
+    padding: var(--spacing-6);
   }
 
   .login-header h1 {
-    font-size: 28px;
+    font-size: var(--font-size-xl);
   }
 }
