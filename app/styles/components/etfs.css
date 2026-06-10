@@ -1,0 +1,320 @@
+/* ==================== ETFS PAGE ==================== */
+
+/* Hero */
+.etfs-hero {
+  position: relative;
+  padding: var(--spacing-16) var(--spacing-6);
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-slate-200);
+}
+
+.etfs-hero__content {
+  max-width: 56rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.etfs-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--color-blue-50);
+  color: var(--color-blue-700);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  margin-bottom: var(--spacing-4);
+}
+
+.etfs-hero__title {
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+  color: var(--color-slate-900);
+  line-height: 1.2;
+  margin-bottom: var(--spacing-4);
+}
+
+@media (min-width: 768px) {
+  .etfs-hero__title {
+    font-size: var(--font-size-5xl);
+  }
+}
+
+.etfs-hero__description {
+  font-size: var(--font-size-lg);
+  color: var(--color-slate-600);
+  line-height: 1.6;
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+/* Filters */
+.etfs-filters {
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-slate-200);
+  padding: var(--spacing-6) 0;
+}
+
+.etfs-filters__wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  align-items: center;
+}
+
+.etfs-filters__search {
+  position: relative;
+  flex: 1;
+  min-width: 300px;
+}
+
+.etfs-filters__search-icon {
+  position: absolute;
+  left: var(--spacing-4);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-slate-400);
+  pointer-events: none;
+}
+
+.etfs-filters__search-input {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-12);
+  border: 1px solid var(--color-slate-300);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
+  transition: all var(--transition-base);
+}
+
+.etfs-filters__search-input::placeholder {
+  color: var(--color-slate-400);
+}
+
+.etfs-filters__search-input:focus {
+  outline: none;
+  border-color: var(--color-slate-900);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+}
+
+.etfs-filters__select {
+  padding: var(--spacing-3) var(--spacing-4);
+  border: 1px solid var(--color-slate-300);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
+  background-color: var(--color-white);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.etfs-filters__select:hover {
+  border-color: var(--color-slate-400);
+}
+
+.etfs-filters__select:focus {
+  outline: none;
+  border-color: var(--color-slate-900);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+}
+
+.etfs-filters__sort-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--color-slate-300);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-white);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.etfs-filters__sort-btn:hover {
+  background-color: var(--color-slate-50);
+  border-color: var(--color-slate-400);
+}
+
+.etfs-filters__count {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-600);
+  margin-left: auto;
+}
+
+.etfs-filters__count-number {
+  font-weight: 600;
+  color: var(--color-slate-900);
+}
+
+/* Grid */
+.etfs-grid {
+  background-color: var(--color-slate-50);
+  padding: var(--spacing-12) var(--spacing-6);
+}
+
+.etfs-loading,
+.etfs-empty {
+  text-align: center;
+  padding: var(--spacing-16);
+  color: var(--color-slate-600);
+  font-size: var(--font-size-lg);
+}
+
+.etfs-grid__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-6);
+}
+
+/* ETF Card */
+.etf-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-6);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-xl);
+  transition: all var(--transition-base);
+  cursor: pointer;
+}
+
+.etf-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+  border-color: var(--color-slate-300);
+}
+
+.etf-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-4);
+}
+
+.etf-card__ticker {
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: var(--color-slate-100);
+  color: var(--color-slate-700);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+}
+
+.etf-card__score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-2) var(--spacing-3);
+  background: linear-gradient(135deg, var(--color-blue-500) 0%, var(--color-blue-600) 100%);
+  border-radius: var(--radius-lg);
+}
+
+.etf-card__score-value {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1;
+}
+
+.etf-card__score-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-blue-100);
+  margin-top: var(--spacing-1);
+}
+
+.etf-card__name {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-slate-900);
+  line-height: 1.4;
+  margin-bottom: var(--spacing-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.etf-card__issuer {
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-500);
+  margin-bottom: var(--spacing-4);
+}
+
+.etf-card__stats {
+  display: flex;
+  gap: var(--spacing-4);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--color-slate-100);
+  margin-bottom: var(--spacing-4);
+}
+
+.etf-card__stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.etf-card__stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-slate-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.etf-card__stat-value {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-slate-900);
+}
+
+.etf-card__stat-value.positive {
+  color: var(--color-green-600);
+}
+
+.etf-card__stat-value.negative {
+  color: var(--color-red-600);
+}
+
+.etf-card__category {
+  display: inline-block;
+  padding: var(--spacing-1) var(--spacing-3);
+  background-color: var(--color-slate-100);
+  color: var(--color-slate-600);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  margin-top: auto;
+}
+
+/* CTA Section */
+.etfs-cta {
+  background: linear-gradient(135deg, var(--color-blue-600) 0%, var(--color-blue-700) 100%);
+  padding: var(--spacing-16) var(--spacing-6);
+  text-align: center;
+}
+
+.etfs-cta__title {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: var(--spacing-4);
+}
+
+@media (min-width: 768px) {
+  .etfs-cta__title {
+    font-size: var(--font-size-4xl);
+  }
+}
+
+.etfs-cta__description {
+  font-size: var(--font-size-lg);
+  color: var(--color-blue-100);
+  max-width: 42rem;
+  margin: 0 auto var(--spacing-8);
+}

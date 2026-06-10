@@ -12,6 +12,21 @@ const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   }
 });
 
+function calculateETFScore(etf: any): number | null {
+  // Simple scoring algorithm based on available metrics
+  if (!etf.return_1y || !etf.ter || !etf.aum_millions) return null;
+
+  // Score components (0-10 each)
+  const returnScore = Math.min(10, Math.max(0, etf.return_1y / 5)); // 50% return = 10 points
+  const terScore = Math.min(10, Math.max(0, 10 - (etf.ter * 200))); // Lower TER = better
+  const aumScore = Math.min(10, Math.log10(etf.aum_millions + 1)); // Log scale for AUM
+  const sharpeScore = etf.sharpe_ratio ? Math.min(10, etf.sharpe_ratio * 5) : 5; // Sharpe ratio
+
+  // Weighted average
+  const score = (returnScore * 0.35 + terScore * 0.25 + aumScore * 0.2 + sharpeScore * 0.2);
+  return Math.min(10, Math.max(0, score));
+}
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -69,8 +84,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Transform data to include issuer_name and etfnexo_score
+    const transformedData = data?.map((etf: any) => ({
+      ...etf,
+      issuer_name: null, // TODO: Add JOIN with managers table when relationship is configured
+      etfnexo_score: calculateETFScore(etf) // Calculate score
+    }));
+
     return NextResponse.json({
-      data,
+      data: transformedData,
       pagination: {
         total: count || 0,
         limit,

@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import Header from '@/components/Header';
 import { createAdminClient } from '@/lib/supabase/admin';
 
@@ -182,30 +181,27 @@ export default function NoticiasPage() {
                   <Link
                     key={article.id}
                     href={`/noticias/${article.slug}`}
-                    className="news-card"
+                    className="news-card group"
                   >
                     {/* Image */}
-                    {article.featured_image_url && (
-                      <div className="news-card__image-container">
-                        <Image
+                    <div className="news-card-image">
+                      {article.featured_image_url ? (
+                        <img
                           src={article.featured_image_url}
-                          alt={article.title || 'Imagen destacada'}
-                          fill
-                          className="news-card__image"
+                          alt={article.title}
+                          className="group-hover:scale-105 transition-transform duration-300"
                         />
-                        {/* Category Badge */}
-                        {article.category_name && (
-                          <div className="news-card__badge">
-                            <span
-                              className="news-card__badge-text"
-                              style={{ backgroundColor: article.category_color || '#3B82F6' }}
-                            >
-                              {article.category_name}
-                            </span>
-                          </div>
-                        )}
+                      ) : (
+                        <div className="news-card-image__placeholder">
+                          <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                          </svg>
+                        </div>
+                      )}
+                      <div className="absolute top-3 left-3 px-2 py-1 bg-blue-600 text-white text-xs font-semibold rounded">
+                        {article.category_name}
                       </div>
-                    )}
+                    </div>
 
                     {/* Content */}
                     <div className="news-card__content">

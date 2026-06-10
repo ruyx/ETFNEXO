@@ -12,6 +12,7 @@
 @import './styles/components/etf-detail.css';
 @import './styles/components/gestoras.css';
 @import './styles/components/noticias.css';
+@import './styles/components/etfs.css';
 
 @tailwind base;
 @tailwind components;
