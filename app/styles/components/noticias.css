@@ -516,6 +516,7 @@
 
 .article-image--featured {
   aspect-ratio: 16 / 9;
+  min-height: 300px; /* IMPORTANTE: Necesario para Next.js Image con fill */
   background-color: var(--color-slate-100);
 }
 

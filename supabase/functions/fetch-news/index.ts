@@ -1,7 +1,9 @@
 // ============================================
-// ETF Nexo - News Fetcher Edge Function (v2 - Full Content Scraper)
+// ETF Nexo - News Fetcher Edge Function (v3 - RSS-First Intelligent Scraper)
 // ============================================
-// Descripción: Obtiene noticias de Google News RSS y scrape el contenido completo
+// Descripción: Sistema inteligente que prioriza contenido de RSS (media:description, media:content)
+//              sobre HTML scraping para obtener noticias limpias y bien formateadas
+// Estrategia: RSS content → HTML scraping (solo si necesario) → Placeholder
 // Ejecutar: curl -X POST https://<project-ref>.supabase.co/functions/v1/fetch-news
 // Cron: Configurar en Supabase Dashboard
 
@@ -17,6 +19,8 @@ interface RSSItem {
   link: string;
   pubDate: string;
   description: string;
+  mediaDescription?: string; // Contenido completo de media:description
+  mediaContent?: string; // URL de imagen de media:content
   source?: string;
   guid?: string;
 }
@@ -36,44 +40,50 @@ interface ScrapedArticle {
 }
 
 // ============================================
-// Configuración de fuentes RSS
+// Configuración de fuentes RSS y Web Scraping
 // ============================================
 const NEWS_SOURCES: NewsSource[] = [
-  // Google News - ETF tradicionales (EXCLUYE crypto)
+  // Funds Society - ETF (✅ Proporciona contenido completo)
   {
-    name: 'Google News ETF España',
-    url: 'https://news.google.com/rss/search?q=ETF+OR+"fondos+cotizados"+-Bitcoin+-crypto+-criptomonedas+-blockchain+-BTC+-ETH+when:7d&hl=es&gl=ES&ceid=ES:es',
+    name: 'Funds Society',
+    url: 'https://www.fundssociety.com/es/feed',
     category: 'etfs',
     language: 'es'
   },
-  // Google News - Gestoras (EXCLUYE crypto)
+  // Finect - ETFs (✅ Buen contenido en RSS)
   {
-    name: 'Google News Gestoras',
-    url: 'https://news.google.com/rss/search?q=(BlackRock+OR+Vanguard+OR+iShares+OR+Amundi+OR+Invesco+OR+SPDR)+ETF+-Bitcoin+-crypto+-criptomonedas+when:7d&hl=es&gl=ES&ceid=ES:es',
-    category: 'gestoras',
-    language: 'es'
-  },
-  // Google News - ETFs Renta Variable
-  {
-    name: 'Google News ETF Renta Variable',
-    url: 'https://news.google.com/rss/search?q="ETF+renta+variable"+OR+"ETF+acciones"+OR+"ETF+bolsa"+-Bitcoin+-crypto+when:7d&hl=es&gl=ES&ceid=ES:es',
-    category: 'etfs',
-    language: 'es'
-  },
-  // Google News - ETFs Renta Fija
-  {
-    name: 'Google News ETF Renta Fija',
-    url: 'https://news.google.com/rss/search?q="ETF+renta+fija"+OR+"ETF+bonos"+OR+"ETF+deuda"+-Bitcoin+-crypto+when:7d&hl=es&gl=ES&ceid=ES:es',
-    category: 'etfs',
-    language: 'es'
-  },
-  // Finect - RSS Feed
-  {
-    name: 'Finect ETFs',
+    name: 'Finect',
     url: 'https://www.finect.com/rss/etfs',
     category: 'etfs',
     language: 'es'
+  },
+  // Estrategias de Inversión (✅ Permite scraping)
+  {
+    name: 'Estrategias de Inversión',
+    url: 'https://www.estrategiasdeinversion.com/feed',
+    category: 'etfs',
+    language: 'es'
+  },
+  // Expansión - ETFs y fondos
+  {
+    name: 'Expansión',
+    url: 'https://e00-expansion.uecdn.es/rss/mercados.xml',
+    category: 'etfs',
+    language: 'es'
+  },
+  // Rankia - Fondos y ETFs
+  {
+    name: 'Rankia',
+    url: 'https://www.rankia.com/rss/fondos-inversion',
+    category: 'etfs',
+    language: 'es'
   }
+  // REMOVED sources that only provide snippets:
+  // - Google News (redirects to third-party sites, content scraping fails)
+  // - Investing.com (no RSS descriptions + blocks scraping)
+  // - El Economista (Access Denied)
+  // - Cinco Días (no RSS descriptions)
+  // - Morningstar (no RSS feed available)
 ];
 
 // ============================================
@@ -168,7 +178,20 @@ async function scrapeArticleContent(url: string): Promise<ScrapedArticle> {
     const finalUrl = response.url || url;
     console.log(`📍 Final URL: ${finalUrl}`);
 
-    const html = await response.text();
+    // Intentar obtener con encoding correcto
+    const buffer = await response.arrayBuffer();
+
+    // Intentar decodificar como windows-1252 primero (común en sitios españoles)
+    let html: string;
+    try {
+      const decoder = new TextDecoder('windows-1252');
+      html = decoder.decode(buffer);
+    } catch {
+      // Fallback a UTF-8
+      const decoder = new TextDecoder('utf-8');
+      html = decoder.decode(buffer);
+    }
+
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
 
@@ -279,7 +302,7 @@ async function scrapeArticleContent(url: string): Promise<ScrapedArticle> {
   }
 }
 
-// Limpia el contenido del artículo eliminando elementos no deseados
+// Limpia el contenido del artículo eliminando elementos no deseados y extrayendo solo el texto
 function cleanArticleContent(element: any): string {
   // Clonar para no modificar el original
   const clone = element.cloneNode(true);
@@ -294,11 +317,38 @@ function cleanArticleContent(element: any): string {
     'aside',
     '.advertisement',
     '.ad',
+    '.ads',
     '.social-share',
     '.related-posts',
+    '.related-articles',
+    '.more-articles',
     '.comments',
     'iframe',
-    'form'
+    'form',
+    'button',
+    '.share',
+    '.share-buttons',
+    '.social-buttons',
+    '.newsletter',
+    '.subscription',
+    '.author-bio',
+    '.author-links',
+    '.author-articles',
+    '.tags',
+    '.metadata',
+    '.breadcrumb',
+    '.navigation',
+    'meta',
+    'link',
+    'img',  // Imágenes se extraen por separado en featured_image_url
+    'figure',
+    'picture',
+    'video',
+    // Específicos de Expansión
+    '.ue-l-article__related',
+    '.ue-c-article__tools',
+    '.ue-c-article__author',
+    '.ue-c-cover-content__footer'
   ];
 
   unwantedSelectors.forEach(selector => {
@@ -306,16 +356,134 @@ function cleanArticleContent(element: any): string {
     elements.forEach((el: any) => el.remove());
   });
 
-  // Obtener HTML limpio
-  let html = clone.innerHTML || '';
+  // Extraer solo párrafos y títulos relevantes
+  const paragraphs: string[] = [];
 
-  // Limpiar atributos peligrosos
-  html = html
-    .replace(/\son\w+="[^"]*"/g, '') // Remover event handlers
-    .replace(/javascript:/gi, '') // Remover javascript: urls
-    .replace(/<script[^>]*>.*?<\/script>/gi, ''); // Remover scripts inline
+  // Lista negra de frases a excluir
+  const excludedPhrases = [
+    'compartir en facebook',
+    'compartir en twitter',
+    'compartir en linkedin',
+    'enviar por email',
+    'compartir',
+    'suscríbete',
+    'newsletter',
+    'regístrate',
+    'iniciar sesión',
+    'más información',
+    'leer más',
+    'la primera de expansión',
+    'crónica de bolsa',
+    'siga el minuto a minuto',
+    'relacionadas',
+    'artículos',
+    'qué hacer con',
+    'fuente original'
+  ];
 
-  return html.trim();
+  const shouldExcludeText = (text: string): boolean => {
+    const lowerText = text.toLowerCase();
+
+    // Filtrar frases excluidas
+    if (excludedPhrases.some(phrase => lowerText.includes(phrase))) return true;
+
+    // Filtrar nombres de autores (TODO MAYÚSCULAS cortos)
+    if (text === text.toUpperCase() && text.length < 50 && text.length > 5) return true;
+
+    // Filtrar timestamps con títulos de artículos relacionados (ej: "07:54 El Ibex, en vilo...")
+    if (/^\d{2}:\d{2}\s+/.test(text)) return true;
+
+    // Filtrar listas de artículos relacionados muy cortas
+    if (text.length < 40) return true;
+
+    return false;
+  };
+
+  // Extraer h2, h3 (títulos de secciones)
+  const headings = clone.querySelectorAll('h2, h3');
+  headings.forEach((heading: any) => {
+    const text = heading.textContent?.trim();
+    if (text && text.length > 10 && text.length < 200 && !shouldExcludeText(text)) {
+      const tag = heading.tagName.toLowerCase();
+      paragraphs.push(`<${tag}>${text}</${tag}>`);
+    }
+  });
+
+  // Extraer párrafos de texto
+  const textParagraphs = clone.querySelectorAll('p');
+  textParagraphs.forEach((p: any) => {
+    const text = p.textContent?.trim();
+    // Filtrar párrafos muy cortos, con frases excluidas, o autores
+    if (text && text.length > 50 && !shouldExcludeText(text)) {
+      paragraphs.push(`<p>${text}</p>`);
+    }
+  });
+
+  // Extraer listas (SOLO si son parte del contenido editorial, no navegación)
+  const lists = clone.querySelectorAll('ul, ol');
+  lists.forEach((list: any) => {
+    const items: string[] = [];
+    const listItems = list.querySelectorAll('li');
+
+    // Detectar si es una lista de navegación/sidebar (tiene timestamps o links)
+    let hasTimestamps = false;
+    let hasLinks = false;
+
+    listItems.forEach((li: any) => {
+      const text = li.textContent?.trim();
+      if (!text) return;
+
+      // Detectar timestamps (HH:MM formato)
+      if (/^\d{2}:\d{2}/.test(text)) {
+        hasTimestamps = true;
+        return;
+      }
+
+      // Detectar si es solo un título sin contenido (artículos relacionados)
+      if (text.length < 100 && !text.includes('.') && !text.includes(',')) {
+        hasLinks = true;
+      }
+
+      // Solo agregar items que parecen ser contenido editorial real
+      if (text.length > 50 && !shouldExcludeText(text)) {
+        items.push(`<li>${text}</li>`);
+      }
+    });
+
+    // Solo agregar la lista si NO es navegación y tiene contenido válido
+    if (!hasTimestamps && !hasLinks && items.length > 0) {
+      const tag = list.tagName.toLowerCase();
+      paragraphs.push(`<${tag}>${items.join('')}</${tag}>`);
+    }
+  });
+
+  // Si no se extrajo contenido con selectores, extraer todo el texto
+  if (paragraphs.length === 0) {
+    const allText = clone.textContent?.trim() || '';
+    if (allText.length > 200) {
+      return formatTextToHTML(allText);
+    }
+  }
+
+  // Limpieza final: Detectar y eliminar todo después de secciones de navegación/sidebar
+  const finalContent: string[] = [];
+  let foundNavigationSection = false;
+
+  for (const para of paragraphs) {
+    const lowerPara = para.toLowerCase();
+
+    // Si encontramos indicadores de sección de navegación/sidebar, detener
+    if (lowerPara.includes('compartir en facebook') ||
+        lowerPara.includes('artículos') && lowerPara.includes('<li>') ||
+        /\d{2}:\d{2}/.test(para)) {
+      foundNavigationSection = true;
+      break;
+    }
+
+    finalContent.push(para);
+  }
+
+  return finalContent.join('\n\n');
 }
 
 // Convierte texto plano a HTML con párrafos
@@ -376,12 +544,22 @@ async function parseRSS(url: string): Promise<RSSItem[]> {
       const description = itemXml.match(/<description><!\[CDATA\[(.*?)\]\]><\/description>|<description>(.*?)<\/description>/i)?.[1] || itemXml.match(/<description>(.*?)<\/description>/i)?.[1] || '';
       const guid = itemXml.match(/<guid.*?>(.*?)<\/guid>/i)?.[1] || link;
 
+      // Extraer media:description (contenido completo en algunos RSS)
+      const mediaDescription = itemXml.match(/<media:description><!\[CDATA\[(.*?)\]\]><\/media:description>/i)?.[1] ||
+                               itemXml.match(/<media:description>(.*?)<\/media:description>/i)?.[1] || '';
+
+      // Extraer media:content (imagen destacada)
+      const mediaContentMatch = itemXml.match(/<media:content[^>]*url=["'](.*?)["'][^>]*>/i);
+      const mediaContent = mediaContentMatch?.[1] || '';
+
       if (title && link) {
         items.push({
           title: title.trim(),
           link: link.trim(),
           pubDate: pubDate.trim(),
           description: description.trim(),
+          mediaDescription: mediaDescription.trim(),
+          mediaContent: mediaContent.trim(),
           guid: guid.trim()
         });
       }
@@ -430,14 +608,60 @@ async function processNews(supabaseClient: any) {
           continue;
         }
 
-        // SCRAPE del contenido completo primero para obtener URL real
-        const scrapedData = await scrapeArticleContent(item.link);
+        // ESTRATEGIA RSS-FIRST: Priorizar contenido de RSS sobre HTML scraping
+        let content = '';
+        let featuredImage: string | null = null;
+        let author: string | null = null;
+        let finalUrl = item.link;
+
+        // 1. Intentar usar media:description (contenido completo en RSS)
+        // Threshold: 1000 chars para evitar snippets cortos con "Leer más..."
+        if (item.mediaDescription && item.mediaDescription.length > 1000) {
+          content = formatTextToHTML(item.mediaDescription);
+          console.log(`📰 Using media:description (${content.length} chars) from RSS`);
+        }
+        // 2. Fallback a description si es suficientemente largo (>1000 chars)
+        else if (item.description && item.description.length > 1000) {
+          content = formatTextToHTML(item.description);
+          console.log(`📰 Using description (${content.length} chars) from RSS`);
+        }
+
+        // 3. Extraer imagen de RSS media:content
+        if (item.mediaContent && isValidImageUrl(item.mediaContent)) {
+          featuredImage = item.mediaContent;
+          console.log(`🖼️ Using image from RSS media:content`);
+        }
+
+        // 4. Solo scrape HTML si RSS no tiene contenido suficiente (<1000 chars)
+        let needsScraping = !content || content.length < 1000 || !featuredImage;
+        let scrapedData: ScrapedArticle | null = null;
+
+        if (needsScraping) {
+          console.log(`🔍 RSS content insufficient, scraping HTML...`);
+          scrapedData = await scrapeArticleContent(item.link);
+          finalUrl = scrapedData.finalUrl;
+
+          // Usar contenido scrapeado si es mejor que el RSS
+          if (!content || (scrapedData.content && scrapedData.content.length > content.length)) {
+            content = scrapedData.content;
+          }
+
+          // Usar imagen scrapeada si no hay en RSS
+          if (!featuredImage && scrapedData.featuredImage) {
+            featuredImage = scrapedData.featuredImage;
+          }
+
+          // Usar autor scrapeado
+          if (scrapedData.author) {
+            author = scrapedData.author;
+          }
+        }
 
         // FILTRO 2: Verificar duplicados por URL final (después de redirects)
         const { data: existing } = await supabaseClient
           .from('news_articles')
           .select('id')
-          .eq('source_url', scrapedData.finalUrl)
+          .eq('source_url', finalUrl)
           .single();
 
         if (existing) {
@@ -446,12 +670,17 @@ async function processNews(supabaseClient: any) {
           continue;
         }
 
-        if (scrapedData.content && scrapedData.content.length > 500) {
-          results.scrapedFull++;
-        } else if (scrapedData.content && scrapedData.content.length > 100) {
-          results.scrapedPartial++;
+        // Estadísticas de scraping
+        if (needsScraping) {
+          if (content && content.length > 500) {
+            results.scrapedFull++;
+          } else if (content && content.length > 100) {
+            results.scrapedPartial++;
+          } else {
+            results.scrapeFailed++;
+          }
         } else {
-          results.scrapeFailed++;
+          results.scrapedFull++; // RSS content is good
         }
 
         // Crear slug único
@@ -470,8 +699,7 @@ async function processNews(supabaseClient: any) {
           slug = `${baseSlug}-${counter++}`;
         }
 
-        // Determinar featured image (prioridad: scraped > placeholder)
-        let featuredImage = scrapedData.featuredImage;
+        // Determinar featured image (prioridad: RSS/scraped > placeholder)
         if (!featuredImage) {
           // Placeholder de Unsplash relacionado con finanzas/inversión
           const unsplashIds = [
@@ -489,16 +717,16 @@ async function processNews(supabaseClient: any) {
         const article = {
           title: item.title,
           slug: slug,
-          excerpt: extractExcerpt(scrapedData.content || item.description),
-          content: scrapedData.content || item.description,
+          excerpt: extractExcerpt(content || item.description),
+          content: content || item.description,
           featured_image_url: featuredImage,
           category_id: categoryMap.get(source.category) || null,
           source_name: source.name,
-          source_url: scrapedData.finalUrl, // Usar URL real después de redirects
+          source_url: finalUrl, // Usar URL real después de redirects
           source_published_at: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
           status: 'published', // Auto-publicar si tiene contenido completo
-          published_at: scrapedData.content.length > 500 ? new Date().toISOString() : null,
-          author_name: scrapedData.author || 'Redacción ETF Nexo'
+          published_at: content && content.length > 500 ? new Date().toISOString() : null,
+          author_name: author || 'Redacción ETF Nexo'
         };
 
         // Insertar
@@ -511,8 +739,10 @@ async function processNews(supabaseClient: any) {
           results.errors++;
         } else {
           results.inserted++;
-          const status = scrapedData.content.length > 500 ? '✓ FULL' : scrapedData.content.length > 100 ? '⚠ PARTIAL' : '✗ MINIMAL';
-          console.log(`${status} Inserted: ${item.title.substring(0, 50)}...`);
+          const contentLength = content?.length || 0;
+          const status = contentLength > 500 ? '✓ FULL' : contentLength > 100 ? '⚠ PARTIAL' : '✗ MINIMAL';
+          const sourceType = needsScraping ? 'SCRAPED' : 'RSS';
+          console.log(`${status} [${sourceType}] Inserted: ${item.title.substring(0, 50)}...`);
         }
 
       } catch (error) {
