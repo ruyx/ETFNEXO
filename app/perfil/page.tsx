@@ -19,7 +19,7 @@ export default async function PerfilPage() {
     .from('user_profiles')
     .select('*')
     .eq('id', user.id)
-    .single()
+    .single() as { data: any }
 
   // Get user ratings with ETF info
   const { data: ratings } = await supabase
@@ -33,7 +33,7 @@ export default async function PerfilPage() {
       )
     `)
     .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: false }) as { data: any }
 
   // Get user watchlist
   const { data: watchlist } = await supabase
@@ -49,7 +49,7 @@ export default async function PerfilPage() {
       )
     `)
     .eq('user_id', user.id)
-    .order('added_at', { ascending: false })
+    .order('added_at', { ascending: false }) as { data: any }
 
   const handleSignOut = async () => {
     'use server'
@@ -98,7 +98,7 @@ export default async function PerfilPage() {
           <h2>Mis Valoraciones</h2>
           {ratings && ratings.length > 0 ? (
             <div className="ratings-grid">
-              {ratings.map((rating) => (
+              {ratings.map((rating: any) => (
                 <div key={rating.id} className="rating-card">
                   <div className="rating-card-header">
                     <Link href={`/etfs/${rating.etfs?.isin}`} className="rating-etf-name">
@@ -142,7 +142,7 @@ export default async function PerfilPage() {
           <h2>Mis ETFs Seguidos</h2>
           {watchlist && watchlist.length > 0 ? (
             <div className="watchlist-grid">
-              {watchlist.map((item) => (
+              {watchlist.map((item: any) => (
                 <Link
                   key={item.id}
                   href={`/etfs/${item.etfs?.isin}`}

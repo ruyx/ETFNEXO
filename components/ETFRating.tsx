@@ -53,7 +53,7 @@ export default function ETFRating({
           .select('*')
           .eq('user_id', user.id)
           .eq('etf_id', etfId)
-          .single()
+          .single() as { data: any }
 
         if (rating) {
           setUserRating(rating)
@@ -68,7 +68,7 @@ export default function ETFRating({
           .select('id')
           .eq('user_id', user.id)
           .eq('etf_id', etfId)
-          .single()
+          .single() as { data: any }
 
         setIsWatchlisted(!!watchlist)
       }
@@ -104,14 +104,14 @@ export default function ETFRating({
 
     if (userRating) {
       // Update existing rating
-      const result = await supabase
-        .from('user_ratings')
+      const result = await (supabase
+        .from('user_ratings') as any)
         .update(ratingData)
         .eq('id', userRating.id)
       error = result.error
     } else {
       // Insert new rating
-      const result = await supabase.from('user_ratings').insert([ratingData])
+      const result = await (supabase.from('user_ratings') as any).insert([ratingData])
       error = result.error
     }
 
@@ -122,7 +122,7 @@ export default function ETFRating({
         .select('*')
         .eq('user_id', user.id)
         .eq('etf_id', etfId)
-        .single()
+        .single() as { data: any }
 
       setUserRating(newRating)
       setShowReviewForm(false)
@@ -132,7 +132,7 @@ export default function ETFRating({
         .from('etf_ratings_summary')
         .select('average_rating, total_ratings')
         .eq('etf_id', etfId)
-        .single()
+        .single() as { data: any }
 
       if (summary) {
         setAverageRating(summary.average_rating)
@@ -154,8 +154,8 @@ export default function ETFRating({
     setLoading(true)
 
     if (isWatchlisted) {
-      const { error } = await supabase
-        .from('user_watchlists')
+      const { error } = await (supabase
+        .from('user_watchlists') as any)
         .delete()
         .eq('user_id', user.id)
         .eq('etf_id', etfId)
@@ -164,8 +164,8 @@ export default function ETFRating({
         setIsWatchlisted(false)
       }
     } else {
-      const { error } = await supabase
-        .from('user_watchlists')
+      const { error } = await (supabase
+        .from('user_watchlists') as any)
         .insert([{ user_id: user.id, etf_id: etfId }])
 
       if (!error) {
