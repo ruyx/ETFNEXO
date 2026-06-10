@@ -6,7 +6,7 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-center: center;
+  justify-content: center;
   padding: var(--spacing-4);
   background-color: var(--color-slate-50);
 }
