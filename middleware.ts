@@ -23,15 +23,20 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet: any) {
-          cookiesToSet.forEach(({ name, value, options }: any) =>
+          cookiesToSet.forEach(({ name, value, options }: any) => {
+            // Ensure cookies work in production (HTTPS) and development
+            const cookieOptions = {
+              ...options,
+              sameSite: 'lax' as const,
+              secure: process.env.NODE_ENV === 'production',
+              path: '/',
+            }
             request.cookies.set(name, value)
-          )
+            response.cookies.set(name, value, cookieOptions)
+          })
           response = NextResponse.next({
             request,
           })
-          cookiesToSet.forEach(({ name, value, options }: any) =>
-            response.cookies.set(name, value, options)
-          )
         },
       },
     }
