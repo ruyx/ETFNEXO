@@ -1,25 +1,27 @@
-# Sistema de Publicación Automática de Noticias - ETF Nexo
+# Sistema de Noticias Automáticas - ETF Nexo
 
 ## Resumen
 
-Sistema completo de publicación de noticias automática que obtiene contenido de Google News RSS y otras fuentes, lo procesa y lo publica en el sitio web.
+Sistema completo de scraping y publicación de noticias desde medios españoles especializados en economía y finanzas, con filtrado inteligente de contenido sidebar y limpieza automática.
 
-## ✅ Estado Actual
+## ✅ Estado Actual (v3 - RSS-First)
 
 **Sistema completo y funcionando en producción:**
 - ✅ Base de datos configurada con tablas y vistas
-- ✅ Edge Function desplegada en Supabase con **filtros anti-crypto**
+- ✅ Edge Function desplegada con **scraper RSS-first v3**
+- ✅ **8 fuentes RSS** de medios españoles especializados
+- ✅ **Scraping inteligente** con threshold de 1000 caracteres
+- ✅ **Filtros anti-sidebar** (30+ patrones excluidos)
+- ✅ **Soporte UTF-8/Windows-1252** para caracteres españoles
+- ✅ **Imágenes destacadas** desde media:content RSS
 - ✅ Endpoints API implementados y funcionando
-- ✅ **266 noticias** importadas (76 artículos crypto eliminados)
-- ✅ **16 noticias** publicadas en el sitio
-- ✅ **Filtrado automático**: 30+ keywords de crypto excluidas
-- ✅ **5 fuentes RSS** especializadas en ETFs tradicionales
 - ✅ Desplegado en producción: https://etfnexo.vercel.app
 
-**Referencias de calidad documentadas:**
-- ETFdb.com - Base de datos completa de ETFs
-- Morningstar Global - Ratings y análisis institucional
-- Ver documentación completa: `docs/NEWS_SOURCES.md`
+**Última ejecución:**
+- Total procesado: 63 artículos
+- Artículos con contenido completo: 100% (8,980-15,625 chars)
+- Calidad de contenido: Sin sidebars, sin botones sociales
+- Encoding: UTF-8 correcto (tildes, eñes)
 
 ## Arquitectura del Sistema
 
@@ -28,9 +30,10 @@ Sistema completo de publicación de noticias automática que obtiene contenido d
 #### Tablas Principales:
 
 **`news_articles`** - Artículos de noticias
-- `id`, `title`, `slug`, `excerpt`, `content`
+- `id`, `title`, `slug`, `excerpt`, `content` (HTML)
 - `category_id` - Referencia a categoría
 - `source_name`, `source_url` - Tracking de fuente original
+- `featured_image_url` - URL de imagen destacada
 - `status` - `'draft'` | `'published'` | `'archived'`
 - `published_at`, `views_count`, `shares_count`
 
@@ -40,55 +43,223 @@ Sistema completo de publicación de noticias automática que obtiene contenido d
 **`news_tags`** - Tags flexibles para clasificación
 - Pre-poblados: iShares, Vanguard, Amundi, Renta Variable, etc.
 
-**`news_article_tags`** - Relación N:M artículos-tags
-
-**`news_related_etfs`** - Relación artículos con ETFs específicos
-
-#### Vista Principal:
+**Vista Principal:**
 
 **`news_articles_with_metadata`** - Vista completa con todos los datos relacionados
 
 Migración: `supabase/migrations/20260604000001_create_news_system.sql`
 
-### 2. Edge Function (Supabase Functions)
+### 2. Edge Function - Scraper RSS-First v3
 
 **Archivo:** `supabase/functions/fetch-news/index.ts`
 
-**Función:** Obtener y procesar noticias automáticamente
+**Estrategia RSS-First:**
+1. **Extrae contenido de RSS** (media:description, description)
+2. **Threshold de 1000 chars** - Si RSS > 1000 chars, usa ese contenido
+3. **Fallback a HTML scraping** - Solo si RSS < 1000 chars
+4. **Limpieza inteligente** - Elimina sidebars, botones, autores
 
-**Fuentes Configuradas (5 fuentes especializadas):**
-1. Google News ETF España - Fondos cotizados tradicionales
-2. Google News Gestoras - BlackRock, Vanguard, iShares, Amundi, Invesco, SPDR
-3. Google News ETF Renta Variable - Acciones y bolsa
-4. Google News ETF Renta Fija - Bonos y deuda
-5. Finect ETFs - Red social financiera española
+#### Fuentes Configuradas (8 fuentes especializadas):
 
-**Filtros Anti-Crypto Implementados:**
-- 30+ palabras clave excluidas (bitcoin, ethereum, crypto, blockchain, etc.)
-- Filtrado en URL de Google News (-Bitcoin -crypto -criptomonedas)
-- Filtrado en Edge Function (verificación de título y descripción)
-- Ver lista completa: `docs/NEWS_SOURCES.md`
-
-**Proceso:**
-1. Obtiene noticias de cada fuente RSS
-2. Parse de XML a JSON
-3. **NUEVO:** Filtra artículos con keywords de crypto
-4. Verifica duplicados por `source_url`
-5. Genera slug único
-6. Inserta en `news_articles` con status `'draft'`
-
-**Cómo ejecutar manualmente:**
-```bash
-curl -X POST 'https://utvioubcqkwwzvufhups.supabase.co/functions/v1/fetch-news' \
-  -H "Authorization: Bearer <SERVICE_ROLE_KEY>"
+```typescript
+const RSS_FEEDS: RSSFeed[] = [
+  {
+    url: 'https://e00-expansion.uecdn.es/rss/fondos-de-inversion.xml',
+    sourceName: 'Expansión',
+    categoryName: 'ETFs'
+  },
+  {
+    url: 'https://e00-expansion.uecdn.es/rss/finanzas-personales.xml',
+    sourceName: 'Expansión',
+    categoryName: 'Educación'
+  },
+  {
+    url: 'https://cincodias.elpais.com/rss/tags/fondos-inversion.xml',
+    sourceName: 'Cinco Días',
+    categoryName: 'ETFs'
+  },
+  {
+    url: 'https://cincodias.elpais.com/rss/tags/gestoras-fondos.xml',
+    sourceName: 'Cinco Días',
+    categoryName: 'Gestoras'
+  },
+  {
+    url: 'https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml',
+    sourceName: 'El Mundo Inversión',
+    categoryName: 'Mercados'
+  },
+  {
+    url: 'https://www.elconfidencial.com/rss/mercados/',
+    sourceName: 'El Confidencial',
+    categoryName: 'Mercados'
+  },
+  {
+    url: 'https://www.finect.com/rss/noticias/etfs',
+    sourceName: 'Finect',
+    categoryName: 'ETFs'
+  },
+  {
+    url: 'https://www.fondosgm.com/rss.xml',
+    sourceName: 'FondosGM',
+    categoryName: 'Gestoras'
+  }
+];
 ```
 
-**Resultado última ejecución:**
-- Total procesado: 145 artículos
-- Insertados: 85 artículos nuevos
-- Duplicados: 50 artículos
-- **Filtrados (crypto)**: 10 artículos excluidos ✅
-- Errores: 0
+**Fuentes de datos:** Excel `Listado Medios ETFs.xlsx` con URLs RSS verificadas
+
+#### Proceso de Scraping:
+
+**1. Parse RSS con extracción media tags:**
+```typescript
+interface RSSItem {
+  title: string;
+  link: string;
+  pubDate: string;
+  description: string;
+  mediaDescription?: string; // Contenido completo <media:description>
+  mediaContent?: string;     // URL imagen <media:content>
+  source?: string;
+  guid?: string;
+}
+```
+
+**2. Estrategia RSS-First (threshold 1000 chars):**
+```typescript
+// Priorizar contenido RSS sobre scraping
+if (item.mediaDescription && item.mediaDescription.length > 1000) {
+  content = formatTextToHTML(item.mediaDescription);
+  console.log(`📰 Using media:description (${content.length} chars)`);
+}
+else if (item.description && item.description.length > 1000) {
+  content = formatTextToHTML(item.description);
+  console.log(`📰 Using description (${content.length} chars)`);
+}
+
+// Solo scrape HTML si RSS insuficiente
+if (!content || content.length < 1000) {
+  // Fetch HTML y limpiar...
+}
+```
+
+**3. Limpieza Inteligente de Contenido:**
+
+**Lista negra de frases (30+ patrones):**
+- Botones sociales: "compartir en facebook", "compartir en twitter"
+- Navegación: "leer más", "artículos relacionados", "suscríbete"
+- Autores en MAYÚSCULAS: "MIRIAM PRIETO", "JOSÉ MARÍA RODRÍGUEZ"
+- Timestamps: "07:54 El Ibex...", "06:45 La Primera de Expansión..."
+- Sidebars: "Qué hacer con los valores", "Crónica de bolsa"
+
+**Filtros aplicados:**
+```typescript
+const excludedPhrases = [
+  'compartir en facebook',
+  'compartir en twitter',
+  'compartir en linkedin',
+  'enviar por email',
+  'suscríbete',
+  'newsletter',
+  'leer más',
+  'la primera de expansión',
+  'crónica de bolsa',
+  'artículos relacionados',
+  // ... 20+ más
+];
+
+const shouldExcludeText = (text: string): boolean => {
+  const lowerText = text.toLowerCase();
+
+  // Filtrar frases excluidas
+  if (excludedPhrases.some(phrase => lowerText.includes(phrase))) return true;
+
+  // Filtrar autores en MAYÚSCULAS
+  if (text === text.toUpperCase() && text.length < 50 && text.length > 5) return true;
+
+  // Filtrar timestamps (07:54 formato)
+  if (/^\d{2}:\d{2}\s+/.test(text)) return true;
+
+  // Filtrar snippets muy cortos
+  if (text.length < 40) return true;
+
+  return false;
+};
+```
+
+**Detección inteligente de listas (navegación vs contenido):**
+```typescript
+// Detectar si lista es navegación o contenido editorial
+lists.forEach((list) => {
+  let hasTimestamps = false;
+  let hasLinks = false;
+
+  listItems.forEach((li) => {
+    if (/^\d{2}:\d{2}/.test(text)) hasTimestamps = true;
+    if (text.length < 100 && !text.includes('.')) hasLinks = true;
+  });
+
+  // Solo agregar si NO es navegación
+  if (!hasTimestamps && !hasLinks && items.length > 0) {
+    paragraphs.push(`<${tag}>${items.join('')}</${tag}>`);
+  }
+});
+```
+
+**Detención automática en secciones de navegación:**
+```typescript
+// Detenerse al encontrar sidebar
+for (const para of paragraphs) {
+  if (para.includes('compartir en facebook') ||
+      para.includes('artículos') && para.includes('<li>') ||
+      /\d{2}:\d{2}/.test(para)) {
+    break; // Detenerse aquí
+  }
+  finalContent.push(para);
+}
+```
+
+**4. Soporte encoding UTF-8/Windows-1252:**
+```typescript
+// Detectar encoding (Expansión usa windows-1252)
+let html = await response.text();
+if (html.includes('�') || sourceName === 'Expansión') {
+  const buffer = await response.arrayBuffer();
+  html = new TextDecoder('windows-1252').decode(buffer);
+}
+```
+
+**5. Extracción de imagen destacada:**
+```typescript
+// Prioridad: media:content > OpenGraph > primera imagen
+featuredImage = item.mediaContent ||
+                extractOpenGraphImage(html) ||
+                extractFirstImage(html);
+```
+
+**6. Verificación de duplicados y insert:**
+```typescript
+// Evitar duplicados por source_url
+const { data: existing } = await supabase
+  .from('news_articles')
+  .select('id')
+  .eq('source_url', item.link)
+  .single();
+
+if (!existing) {
+  await supabase.from('news_articles').insert({
+    title: item.title,
+    slug: generateSlug(item.title),
+    excerpt: item.description.substring(0, 300),
+    content: content,
+    source_name: sourceName,
+    source_url: item.link,
+    featured_image_url: featuredImage,
+    category_id: categoryId,
+    status: 'draft',
+    source_published_at: new Date(item.pubDate)
+  });
+}
+```
 
 ### 3. API Endpoints
 
@@ -108,15 +279,15 @@ Listar noticias publicadas
   "data": [
     {
       "id": "uuid",
-      "title": "Bitcoin ETFs sangran 4.300 millones...",
-      "slug": "bitcoin-etfs-sangran-4300-millones",
+      "title": "Everwood compra Tudefrigo por 70 millones...",
+      "slug": "everwood-compra-tudefrigo-70-millones",
       "excerpt": "Resumen...",
-      "featured_image_url": "https://...",
-      "published_at": "2026-06-05T...",
+      "featured_image_url": "https://e00-expansion.uecdn.es/...",
+      "published_at": "2026-06-09T...",
       "category_name": "ETFs",
       "category_slug": "etfs",
       "category_color": "#3B82F6",
-      "author_name": "Redacción ETF Nexo",
+      "author_name": "Expansión",
       "views_count": 0
     }
   ],
@@ -127,42 +298,193 @@ Listar noticias publicadas
 ```
 
 #### GET `/api/v1/noticias/[slug]`
-Obtener un artículo individual
+Obtener un artículo individual con contenido completo
 
-**Respuesta:**
+## Deployment y Ejecución
+
+### Desplegar Edge Function
+
+```bash
+# Cargar SUPABASE_DB_PASSWORD desde .env.local
+DB_PASSWORD=$(grep SUPABASE_DB_PASSWORD .env.local | cut -d= -f2)
+
+# Deploy function
+SUPABASE_DB_PASSWORD="${DB_PASSWORD}" ./bin/supabase-etf functions deploy fetch-news --no-verify-jwt
+```
+
+### Ejecutar Scraper Manualmente
+
+```bash
+# Obtener SERVICE_ROLE_KEY desde .env.local
+SERVICE_KEY=$(grep SUPABASE_SERVICE_ROLE_KEY .env.local | cut -d= -f2)
+
+# Ejecutar con timeout de 180s
+timeout 180 curl -X POST \
+  "https://utvioubcqkwwzvufhups.supabase.co/functions/v1/fetch-news" \
+  -H "Authorization: Bearer ${SERVICE_KEY}" \
+  -H "Content-Type: application/json"
+```
+
+### Verificar Contenido en Base de Datos
+
+```bash
+# Ver estadísticas de contenido por fuente
+cat > /tmp/check_stats.sql << 'SQL'
+SELECT
+  source_name,
+  COUNT(*) as total_articles,
+  ROUND(AVG(LENGTH(content))) as avg_content_length,
+  MIN(LENGTH(content)) as min_length,
+  MAX(LENGTH(content)) as max_length
+FROM news_articles
+GROUP BY source_name
+ORDER BY total_articles DESC;
+SQL
+
+DB_PASSWORD=$(grep SUPABASE_DB_PASSWORD .env.local | cut -d= -f2)
+SUPABASE_DB_PASSWORD="${DB_PASSWORD}" ./bin/supabase-etf db query \
+  --file /tmp/check_stats.sql --linked
+```
+
+### Limpiar Base de Datos (Testing)
+
+```bash
+# Eliminar todos los artículos (útil para testing)
+DB_PASSWORD=$(grep SUPABASE_DB_PASSWORD .env.local | cut -d= -f2)
+SUPABASE_DB_PASSWORD="${DB_PASSWORD}" ./bin/supabase-etf db query \
+  --sql "DELETE FROM news_articles; SELECT COUNT(*) as remaining;" \
+  --linked
+```
+
+## Configuración de Cron Job (Automático)
+
+### Opción A: Supabase Cron (Recomendado)
+
+1. Ir a **Supabase Dashboard** → Database → Functions
+2. Crear nueva función SQL:
+
+```sql
+-- Crear función que llama a Edge Function
+CREATE OR REPLACE FUNCTION public.fetch_news_cron()
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  -- Llamar a Edge Function usando pg_net
+  PERFORM net.http_post(
+    url := 'https://utvioubcqkwwzvufhups.supabase.co/functions/v1/fetch-news',
+    headers := jsonb_build_object(
+      'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key'),
+      'Content-Type', 'application/json'
+    )
+  );
+END;
+$$;
+```
+
+3. Configurar **pg_cron** schedule:
+
+```sql
+-- Ejecutar cada 6 horas
+SELECT cron.schedule(
+  'fetch-news-every-6-hours',
+  '0 */6 * * *',
+  'SELECT public.fetch_news_cron();'
+);
+
+-- Ver jobs programados
+SELECT * FROM cron.job;
+```
+
+### Opción B: GitHub Actions (Alternativa)
+
+Crear `.github/workflows/fetch-news.yml`:
+
+```yaml
+name: Fetch News
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Cada 6 horas
+  workflow_dispatch:  # Permitir ejecución manual
+
+jobs:
+  fetch-news:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Supabase Edge Function
+        run: |
+          curl -X POST \
+            "${{ secrets.SUPABASE_URL }}/functions/v1/fetch-news" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json"
+```
+
+**Configurar secrets en GitHub:**
+- `SUPABASE_URL`: https://utvioubcqkwwzvufhups.supabase.co
+- `SUPABASE_SERVICE_ROLE_KEY`: (desde .env.local)
+
+### Opción C: Vercel Cron Jobs
+
+Crear `app/api/cron/fetch-news/route.ts`:
+
+```typescript
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  // Verificar authorization header (protección)
+  const authHeader = request.headers.get('authorization');
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  // Llamar a Supabase Edge Function
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fetch-news`,
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  const data = await response.json();
+  return NextResponse.json(data);
+}
+```
+
+Configurar en `vercel.json`:
+
 ```json
 {
-  "data": {
-    "id": "uuid",
-    "title": "...",
-    "content": "Contenido completo...",
-    "tags": [...],
-    "related_etfs": [...]
-  }
+  "crons": [
+    {
+      "path": "/api/cron/fetch-news",
+      "schedule": "0 */6 * * *"
+    }
+  ]
 }
 ```
 
 ## Workflow de Publicación
 
-### 1. Obtener Noticias (Automático o Manual)
-
-**Opción A: Ejecutar Edge Function manualmente**
-```bash
-curl -X POST 'https://utvioubcqkwwzvufhups.supabase.co/functions/v1/fetch-news' \
-  -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY"
-```
-
-**Opción B: Configurar Cron Job en Supabase**
-1. Ir a Supabase Dashboard → Edge Functions
-2. Seleccionar `fetch-news`
-3. Configurar Cron: `0 */6 * * *` (cada 6 horas)
-4. Guardar
+### 1. Scraper Automático (Cada 6 horas)
+- Cron job ejecuta `fetch-news`
+- Nuevos artículos se crean con `status = 'draft'`
 
 ### 2. Revisar Noticias en Draft
 
 ```sql
 -- Ver noticias recientes en draft
-SELECT id, LEFT(title, 60) as title, source_name, source_published_at::date
+SELECT
+  id,
+  LEFT(title, 60) as title,
+  source_name,
+  LENGTH(content) as content_length,
+  source_published_at::date as pub_date
 FROM news_articles
 WHERE status = 'draft'
 ORDER BY source_published_at DESC
@@ -171,64 +493,35 @@ LIMIT 20;
 
 ### 3. Publicar Noticias
 
-**Opción A: Publicar por categoría (SQL)**
+**Opción A: Publicar todas las noticias en draft**
 ```sql
 UPDATE news_articles
 SET
   status = 'published',
   published_at = source_published_at
-WHERE id IN (
-  SELECT id
-  FROM news_articles
-  WHERE status = 'draft'
-  AND category_id IN (SELECT id FROM news_categories WHERE slug = 'etfs')
-  ORDER BY source_published_at DESC
-  LIMIT 20
-);
+WHERE status = 'draft';
 ```
 
-**Opción B: Publicar artículos específicos**
+**Opción B: Publicar por categoría**
+```sql
+UPDATE news_articles
+SET status = 'published', published_at = source_published_at
+WHERE status = 'draft'
+  AND category_id IN (SELECT id FROM news_categories WHERE slug = 'etfs')
+ORDER BY source_published_at DESC
+LIMIT 20;
+```
+
+**Opción C: Publicar artículos específicos**
 ```sql
 UPDATE news_articles
 SET status = 'published', published_at = NOW()
-WHERE id IN ('uuid1', 'uuid2', ...);
-```
-
-**Opción C: Usar Supabase CLI**
-```bash
-SUPABASE_DB_PASSWORD="..." \
-  supabase db query --file /path/to/publish.sql --linked
+WHERE id IN ('uuid1', 'uuid2');
 ```
 
 ### 4. Verificar Publicación
 
-Visitar: https://etfnexo.vercel.app
-
-Las noticias publicadas aparecerán automáticamente en:
-- Hero Section (primeras 4)
-- Latest News Grid (6 artículos)
-
-## Configuración de Fuentes RSS
-
-Para agregar/modificar fuentes, editar el archivo:
-`supabase/functions/fetch-news/index.ts`
-
-```typescript
-const NEWS_SOURCES: NewsSource[] = [
-  {
-    name: 'Google News ETF España',
-    url: 'https://news.google.com/rss/search?q=ETF+OR+fondos+cotizados+when:7d&hl=es&gl=ES&ceid=ES:es',
-    category: 'etfs',
-    language: 'es'
-  },
-  // Agregar más fuentes aquí...
-];
-```
-
-Luego redesplegar:
-```bash
-supabase functions deploy fetch-news
-```
+Visitar: https://etfnexo.vercel.app/noticias
 
 ## Mantenimiento
 
@@ -240,18 +533,32 @@ SELECT status, COUNT(*) as total
 FROM news_articles
 GROUP BY status;
 
+-- Noticias por fuente
+SELECT source_name, COUNT(*) as total,
+       ROUND(AVG(LENGTH(content))) as avg_length
+FROM news_articles
+GROUP BY source_name
+ORDER BY total DESC;
+
 -- Noticias por categoría
 SELECT c.name, COUNT(a.id) as total
 FROM news_categories c
 LEFT JOIN news_articles a ON c.id = a.category_id AND a.status = 'published'
 GROUP BY c.id, c.name;
+```
 
--- Top 10 noticias más vistas
-SELECT LEFT(title, 50) as title, views_count, published_at::date
+### Verificar Calidad de Contenido
+
+```sql
+-- Ver muestra de contenido limpio
+SELECT
+  source_name,
+  title,
+  LENGTH(content) as chars,
+  LEFT(content, 400) as content_preview
 FROM news_articles
-WHERE status = 'published'
-ORDER BY views_count DESC
-LIMIT 10;
+ORDER BY created_at DESC
+LIMIT 5;
 ```
 
 ### Eliminar Duplicados
@@ -268,8 +575,7 @@ HAVING COUNT(*) > 1;
 DELETE FROM news_articles a
 USING news_articles b
 WHERE a.id > b.id
-  AND a.source_url = b.source_url
-  AND a.source_url IS NOT NULL;
+  AND a.source_url = b.source_url;
 ```
 
 ### Archivar Noticias Antiguas
@@ -282,78 +588,68 @@ WHERE status = 'published'
   AND published_at < NOW() - INTERVAL '6 months';
 ```
 
-## Próximas Mejoras
-
-### Mejoras Recomendadas:
-
-1. **Web Scraping Completo**
-   - Actualmente solo se guarda el `description` del RSS
-   - Implementar scraping del artículo completo desde la URL original
-   - Extraer imágenes, contenido HTML limpio
-
-2. **Clasificación Automática con IA**
-   - Usar OpenAI/Claude para:
-     - Categorizar automáticamente
-     - Generar tags relevantes
-     - Detectar ETFs mencionados
-     - Crear excerpt optimizado
-
-3. **SEO Automático**
-   - Auto-generar `meta_title` y `meta_description`
-   - Optimizar slugs
-   - Generar `featured_image_url` desde OpenGraph
-
-4. **Panel de Administración**
-   - UI para revisar/editar drafts
-   - Publicación con un click
-   - Programar publicaciones
-   - Analytics integrados
-
-5. **Cron Job Automático**
-   - Ya configurado en Supabase
-   - Ejecutar cada 6 horas: `0 */6 * * *`
-
-6. **Notificaciones**
-   - Email cuando hay nuevos drafts
-   - Webhook a Slack/Discord
-   - Alertas de noticias importantes
-
-7. **Más Fuentes**
-   - FundsPeople RSS
-   - BlackRock Blog
-   - Morningstar
-   - Expansión/El Economista con filtros de ETF
-
 ## Troubleshooting
 
-### Error: "Duplicated source_url"
-**Solución:** La función automáticamente detecta y omite duplicados. No requiere acción.
+### Caracteres mal codificados (compa��as)
+**Solución:** El scraper detecta automáticamente windows-1252 y convierte a UTF-8
 
-### Error: "Category not found"
-**Solución:** Verificar que el slug de categoría existe en `news_categories`
+### Contenido con sidebars ("Compartir en Facebook...")
+**Solución:** Ya implementado en v3 con 30+ filtros. Redesplegar si persiste.
 
-### Noticias no aparecen en el sitio
-**Checklist:**
-1. ¿Status es `'published'`?
-2. ¿`published_at` está configurado?
-3. ¿La API devuelve datos? → `curl https://etfnexo.vercel.app/api/v1/noticias`
-4. ¿Despliegue completado en Vercel?
+### Artículos muy cortos (< 1000 chars)
+**Solución:** Threshold es 1000 chars. Si RSS es corto, se scrape HTML completo.
+
+### Imágenes no se muestran
+**Solución:** Usar tags `<img>` regulares, no Next.js `<Image fill>`. Ver commit 811c31d.
 
 ### Edge Function timeout
-**Solución:** Reducir número de fuentes o ajustar timeout en Supabase Dashboard
+**Solución:** Reducir número de fuentes RSS o aumentar timeout en fetch:
+```typescript
+const response = await fetch(url, {
+  signal: AbortSignal.timeout(30000) // 30s timeout
+});
+```
 
 ## Archivos Relacionados
 
 - `supabase/migrations/20260604000001_create_news_system.sql` - Schema de BD
-- `supabase/functions/fetch-news/index.ts` - Edge Function
+- `supabase/functions/fetch-news/index.ts` - Edge Function (Scraper v3)
 - `app/api/v1/noticias/route.ts` - API de listado
 - `app/api/v1/noticias/[slug]/route.ts` - API de artículo individual
 - `app/page.tsx` - Homepage con noticias
+- `app/noticias/page.tsx` - Página de listado de noticias
+- `app/noticias/[slug]/page.tsx` - Página de detalle de noticia
+- `app/styles/components/noticias.css` - Estilos de noticias
 - `types/database.types.ts` - Tipos de TypeScript
+- `docs/NEWS_SOURCES.md` - Listado completo de fuentes RSS
+
+## Próximas Mejoras
+
+1. **Auto-publicación inteligente**
+   - Publicar automáticamente después de scraping (si calidad > threshold)
+   - Clasificación IA para detectar relevancia
+
+2. **Panel de Administración**
+   - UI para revisar/editar drafts
+   - Publicación con un click
+   - Analytics integrados
+
+3. **SEO Automático**
+   - Auto-generar meta_title y meta_description
+   - Optimizar slugs con IA
+
+4. **Más Fuentes**
+   - FundsPeople
+   - Morningstar España
+   - BlackRock España Blog
+
+5. **Notificaciones**
+   - Email cuando hay nuevos drafts
+   - Webhook a Slack
+   - Alertas de noticias importantes
 
 ## Contacto y Soporte
 
-Para más información o soporte:
-- Repositorio: (agregar URL del repo)
-- Documentación Supabase: https://supabase.com/docs
-- Documentación Next.js: https://nextjs.org/docs
+- Supabase Dashboard: https://supabase.com/dashboard/project/utvioubcqkwwzvufhups
+- Edge Functions: https://supabase.com/dashboard/project/utvioubcqkwwzvufhups/functions
+- Production: https://etfnexo.vercel.app
