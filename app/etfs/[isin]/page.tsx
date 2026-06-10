@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import ETFRating from '@/components/ETFRating';
 
 interface ETFDetail {
   id: string;
@@ -232,6 +233,18 @@ export default function ETFDetailPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* User Rating and Watchlist */}
+        <section className="etf-rating-section">
+          <div className="container">
+            <ETFRating
+              etfId={etf.id}
+              etfIsin={etf.isin}
+              initialAverageRating={data.ratings.average}
+              initialRatingCount={data.ratings.count}
+            />
           </div>
         </section>
 

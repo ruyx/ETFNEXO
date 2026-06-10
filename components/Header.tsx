@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import UserNav from './UserNav';
 
 export default function Header() {
   return (
@@ -31,11 +32,9 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* CTA Button */}
+          {/* User Navigation */}
           <div className="site-header__cta">
-            <Link href="/rankings" className="site-header__cta-button">
-              Ver Rankings
-            </Link>
+            <UserNav />
           </div>
 
           {/* Mobile Menu Button */}
