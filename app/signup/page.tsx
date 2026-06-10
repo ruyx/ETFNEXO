@@ -172,9 +172,9 @@ export default function SignupPage() {
           </p>
           <p style={{ fontSize: '12px', color: '#999', marginTop: '16px' }}>
             Al registrarte, aceptas nuestros{' '}
-            <a href="/terminos" style={{ color: '#667eea' }}>Términos de Servicio</a>
+            <a href="/terminos" style={{ color: '#3B82F6' }}>Términos de Servicio</a>
             {' '}y{' '}
-            <a href="/privacidad" style={{ color: '#667eea' }}>Política de Privacidad</a>
+            <a href="/privacidad" style={{ color: '#3B82F6' }}>Política de Privacidad</a>
           </p>
         </div>
       </div>
