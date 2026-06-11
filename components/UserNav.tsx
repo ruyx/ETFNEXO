@@ -19,16 +19,21 @@ export default function UserNav() {
 
     const getUser = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser()
+        console.log('[UserNav] Getting user...')
+        const { data: { user }, error } = await supabase.auth.getUser()
+        console.log('[UserNav] User result:', { user: user ? 'Found' : 'Not found', email: user?.email, error })
+
         setUser(user)
 
         if (user) {
+          console.log('[UserNav] Fetching profile for user:', user.id)
           const { data: profile } = await supabase
             .from('user_profiles')
             .select('*')
             .eq('id', user.id)
             .single()
 
+          console.log('[UserNav] Profile result:', profile ? 'Found' : 'Not found')
           setProfile(profile)
         }
 
