@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Header from '@/components/Header'
 import './perfil.css'
 
 export default function PerfilPage() {
@@ -97,12 +98,15 @@ export default function PerfilPage() {
 
   if (loading) {
     return (
-      <div className="perfil-container">
-        <div className="perfil-loading">
-          <div className="spinner"></div>
-          <p>Cargando perfil...</p>
+      <>
+        <Header />
+        <div className="perfil-container">
+          <div className="perfil-loading">
+            <div className="spinner"></div>
+            <p>Cargando perfil...</p>
+          </div>
         </div>
-      </div>
+      </>
     )
   }
 
@@ -111,7 +115,9 @@ export default function PerfilPage() {
   }
 
   return (
-    <div className="perfil-container">
+    <>
+      <Header />
+      <div className="perfil-container">
       <div className="perfil-header">
         <div className="perfil-header-content">
           <div className="perfil-avatar">
@@ -239,6 +245,6 @@ export default function PerfilPage() {
           )}
         </section>
       </div>
-    </div>
+    </>
   )
 }
