@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function loginAction(formData: FormData) {
@@ -14,7 +15,7 @@ export async function loginAction(formData: FormData) {
 
   const supabase = await createClient()
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { error, data } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
@@ -22,6 +23,14 @@ export async function loginAction(formData: FormData) {
   if (error) {
     return { error: error.message }
   }
+
+  // Verify session was created
+  if (!data.session) {
+    return { error: 'Error al crear la sesión' }
+  }
+
+  // Force revalidation to ensure cookies are picked up
+  revalidatePath('/', 'layout')
 
   // Server-side redirect ensures cookies are set before navigation
   redirect(redirectTo || '/')
