@@ -21,7 +21,7 @@ function LoginForm() {
     setLoading(true)
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
@@ -30,6 +30,8 @@ function LoginForm() {
       setError(error.message)
       setLoading(false)
     } else {
+      // Wait a bit to ensure cookies are set in browser
+      await new Promise(resolve => setTimeout(resolve, 500))
       // Force a full page reload to ensure server picks up cookies
       window.location.href = redirectTo
     }
