@@ -40,19 +40,19 @@ export async function middleware(request: NextRequest) {
 
   console.log('[Middleware]', request.nextUrl.pathname, 'User:', user ? user.email : 'Not found', 'Error:', userError?.message || 'None')
 
-  // Protected routes - require authentication
-  const protectedPaths = ['/dashboard', '/perfil', '/watchlist']
-  const isProtectedPath = protectedPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path)
-  )
+  // Protected routes - DISABLED: letting client components handle auth
+  // Client-side auth check is more reliable with cookies
+  // const protectedPaths = ['/dashboard', '/perfil', '/watchlist']
+  // const isProtectedPath = protectedPaths.some((path) =>
+  //   request.nextUrl.pathname.startsWith(path)
+  // )
 
-  if (isProtectedPath && !user) {
-    // Redirect to login page
-    const redirectUrl = request.nextUrl.clone()
-    redirectUrl.pathname = '/login'
-    redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
-    return NextResponse.redirect(redirectUrl)
-  }
+  // if (isProtectedPath && !user) {
+  //   const redirectUrl = request.nextUrl.clone()
+  //   redirectUrl.pathname = '/login'
+  //   redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
+  //   return NextResponse.redirect(redirectUrl)
+  // }
 
   // Auth routes - redirect to home if already logged in
   const authPaths = ['/login', '/signup']
