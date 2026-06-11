@@ -8,10 +8,9 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
+  // Create response early
+  let supabaseResponse = NextResponse.next({
+    request,
   })
 
   const supabase = createServerClient(
@@ -24,18 +23,8 @@ export async function middleware(request: NextRequest) {
         },
         setAll(cookiesToSet: any) {
           cookiesToSet.forEach(({ name, value, options }: any) => {
-            // Ensure cookies work in production (HTTPS) and development
-            const cookieOptions = {
-              ...options,
-              sameSite: 'lax' as const,
-              secure: process.env.NODE_ENV === 'production',
-              path: '/',
-            }
             request.cookies.set(name, value)
-            response.cookies.set(name, value, cookieOptions)
-          })
-          response = NextResponse.next({
-            request,
+            supabaseResponse.cookies.set(name, value, options)
           })
         },
       },
@@ -43,7 +32,7 @@ export async function middleware(request: NextRequest) {
   )
 
   // Refresh session if expired - required for Server Components
-  // https://supabase.com/docs/guides/auth/server-side/nextjs
+  // IMPORTANT: This call is critical - it refreshes the user session
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -74,7 +63,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl)
   }
 
-  return response
+  return supabaseResponse
 }
 
 export const config = {
