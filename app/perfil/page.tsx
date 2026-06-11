@@ -1,61 +1,113 @@
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import './perfil.css'
 
-export default async function PerfilPage() {
-  const supabase = await createClient()
+export default function PerfilPage() {
+  const [user, setUser] = useState<any>(null)
+  const [profile, setProfile] = useState<any>(null)
+  const [ratings, setRatings] = useState<any[]>([])
+  const [watchlist, setWatchlist] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
+  const supabase = createClient()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        console.log('[Perfil] Loading user data...')
 
-  if (!user) {
-    redirect('/login')
-  }
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
 
-  // Get user profile
-  const { data: profile } = await supabase
-    .from('user_profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single() as { data: any }
+        if (!user) {
+          console.log('[Perfil] No user found, redirecting to login')
+          router.push('/login')
+          return
+        }
 
-  // Get user ratings with ETF info
-  const { data: ratings } = await supabase
-    .from('user_ratings')
-    .select(`
-      *,
-      etfs (
-        isin,
-        name,
-        manager_id
-      )
-    `)
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false }) as { data: any }
+        console.log('[Perfil] User found:', user.email)
+        setUser(user)
 
-  // Get user watchlist
-  const { data: watchlist } = await supabase
-    .from('user_watchlists')
-    .select(`
-      *,
-      etfs (
-        isin,
-        name,
-        ter,
-        return_1y,
-        average_rating
-      )
-    `)
-    .eq('user_id', user.id)
-    .order('added_at', { ascending: false }) as { data: any }
+        // Get user profile
+        const { data: profileData } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single()
+
+        console.log('[Perfil] Profile loaded:', profileData ? 'Found' : 'Not found')
+        setProfile(profileData)
+
+        // Get user ratings with ETF info
+        const { data: ratingsData } = await supabase
+          .from('user_ratings')
+          .select(`
+            *,
+            etfs (
+              isin,
+              name,
+              manager_id
+            )
+          `)
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+
+        console.log('[Perfil] Ratings loaded:', ratingsData?.length || 0)
+        setRatings(ratingsData || [])
+
+        // Get user watchlist
+        const { data: watchlistData } = await supabase
+          .from('user_watchlists')
+          .select(`
+            *,
+            etfs (
+              isin,
+              name,
+              ter,
+              return_1y,
+              average_rating
+            )
+          `)
+          .eq('user_id', user.id)
+          .order('added_at', { ascending: false })
+
+        console.log('[Perfil] Watchlist loaded:', watchlistData?.length || 0)
+        setWatchlist(watchlistData || [])
+
+        setLoading(false)
+      } catch (err) {
+        console.error('[Perfil] Error loading data:', err)
+        setLoading(false)
+      }
+    }
+
+    loadUserData()
+  }, [router])
 
   const handleSignOut = async () => {
-    'use server'
-    const supabase = await createClient()
     await supabase.auth.signOut()
-    redirect('/login')
+    router.push('/login')
+    router.refresh()
+  }
+
+  if (loading) {
+    return (
+      <div className="perfil-container">
+        <div className="perfil-loading">
+          <div className="spinner"></div>
+          <p>Cargando perfil...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return null
   }
 
   return (
