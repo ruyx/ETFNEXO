@@ -19,8 +19,10 @@ function LoginForm() {
       const result = await loginAction(formData)
       if (result?.error) {
         setError(result.error)
+      } else if (result?.success) {
+        // Hard reload to ensure client picks up server cookies
+        window.location.href = redirectTo
       }
-      // If no error, the server action will redirect
     })
   }
 
