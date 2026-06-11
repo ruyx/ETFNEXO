@@ -35,7 +35,10 @@ export async function middleware(request: NextRequest) {
   // IMPORTANT: This call is critical - it refreshes the user session
   const {
     data: { user },
+    error: userError,
   } = await supabase.auth.getUser()
+
+  console.log('[Middleware]', request.nextUrl.pathname, 'User:', user ? user.email : 'Not found', 'Error:', userError?.message || 'None')
 
   // Protected routes - require authentication
   const protectedPaths = ['/dashboard', '/perfil', '/watchlist']
