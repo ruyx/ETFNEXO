@@ -1,40 +1,27 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useTransition } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { loginAction } from './actions'
 import './login.css'
 
 function LoginForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get('redirectTo') || '/'
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleLogin = async (formData: FormData) => {
     setError('')
-    setLoading(true)
-
-    const supabase = createClient()
-    const { error, data } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    startTransition(async () => {
+      const result = await loginAction(formData)
+      if (result?.error) {
+        setError(result.error)
+      }
+      // If no error, the server action will redirect
     })
-
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else {
-      // Wait a bit to ensure cookies are set in browser
-      await new Promise(resolve => setTimeout(resolve, 500))
-      // Force a full page reload to ensure server picks up cookies
-      window.location.href = redirectTo
-    }
   }
 
   const handleGoogleLogin = async () => {
@@ -65,17 +52,18 @@ function LoginForm() {
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="login-form">
+        <form action={handleLogin} className="login-form">
+          <input type="hidden" name="redirectTo" value={redirectTo} />
+
           <div className="form-group">
             <label htmlFor="email">Correo Electrónico</label>
             <input
               id="email"
+              name="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               placeholder="tu@email.com"
               required
-              disabled={loading}
+              disabled={isPending}
             />
           </div>
 
@@ -83,21 +71,20 @@ function LoginForm() {
             <label htmlFor="password">Contraseña</label>
             <input
               id="password"
+              name="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              disabled={loading}
+              disabled={isPending}
             />
           </div>
 
           <button
             type="submit"
             className="btn-primary"
-            disabled={loading}
+            disabled={isPending}
           >
-            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+            {isPending ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>
         </form>
 
@@ -109,7 +96,7 @@ function LoginForm() {
           type="button"
           onClick={handleGoogleLogin}
           className="btn-google"
-          disabled={loading}
+          disabled={isPending}
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
