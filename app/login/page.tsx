@@ -30,8 +30,8 @@ function LoginForm() {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push(redirectTo)
-      router.refresh()
+      // Force a full page reload to ensure server picks up cookies
+      window.location.href = redirectTo
     }
   }
 
@@ -123,9 +123,6 @@ function LoginForm() {
             ¿No tienes cuenta?{' '}
             <Link href="/signup">Regístrate aquí</Link>
           </p>
-          <Link href="/forgot-password" className="forgot-link">
-            ¿Olvidaste tu contraseña?
-          </Link>
         </div>
       </div>
     </div>
