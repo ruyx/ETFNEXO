@@ -5,19 +5,21 @@
 .perfil-container {
   min-height: 100vh;
   background: var(--color-slate-50);
+  padding: var(--spacing-8) 0;
 }
 
 /* ==================== HEADER ==================== */
 .perfil-header {
-  background: var(--color-slate-900);
+  max-width: 1200px;
+  margin: 0 auto var(--spacing-8);
+  background: linear-gradient(135deg, var(--color-slate-900) 0%, var(--color-slate-800) 100%);
   color: var(--color-white);
-  padding: var(--spacing-12) var(--spacing-6);
-  border-bottom: 1px solid var(--color-slate-800);
+  padding: var(--spacing-10) var(--spacing-8);
+  border-radius: var(--card-radius);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .perfil-header-content {
-  max-width: 1200px;
-  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: var(--spacing-8);
@@ -118,7 +120,7 @@
 /* ==================== CONTENT ==================== */
 .perfil-content {
   max-width: 1200px;
-  margin: calc(var(--spacing-10) * -1) auto 0;
+  margin: 0 auto;
   padding: 0 var(--spacing-6) var(--spacing-12);
 }
 
@@ -355,8 +357,13 @@
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
+  .perfil-container {
+    padding: var(--spacing-6) var(--spacing-4);
+  }
+
   .perfil-header {
-    padding: var(--spacing-8) var(--spacing-5);
+    padding: var(--spacing-8) var(--spacing-6);
+    margin: 0 0 var(--spacing-6);
   }
 
   .perfil-header-content {
@@ -388,8 +395,7 @@
   }
 
   .perfil-content {
-    margin-top: 0;
-    padding: var(--spacing-6) var(--spacing-5) var(--spacing-10);
+    padding: 0 var(--spacing-4) var(--spacing-10);
   }
 
   .perfil-section {
