@@ -37,6 +37,12 @@ export async function loginAction(formData: FormData) {
   // Force revalidation to ensure cookies are picked up
   revalidatePath('/', 'layout')
 
-  // Return success - let client handle redirect
-  return { success: true }
+  // Return session to client so it can set it locally
+  return {
+    success: true,
+    session: {
+      access_token: data.session.access_token,
+      refresh_token: data.session.refresh_token,
+    }
+  }
 }

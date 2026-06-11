@@ -19,8 +19,21 @@ function LoginForm() {
       const result = await loginAction(formData)
       if (result?.error) {
         setError(result.error)
-      } else if (result?.success) {
-        // Hard reload to ensure client picks up server cookies
+      } else if (result?.success && result?.session) {
+        // Set session on client to establish cookies
+        const supabase = createClient()
+        const { error: sessionError } = await supabase.auth.setSession({
+          access_token: result.session.access_token,
+          refresh_token: result.session.refresh_token,
+        })
+
+        if (sessionError) {
+          setError('Error al establecer la sesión')
+          console.error('[Login] Session error:', sessionError)
+          return
+        }
+
+        // Now redirect - cookies are set on client side
         window.location.href = redirectTo
       }
     })
