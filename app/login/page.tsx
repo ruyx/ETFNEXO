@@ -1,42 +1,64 @@
 'use client'
 
-import { useState, Suspense, useTransition } from 'react'
+import { useState, Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { loginAction } from './actions'
 import './login.css'
 
 function LoginForm() {
   const [error, setError] = useState('')
-  const [isPending, startTransition] = useTransition()
+  const [isPending, setIsPending] = useState(false)
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get('redirectTo') || '/'
 
-  const handleLogin = async (formData: FormData) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     setError('')
-    startTransition(async () => {
-      const result = await loginAction(formData)
-      if (result?.error) {
-        setError(result.error)
-      } else if (result?.success && result?.session) {
-        // Set session on client to establish cookies
-        const supabase = createClient()
-        const { error: sessionError } = await supabase.auth.setSession({
-          access_token: result.session.access_token,
-          refresh_token: result.session.refresh_token,
-        })
+    setIsPending(true)
 
-        if (sessionError) {
-          setError('Error al establecer la sesión')
-          console.error('[Login] Session error:', sessionError)
-          return
-        }
+    const formData = new FormData(e.currentTarget)
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
 
-        // Now redirect - cookies are set on client side
-        window.location.href = redirectTo
+    if (!email || !password) {
+      setError('Email y contraseña son requeridos')
+      setIsPending(false)
+      return
+    }
+
+    try {
+      const supabase = createClient()
+
+      console.log('[Login] Attempting client-side login for:', email)
+
+      const { error, data } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (error) {
+        console.error('[Login] Error:', error.message)
+        setError(error.message)
+        setIsPending(false)
+        return
       }
-    })
+
+      if (!data.session) {
+        setError('Error al crear la sesión')
+        setIsPending(false)
+        return
+      }
+
+      console.log('[Login] Session created successfully')
+
+      // Redirect after successful login
+      window.location.href = redirectTo
+    } catch (err) {
+      console.error('[Login] Unexpected error:', err)
+      setError('Error inesperado al iniciar sesión')
+      setIsPending(false)
+    }
   }
 
   const handleGoogleLogin = async () => {
@@ -67,7 +89,7 @@ function LoginForm() {
           </div>
         )}
 
-        <form action={handleLogin} className="login-form">
+        <form onSubmit={handleLogin} className="login-form">
           <input type="hidden" name="redirectTo" value={redirectTo} />
 
           <div className="form-group">
