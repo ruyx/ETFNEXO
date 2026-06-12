@@ -396,7 +396,8 @@ serve(async (req) => {
             featured_image_url: scraped.featuredImage,
             published_at: publishedAt.toISOString(),
             author_name: scraped.author,
-            slug: `${slugify(scraped.title)}-${Date.now()}`
+            slug: `${slugify(scraped.title)}-${Date.now()}`,
+            status: 'published' // IMPORTANTE: Marcar como publicado para que aparezca en la web
           });
 
         if (error) {

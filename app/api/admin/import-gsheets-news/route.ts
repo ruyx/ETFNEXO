@@ -297,7 +297,8 @@ export async function POST(req: NextRequest) {
             featured_image_url: scraped.featuredImage,
             published_at: parseCSVDate(row.date).toISOString(),
             author_name: scraped.author,
-            slug: `${slugify(scraped.title)}-${Date.now()}`
+            slug: `${slugify(scraped.title)}-${Date.now()}`,
+            status: 'published' // IMPORTANTE: Marcar como publicado para que aparezca en la web
           });
 
         if (error) {
