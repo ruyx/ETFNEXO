@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import MarketTicker from '@/components/MarketTicker';
 import ProgressBar from '@/components/ProgressBar';
@@ -39,17 +40,19 @@ const CATEGORIES = [
 type SortField = 'rank' | 'score' | 'return' | 'ter' | 'aum';
 
 export default function RankingsPage() {
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams.get('category') || '';
+
   const [rankings, setRankings] = useState<ETFRanking[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentCategory, setCurrentCategory] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<SortField>('rank');
   const [sortDesc, setSortDesc] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    const url = currentCategory
-      ? `/api/v1/rankings?category=${currentCategory}`
+    const url = categoryParam
+      ? `/api/v1/rankings?category=${categoryParam}`
       : '/api/v1/rankings';
 
     fetch(url)
@@ -62,7 +65,7 @@ export default function RankingsPage() {
         console.error('Error:', err);
         setLoading(false);
       });
-  }, [currentCategory]);
+  }, [categoryParam]);
 
   const stats = useMemo(() => {
     if (rankings.length === 0) return null;
@@ -185,7 +188,7 @@ export default function RankingsPage() {
               <Link
                 key={cat.value}
                 href={cat.value === '' ? '/rankings' : `/rankings?category=${cat.value}`}
-                className={currentCategory === cat.value
+                className={categoryParam === cat.value
                   ? 'rankings-filters__link rankings-filters__link--active'
                   : 'rankings-filters__link rankings-filters__link--inactive'}
               >
