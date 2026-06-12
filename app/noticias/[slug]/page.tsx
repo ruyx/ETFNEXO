@@ -93,7 +93,7 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
   // Check if author is a URL and extract source name
   const authorIsUrl = article.author_name && isUrl(article.author_name);
   const displayAuthorName = authorIsUrl
-    ? getSourceNameFromUrl(article.author_name)
+    ? getSourceNameFromUrl(article.author_name!)
     : (article.author_name || 'Redacción ETF Nexo');
 
   return (
