@@ -530,6 +530,18 @@
   flex-shrink: 0;
 }
 
+.article-detail__author-link {
+  color: var(--color-blue-600);
+  font-weight: 500;
+  transition: color var(--transition-base);
+  text-decoration: none;
+}
+
+.article-detail__author-link:hover {
+  color: var(--color-orange-500);
+  text-decoration: underline;
+}
+
 /* Article Image */
 .article-image {
   position: relative;

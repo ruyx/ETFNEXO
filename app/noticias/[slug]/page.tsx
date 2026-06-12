@@ -52,6 +52,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+// Helper function to extract source name from URL
+function getSourceNameFromUrl(url: string): string {
+  try {
+    const hostname = new URL(url).hostname;
+    const domain = hostname.replace('www.', '').split('.')[0];
+    return domain.charAt(0).toUpperCase() + domain.slice(1);
+  } catch {
+    return url;
+  }
+}
+
+// Helper to check if author is a URL
+function isUrl(str: string): boolean {
+  try {
+    new URL(str);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export default async function NoticiaDetailPage({ params }: PageProps) {
   const article = await getArticle(params.slug);
 
@@ -68,6 +89,12 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
         day: 'numeric'
       })
     : 'Fecha no disponible';
+
+  // Check if author is a URL and extract source name
+  const authorIsUrl = article.author_name && isUrl(article.author_name);
+  const displayAuthorName = authorIsUrl
+    ? getSourceNameFromUrl(article.author_name)
+    : (article.author_name || 'Redacción ETF Nexo');
 
   return (
     <>
@@ -119,7 +146,18 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
                   <svg className="article-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
-                  <span>{article.author_name || 'Redacción ETF Nexo'}</span>
+                  {authorIsUrl ? (
+                    <a
+                      href={article.author_name!}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="article-detail__author-link"
+                    >
+                      🔗 {displayAuthorName}
+                    </a>
+                  ) : (
+                    <span>{displayAuthorName}</span>
+                  )}
                 </div>
                 <div className="article-detail__meta-item">
                   <svg className="article-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
