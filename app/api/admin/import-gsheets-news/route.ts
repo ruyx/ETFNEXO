@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { JSDOM } from 'jsdom';
+import * as cheerio from 'cheerio';
 
 // ============================================
 // Interfaces
@@ -100,33 +100,29 @@ async function scrapeArticleContent(url: string): Promise<ScrapedArticle> {
     }
 
     const html = await response.text();
-    const dom = new JSDOM(html);
-    const doc = dom.window.document;
+    const $ = cheerio.load(html);
 
     // Extraer título
     let title = '';
-    const titleTag = doc.querySelector('h1, .article-title, .post-title, [itemprop="headline"]');
-    if (titleTag) {
-      title = titleTag.textContent?.trim() || '';
+    const titleTag = $('h1, .article-title, .post-title, [itemprop="headline"]').first();
+    if (titleTag.length) {
+      title = titleTag.text().trim();
     }
     if (!title) {
-      const ogTitle = doc.querySelector('meta[property="og:title"]');
+      const ogTitle = $('meta[property="og:title"]').attr('content');
       if (ogTitle) {
-        title = ogTitle.getAttribute('content') || '';
+        title = ogTitle;
       }
     }
     if (!title) {
-      const docTitle = doc.querySelector('title');
-      if (docTitle) {
-        title = docTitle.textContent?.trim() || '';
-      }
+      title = $('title').text().trim();
     }
 
     // Extraer contenido
     let content = '';
-    const articleTag = doc.querySelector('article');
-    if (articleTag) {
-      content = cleanArticleContent(articleTag);
+    const articleTag = $('article').first();
+    if (articleTag.length) {
+      content = cleanArticleContent($, articleTag);
     }
 
     if (!content) {
@@ -141,9 +137,9 @@ async function scrapeArticleContent(url: string): Promise<ScrapedArticle> {
       ];
 
       for (const selector of contentSelectors) {
-        const element = doc.querySelector(selector);
-        if (element) {
-          content = cleanArticleContent(element);
+        const element = $(selector).first();
+        if (element.length) {
+          content = cleanArticleContent($, element);
           if (content.length > 300) break;
         }
       }
@@ -151,37 +147,29 @@ async function scrapeArticleContent(url: string): Promise<ScrapedArticle> {
 
     // Fallback
     if (!content || content.length < 300) {
-      const paragraphs = Array.from(doc.querySelectorAll('p'));
-      const text = paragraphs
-        .map(p => p.textContent || '')
-        .filter(t => t.length > 100)
-        .join('\n\n');
+      const paragraphs: string[] = [];
+      $('p').each((_, elem) => {
+        const text = $(elem).text().trim();
+        if (text.length > 100) {
+          paragraphs.push(text);
+        }
+      });
 
-      content = text
-        .split('\n\n')
-        .map(p => `<p>${p.trim()}</p>`)
+      content = paragraphs
+        .map(p => `<p>${p}</p>`)
         .join('\n');
     }
 
     // Extraer imagen
     let featuredImage: string | null = null;
-    const ogImage = doc.querySelector('meta[property="og:image"]');
-    if (ogImage) {
-      featuredImage = ogImage.getAttribute('content');
-    }
+    featuredImage = $('meta[property="og:image"]').attr('content') || null;
     if (!featuredImage) {
-      const twitterImage = doc.querySelector('meta[name="twitter:image"]');
-      if (twitterImage) {
-        featuredImage = twitterImage.getAttribute('content');
-      }
+      featuredImage = $('meta[name="twitter:image"]').attr('content') || null;
     }
 
     // Extraer autor
     let author: string | null = null;
-    const authorMeta = doc.querySelector('meta[name="author"]');
-    if (authorMeta) {
-      author = authorMeta.getAttribute('content');
-    }
+    author = $('meta[name="author"]').attr('content') || null;
 
     console.log(`✅ Scraped: ${title.substring(0, 50)}...`);
 
@@ -198,27 +186,30 @@ async function scrapeArticleContent(url: string): Promise<ScrapedArticle> {
   }
 }
 
-function cleanArticleContent(element: Element): string {
+function cleanArticleContent($: cheerio.CheerioAPI, element: cheerio.Cheerio<any>): string {
   const unwantedSelectors = [
     'script', 'style', 'nav', 'aside', 'form', 'iframe',
     '.sidebar', '.related-posts', '.comments', '.ad'
   ];
 
-  const clone = element.cloneNode(true) as Element;
+  const clone = element.clone();
   unwantedSelectors.forEach(selector => {
-    clone.querySelectorAll(selector).forEach(el => el.remove());
+    clone.find(selector).remove();
   });
 
-  const paragraphs = Array.from(clone.querySelectorAll('p, h2, h3, li'));
-  return paragraphs
-    .map(p => {
-      const text = p.textContent?.trim() || '';
-      if (!text || text.length < 20) return '';
-      const tag = p.tagName.toLowerCase();
-      return tag.startsWith('h') || tag === 'li' ? `<${tag}>${text}</${tag}>` : `<p>${text}</p>`;
-    })
-    .filter(Boolean)
-    .join('\n');
+  const paragraphs: string[] = [];
+  clone.find('p, h2, h3, li').each((_, elem) => {
+    const text = $(elem).text().trim();
+    if (!text || text.length < 20) return;
+    const tagName = elem.tagName.toLowerCase();
+    if (tagName.startsWith('h') || tagName === 'li') {
+      paragraphs.push(`<${tagName}>${text}</${tagName}>`);
+    } else {
+      paragraphs.push(`<p>${text}</p>`);
+    }
+  });
+
+  return paragraphs.join('\n');
 }
 
 // ============================================
