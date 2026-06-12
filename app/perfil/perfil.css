@@ -5,13 +5,13 @@
 .perfil-container {
   min-height: 100vh;
   background: var(--color-slate-50);
-  padding: var(--spacing-8) 0;
+  padding: 0 0 var(--spacing-8) 0; /* Solo padding bottom, sin padding top para no ocultar el header */
 }
 
 /* ==================== HEADER ==================== */
 .perfil-header {
   max-width: 1200px;
-  margin: 0 auto var(--spacing-8);
+  margin: var(--spacing-8) auto var(--spacing-8); /* Margen superior para separar del header global */
   background: linear-gradient(135deg, var(--color-slate-900) 0%, var(--color-slate-800) 100%);
   color: var(--color-white);
   padding: var(--spacing-10) var(--spacing-8);
