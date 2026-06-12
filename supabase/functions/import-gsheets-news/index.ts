@@ -16,7 +16,7 @@ interface GoogleSheetRow {
   priority: string;
   date: string;
   url: string;
-  authorUrl: string;
+  author: string;
 }
 
 interface ScrapedArticle {
@@ -316,7 +316,7 @@ async function fetchGoogleSheetCSV(): Promise<GoogleSheetRow[]> {
         priority: columns[0],
         date: columns[1],
         url: columns[2],
-        authorUrl: columns[3]
+        author: columns[3]?.trim() || '' // Autor desde el sheet
       });
     }
   }
@@ -385,6 +385,9 @@ serve(async (req) => {
         // Parsear fecha
         const publishedAt = parseCSVDate(row.date);
 
+        // Usar el autor del sheet, con fallback al autor scrapeado
+        const authorName = row.author || scraped.author || null;
+
         // Insertar en la base de datos
         const { error } = await supabase
           .from('news_articles')
@@ -395,7 +398,7 @@ serve(async (req) => {
             source_name: extractSourceName(url),
             featured_image_url: scraped.featuredImage,
             published_at: publishedAt.toISOString(),
-            author_name: scraped.author,
+            author_name: authorName, // Autor del sheet tiene prioridad
             slug: `${slugify(scraped.title)}-${Date.now()}`,
             status: 'published' // IMPORTANTE: Marcar como publicado para que aparezca en la web
           });
