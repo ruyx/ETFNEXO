@@ -245,6 +245,7 @@ export default function PerfilPage() {
           )}
         </section>
       </div>
+      </div>
     </>
   )
 }
