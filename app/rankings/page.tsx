@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
@@ -39,7 +39,7 @@ const CATEGORIES = [
 
 type SortField = 'rank' | 'score' | 'return' | 'ter' | 'aum';
 
-export default function RankingsPage() {
+function RankingsContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category') || '';
 
@@ -392,5 +392,22 @@ export default function RankingsPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function RankingsPage() {
+  return (
+    <Suspense fallback={
+      <div className="rankings-skeleton">
+        {[1, 2, 3, 4, 5].map(i => (
+          <div key={i} className="rankings-skeleton__card">
+            <div className="rankings-skeleton__bar"></div>
+            <div className="rankings-skeleton__bar rankings-skeleton__bar--large"></div>
+          </div>
+        ))}
+      </div>
+    }>
+      <RankingsContent />
+    </Suspense>
   );
 }
