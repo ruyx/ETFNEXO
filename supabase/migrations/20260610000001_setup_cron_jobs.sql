@@ -142,33 +142,21 @@ CREATE INDEX IF NOT EXISTS idx_cron_logs_status
 
 -- IMPORTANTE: Los siguientes comandos deben ejecutarse manualmente
 -- en Supabase Dashboard → SQL Editor con permisos de SUPERUSER
-
-/*
-
+--
 -- Job 1: Fetch-News cada 6 horas
-SELECT cron.schedule(
-  'fetch-news-every-6-hours',    -- nombre del job
-  '0 */6 * * *',                 -- cron expression: cada 6 horas
-  'SELECT public.fetch_news_cron();'
-);
-
+-- SELECT cron.schedule('fetch-news-every-6-hours', '0 */6 * * *', 'SELECT public.fetch_news_cron();');
+--
 -- Job 2: Auto-Publish cada 12 horas
-SELECT cron.schedule(
-  'auto-publish-news-every-12-hours',
-  '0 */12 * * *',                -- cada 12 horas
-  'SELECT public.auto_publish_news_cron();'
-);
-
--- Ver jobs programados
-SELECT * FROM cron.job ORDER BY schedule;
-
--- Eliminar un job (si es necesario)
+-- SELECT cron.schedule('auto-publish-news-every-12-hours', '0 */12 * * *', 'SELECT public.auto_publish_news_cron();');
+--
+-- Ver jobs programados:
+-- SELECT * FROM cron.job ORDER BY schedule;
+--
+-- Eliminar un job (si es necesario):
 -- SELECT cron.unschedule('fetch-news-every-6-hours');
-
--- Ver historial de ejecuciones de pg_cron
-SELECT * FROM cron.job_run_details ORDER BY start_time DESC LIMIT 20;
-
-*/
+--
+-- Ver historial de ejecuciones de pg_cron:
+-- SELECT * FROM cron.job_run_details ORDER BY start_time DESC LIMIT 20;
 
 -- ============================================================
 -- 5. Vista para monitorear cron jobs
@@ -210,13 +198,7 @@ END;
 $$;
 
 -- Programar cleanup mensual (ejecutar manualmente en Dashboard)
-/*
-SELECT cron.schedule(
-  'cleanup-cron-logs-monthly',
-  '0 0 1 * *',  -- Día 1 de cada mes a medianoche
-  'SELECT public.cleanup_old_cron_logs();'
-);
-*/
+-- SELECT cron.schedule('cleanup-cron-logs-monthly', '0 0 1 * *', 'SELECT public.cleanup_old_cron_logs();');
 
 -- ============================================================
 -- 7. Grants de permisos

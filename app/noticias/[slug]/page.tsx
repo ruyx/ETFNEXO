@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import AdSlot from '@/components/AdSlot';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 interface PageProps {
@@ -196,6 +197,9 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
                 </div>
               )}
 
+              {/* Ad Slot - Article Top */}
+              <AdSlot placement="article_top" />
+
               {/* Content - Always show */}
               {article.content && (
                 <div
@@ -203,6 +207,9 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
                   dangerouslySetInnerHTML={{ __html: article.content || '' }}
                 />
               )}
+
+              {/* Ad Slot - Article Bottom */}
+              <AdSlot placement="article_bottom" />
 
               {/* Source Link - At the bottom */}
               {article.source_url && article.source_name && (

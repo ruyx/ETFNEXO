@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS public.user_profiles (
 );
 
 -- Índices
-CREATE INDEX idx_user_profiles_username ON user_profiles(username);
+CREATE INDEX IF NOT EXISTS idx_user_profiles_username ON user_profiles(username);
 
 -- Comentarios
 COMMENT ON TABLE user_profiles IS 'Perfiles de usuarios (extiende auth.users de Supabase)';
@@ -61,10 +61,10 @@ CREATE TABLE IF NOT EXISTS public.user_ratings (
 );
 
 -- Índices
-CREATE INDEX idx_user_ratings_user ON user_ratings(user_id);
-CREATE INDEX idx_user_ratings_etf ON user_ratings(etf_id);
-CREATE INDEX idx_user_ratings_rating ON user_ratings(rating);
-CREATE INDEX idx_user_ratings_created ON user_ratings(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_user_ratings_user ON user_ratings(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_ratings_etf ON user_ratings(etf_id);
+CREATE INDEX IF NOT EXISTS idx_user_ratings_rating ON user_ratings(rating);
+CREATE INDEX IF NOT EXISTS idx_user_ratings_created ON user_ratings(created_at DESC);
 
 -- Comentarios
 COMMENT ON TABLE user_ratings IS 'Valoraciones (1-5 estrellas) y reviews de ETFs por usuarios';
@@ -90,9 +90,9 @@ CREATE TABLE IF NOT EXISTS public.user_watchlists (
 );
 
 -- Índices
-CREATE INDEX idx_user_watchlists_user ON user_watchlists(user_id);
-CREATE INDEX idx_user_watchlists_etf ON user_watchlists(etf_id);
-CREATE INDEX idx_user_watchlists_added ON user_watchlists(added_at DESC);
+CREATE INDEX IF NOT EXISTS idx_user_watchlists_user ON user_watchlists(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_watchlists_etf ON user_watchlists(etf_id);
+CREATE INDEX IF NOT EXISTS idx_user_watchlists_added ON user_watchlists(added_at DESC);
 
 -- Comentarios
 COMMENT ON TABLE user_watchlists IS 'ETFs favoritos/seguidos por usuarios';
@@ -301,7 +301,7 @@ BEGIN
   ) THEN
     ALTER TABLE etfs ADD COLUMN average_rating DECIMAL(3,2) DEFAULT NULL;
     COMMENT ON COLUMN etfs.average_rating IS 'Rating promedio de usuarios (1.00-5.00)';
-    CREATE INDEX idx_etfs_average_rating ON etfs(average_rating DESC);
+    CREATE INDEX IF NOT EXISTS idx_etfs_average_rating ON etfs(average_rating DESC);
   END IF;
 END $$;
 

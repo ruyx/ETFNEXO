@@ -1,0 +1,244 @@
+/* ============================================
+   ADS - Sistema de Publicidad
+   ============================================ */
+
+/* ==================== BASE ==================== */
+.ad-slot {
+  position: relative;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  margin: var(--spacing-4) 0;
+}
+
+/* Label "Publicidad" */
+.ad-slot__label {
+  position: absolute;
+  top: var(--spacing-2);
+  right: var(--spacing-2);
+  font-size: var(--font-size-xs);
+  color: var(--color-slate-400);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  background-color: var(--color-white);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: 4px;
+  z-index: 1;
+}
+
+/* ==================== IMAGE BANNER ==================== */
+.ad-slot--image {
+  padding: 0;
+}
+
+.ad-slot__image-container {
+  cursor: pointer;
+  transition: opacity var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.ad-slot__image-container:hover {
+  opacity: 0.9;
+}
+
+.ad-slot__image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* Tamaños según placement */
+.ad-slot--sidebar_top .ad-slot__image,
+.ad-slot--sidebar_bottom .ad-slot__image {
+  max-height: 250px;
+}
+
+.ad-slot--article_top .ad-slot__image,
+.ad-slot--article_mid .ad-slot__image,
+.ad-slot--article_bottom .ad-slot__image {
+  max-height: 200px;
+}
+
+.ad-slot--feed_inline .ad-slot__image {
+  max-height: 180px;
+}
+
+.ad-slot--header .ad-slot__image,
+.ad-slot--footer .ad-slot__image {
+  max-height: 90px;
+}
+
+/* ==================== TEXT BANNER ==================== */
+.ad-slot--text {
+  padding: var(--spacing-6);
+}
+
+.ad-slot__text-container {
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-align: center;
+}
+
+.ad-slot__text-container:hover {
+  transform: translateY(-2px);
+}
+
+.ad-slot__title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-slate-900);
+  margin: 0 0 var(--spacing-3) 0;
+  line-height: 1.3;
+}
+
+.ad-slot__description {
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-600);
+  margin: 0 0 var(--spacing-4) 0;
+  line-height: 1.5;
+}
+
+.ad-slot__cta {
+  display: inline-block;
+  padding: var(--spacing-3) var(--spacing-6);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--btn-radius);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+}
+
+.ad-slot__cta:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+/* ==================== SCRIPT ADS ==================== */
+.ad-slot--script {
+  padding: var(--spacing-4);
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==================== VARIANTES POR PLACEMENT ==================== */
+
+/* Sidebar ads - Más compactos */
+.ad-slot--sidebar_top,
+.ad-slot--sidebar_bottom {
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Article ads - Ancho completo */
+.ad-slot--article_top,
+.ad-slot--article_mid,
+.ad-slot--article_bottom {
+  margin: var(--spacing-8) 0;
+}
+
+/* Feed inline ads - Integrados en el feed */
+.ad-slot--feed_inline {
+  margin: var(--spacing-6) 0;
+}
+
+/* Header/Footer ads - Horizontales y delgados */
+.ad-slot--header,
+.ad-slot--footer {
+  margin: var(--spacing-2) 0;
+}
+
+.ad-slot--header .ad-slot__text-container,
+.ad-slot--footer .ad-slot__text-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  gap: var(--spacing-4);
+}
+
+.ad-slot--header .ad-slot__title,
+.ad-slot--footer .ad-slot__title {
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+.ad-slot--header .ad-slot__description,
+.ad-slot--footer .ad-slot__description {
+  margin: 0;
+  flex: 1;
+}
+
+.ad-slot--header .ad-slot__cta,
+.ad-slot--footer .ad-slot__cta {
+  padding: var(--spacing-2) var(--spacing-4);
+  white-space: nowrap;
+}
+
+/* ==================== ESTADOS ==================== */
+
+/* Loading state (opcional) */
+.ad-slot--loading {
+  background: linear-gradient(
+    90deg,
+    var(--color-slate-100) 0%,
+    var(--color-slate-50) 50%,
+    var(--color-slate-100) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+/* Focus state para accesibilidad */
+.ad-slot__image-container:focus,
+.ad-slot__text-container:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 768px) {
+  .ad-slot--sidebar_top,
+  .ad-slot--sidebar_bottom {
+    max-width: 100%;
+  }
+
+  .ad-slot--header .ad-slot__text-container,
+  .ad-slot--footer .ad-slot__text-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .ad-slot--header .ad-slot__description,
+  .ad-slot--footer .ad-slot__description {
+    display: none; /* Ocultar descripción en móvil para ads de header/footer */
+  }
+}
+
+/* ==================== DARK MODE (Futuro) ==================== */
+@media (prefers-color-scheme: dark) {
+  .ad-slot {
+    /* Variables para dark mode cuando se implemente */
+  }
+}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import RankingSlider from '@/components/RankingSlider';
 import MarketTicker from '@/components/MarketTicker';
+import AdSlot from '@/components/AdSlot';
 
 interface NewsArticle {
   id: string;
@@ -231,6 +232,13 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Ad Slot - Feed Inline (después de rankings) */}
+        <section className="py-8 px-6 bg-white">
+          <div className="container max-w-4xl">
+            <AdSlot placement="feed_inline" />
+          </div>
+        </section>
+
         {/* Latest News Grid */}
         <section className="py-16 px-6 bg-slate-50">
           <div className="container max-w-7xl">
@@ -263,49 +271,57 @@ export default function HomePage() {
               </div>
             ) : recentArticles.length > 0 ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {recentArticles.map((article) => (
-                  <Link
-                    key={article.id}
-                    href={`/noticias/${article.slug}`}
-                    className="group"
-                  >
-                    <article className="h-full flex flex-col bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-lg transition-all">
-                      {/* Image */}
-                      <div className="news-card-image">
-                        {article.featured_image_url ? (
-                          <img
-                            src={article.featured_image_url}
-                            alt={article.title}
-                            className="group-hover:scale-105 transition-transform duration-300"
-                          />
-                        ) : (
-                          <div className="news-card-image__placeholder">
-                            <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                            </svg>
+                {recentArticles.map((article, index) => (
+                  <>
+                    <Link
+                      key={article.id}
+                      href={`/noticias/${article.slug}`}
+                      className="group"
+                    >
+                      <article className="h-full flex flex-col bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-lg transition-all">
+                        {/* Image */}
+                        <div className="news-card-image">
+                          {article.featured_image_url ? (
+                            <img
+                              src={article.featured_image_url}
+                              alt={article.title}
+                              className="group-hover:scale-105 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="news-card-image__placeholder">
+                              <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                              </svg>
+                            </div>
+                          )}
+                          <div className="absolute top-3 left-3 px-2 py-1 bg-blue-600 text-white text-xs font-semibold rounded">
+                            {article.category_name}
                           </div>
-                        )}
-                        <div className="absolute top-3 left-3 px-2 py-1 bg-blue-600 text-white text-xs font-semibold rounded">
-                          {article.category_name}
                         </div>
-                      </div>
 
-                      {/* Content */}
-                      <div className="flex-1 flex flex-col p-6">
-                        <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
-                          {article.title}
-                        </h3>
-                        <p className="text-slate-600 mb-4 line-clamp-2 flex-1">
-                          {article.excerpt}
-                        </p>
-                        <div className="flex items-center gap-3 text-sm text-slate-500">
-                          <time>{formatDate(article.published_at)}</time>
-                          <span className="w-1 h-1 bg-slate-400 rounded-full"></span>
-                          <span>{article.views_count} vistas</span>
+                        {/* Content */}
+                        <div className="flex-1 flex flex-col p-6">
+                          <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
+                            {article.title}
+                          </h3>
+                          <p className="text-slate-600 mb-4 line-clamp-2 flex-1">
+                            {article.excerpt}
+                          </p>
+                          <div className="flex items-center gap-3 text-sm text-slate-500">
+                            <time>{formatDate(article.published_at)}</time>
+                            <span className="w-1 h-1 bg-slate-400 rounded-full"></span>
+                            <span>{article.views_count} vistas</span>
+                          </div>
                         </div>
+                      </article>
+                    </Link>
+                    {/* Ad after 3rd article */}
+                    {index === 2 && (
+                      <div className="md:col-span-2 lg:col-span-3">
+                        <AdSlot placement="feed_inline" />
                       </div>
-                    </article>
-                  </Link>
+                    )}
+                  </>
                 ))}
               </div>
             ) : (
