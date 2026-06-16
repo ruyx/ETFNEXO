@@ -92,7 +92,6 @@ export async function GET(request: NextRequest) {
 
       // Limpiar campos sensibles antes de enviar al cliente
       const {
-        script_code,
         target_pages,
         target_categories,
         max_impressions,
@@ -101,6 +100,11 @@ export async function GET(request: NextRequest) {
         clicks_count,
         ...publicAdData
       } = selectedAd;
+
+      // Solo incluir script_code para ads de tipo script
+      if (selectedAd.type !== 'script') {
+        delete (publicAdData as any).script_code;
+      }
 
       return NextResponse.json({
         ad: publicAdData,
