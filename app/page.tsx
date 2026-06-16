@@ -2,10 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import RankingSlider from '@/components/RankingSlider';
 import MarketTicker from '@/components/MarketTicker';
-import AdSlot from '@/components/AdSlot';
+
+// Import AdSlot with client-side only rendering to avoid hydration mismatch
+const AdSlot = dynamic(() => import('@/components/AdSlot'), {
+  ssr: false,
+  loading: () => <div style={{ minHeight: '100px' }} /> // Placeholder during load
+});
 
 interface NewsArticle {
   id: string;
