@@ -104,44 +104,10 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     }
   };
 
-  // Show diagnostic box before mounting
-  if (!mounted) {
-    return (
-      <div style={{
-        backgroundColor: '#ff0000',
-        color: '#ffffff',
-        padding: '20px',
-        margin: '20px 0',
-        border: '5px solid #000000',
-        fontSize: '18px',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        minHeight: '100px'
-      }}>
-        DIAGNOSTIC: AdSlot component exists but not mounted yet
-      </div>
-    );
-  }
-
-  // Don't render anything while loading or if no ad
-  if (loading || !ad) {
-    console.log('[AdSlot] Not rendering - loading:', loading, 'ad:', ad);
-    // Show loading diagnostic
-    return (
-      <div style={{
-        backgroundColor: '#ffaa00',
-        color: '#000000',
-        padding: '20px',
-        margin: '20px 0',
-        border: '5px solid #ff0000',
-        fontSize: '18px',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        minHeight: '100px'
-      }}>
-        DIAGNOSTIC: Mounted but {loading ? 'LOADING...' : 'NO AD'}
-      </div>
-    );
+  // Don't render until mounted and ad is loaded
+  if (!mounted || loading || !ad) {
+    console.log('[AdSlot] Not rendering - mounted:', mounted, 'loading:', loading, 'ad:', !!ad);
+    return null;
   }
 
   console.log('[AdSlot] Rendering ad type:', ad.type, 'placement:', placement);
@@ -220,12 +186,13 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
         className={`ad-slot ad-slot--text ad-slot--${placement} ${className}`}
         style={{
           backgroundColor: '#ffffff',
-          border: '2px solid #e2e8f0',
+          border: '3px solid #3b82f6',
           borderRadius: '12px',
           padding: '32px',
           margin: '24px 0',
           position: 'relative',
-          minHeight: '200px'
+          minHeight: '200px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
         }}
       >
         <div
@@ -238,9 +205,10 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
             color: '#94a3b8',
             textTransform: 'uppercase',
             fontWeight: '600',
-            backgroundColor: '#ffffff',
+            backgroundColor: '#f8fafc',
             padding: '4px 8px',
-            borderRadius: '4px'
+            borderRadius: '4px',
+            border: '1px solid #e2e8f0'
           }}
         >
           Publicidad
@@ -259,10 +227,10 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
           <h3
             className="ad-slot__title"
             style={{
-              fontSize: '20px',
+              fontSize: '24px',
               fontWeight: '700',
               color: '#0f172a',
-              margin: '0 0 12px 0',
+              margin: '0 0 16px 0',
               lineHeight: '1.3'
             }}
           >
@@ -271,9 +239,9 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
           <p
             className="ad-slot__description"
             style={{
-              fontSize: '14px',
+              fontSize: '16px',
               color: '#475569',
-              margin: '0 0 16px 0',
+              margin: '0 0 20px 0',
               lineHeight: '1.5'
             }}
           >
@@ -283,14 +251,15 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
             className="ad-slot__cta"
             style={{
               display: 'inline-block',
-              padding: '12px 24px',
+              padding: '14px 28px',
               backgroundColor: '#3b82f6',
               color: '#ffffff',
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: '600',
               border: 'none',
               borderRadius: '8px',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              boxShadow: '0 2px 4px rgba(59, 130, 246, 0.3)'
             }}
           >
             {ad.cta_text || 'Saber más'}
