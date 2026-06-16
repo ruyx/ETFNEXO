@@ -119,19 +119,54 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   // Image banner
   if (ad.type === 'image_banner') {
     return (
-      <div className={`ad-slot ad-slot--image ad-slot--${placement} ${className}`}>
-        <div className="ad-slot__label">Publicidad</div>
+      <div
+        className={`ad-slot ad-slot--image ad-slot--${placement} ${className}`}
+        style={{
+          backgroundColor: '#ffffff',
+          border: '2px solid #e2e8f0',
+          borderRadius: '12px',
+          overflow: 'hidden',
+          margin: '24px 0',
+          position: 'relative'
+        }}
+      >
+        <div
+          className="ad-slot__label"
+          style={{
+            position: 'absolute',
+            top: '8px',
+            right: '8px',
+            fontSize: '12px',
+            color: '#94a3b8',
+            textTransform: 'uppercase',
+            fontWeight: '600',
+            backgroundColor: '#ffffff',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            zIndex: 1
+          }}
+        >
+          Publicidad
+        </div>
         <div
           className="ad-slot__image-container"
           onClick={handleAdClick}
           role="button"
           tabIndex={0}
           onKeyPress={(e) => e.key === 'Enter' && handleAdClick()}
+          style={{
+            cursor: 'pointer'
+          }}
         >
           <img
             src={ad.image_url}
             alt={ad.image_alt || 'Anuncio'}
             className="ad-slot__image"
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'block'
+            }}
           />
         </div>
       </div>
@@ -141,18 +176,85 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   // Text banner
   if (ad.type === 'text_banner') {
     return (
-      <div className={`ad-slot ad-slot--text ad-slot--${placement} ${className}`}>
-        <div className="ad-slot__label">Publicidad</div>
+      <div
+        className={`ad-slot ad-slot--text ad-slot--${placement} ${className}`}
+        style={{
+          backgroundColor: '#ffffff',
+          border: '2px solid #e2e8f0',
+          borderRadius: '12px',
+          padding: '32px',
+          margin: '24px 0',
+          position: 'relative',
+          minHeight: '200px'
+        }}
+      >
+        <div
+          className="ad-slot__label"
+          style={{
+            position: 'absolute',
+            top: '8px',
+            right: '8px',
+            fontSize: '12px',
+            color: '#94a3b8',
+            textTransform: 'uppercase',
+            fontWeight: '600',
+            backgroundColor: '#ffffff',
+            padding: '4px 8px',
+            borderRadius: '4px'
+          }}
+        >
+          Publicidad
+        </div>
         <div
           className="ad-slot__text-container"
           onClick={handleAdClick}
           role="button"
           tabIndex={0}
           onKeyPress={(e) => e.key === 'Enter' && handleAdClick()}
+          style={{
+            cursor: 'pointer',
+            textAlign: 'center'
+          }}
         >
-          <h3 className="ad-slot__title">{ad.title}</h3>
-          <p className="ad-slot__description">{ad.description}</p>
-          <button className="ad-slot__cta">{ad.cta_text || 'Saber más'}</button>
+          <h3
+            className="ad-slot__title"
+            style={{
+              fontSize: '20px',
+              fontWeight: '700',
+              color: '#0f172a',
+              margin: '0 0 12px 0',
+              lineHeight: '1.3'
+            }}
+          >
+            {ad.title}
+          </h3>
+          <p
+            className="ad-slot__description"
+            style={{
+              fontSize: '14px',
+              color: '#475569',
+              margin: '0 0 16px 0',
+              lineHeight: '1.5'
+            }}
+          >
+            {ad.description}
+          </p>
+          <button
+            className="ad-slot__cta"
+            style={{
+              display: 'inline-block',
+              padding: '12px 24px',
+              backgroundColor: '#3b82f6',
+              color: '#ffffff',
+              fontSize: '14px',
+              fontWeight: '600',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer'
+            }}
+          >
+            {ad.cta_text || 'Saber más'}
+          </button>
         </div>
       </div>
     );
