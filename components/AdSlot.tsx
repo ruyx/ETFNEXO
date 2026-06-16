@@ -45,42 +45,6 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   const [loading, setLoading] = useState(true);
   const [impressionTracked, setImpressionTracked] = useState(false);
 
-  useEffect(() => {
-    fetchAd();
-  }, [placement]);
-
-  useEffect(() => {
-    if (ad && !impressionTracked) {
-      trackImpression();
-      setImpressionTracked(true);
-    }
-  }, [ad, impressionTracked]);
-
-  // Debug: Check if element is actually in the DOM
-  useEffect(() => {
-    if (ad) {
-      setTimeout(() => {
-        const elements = document.querySelectorAll('.ad-slot');
-        console.log('[AdSlot] DOM check - Found', elements.length, 'ad elements in DOM');
-        elements.forEach((el, i) => {
-          const rect = el.getBoundingClientRect();
-          console.log(`[AdSlot] Element ${i}:`, {
-            visible: rect.width > 0 && rect.height > 0,
-            width: rect.width,
-            height: rect.height,
-            top: rect.top,
-            left: rect.left
-          });
-        });
-      }, 1000);
-    }
-  }, [ad]);
-
-  // Don't render anything until client-side to avoid hydration mismatch
-  if (!mounted) {
-    return <div style={{ minHeight: '100px', width: '100%' }} />;
-  }
-
   const fetchAd = async () => {
     try {
       const pageUrl = window.location.pathname;
@@ -157,6 +121,42 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
       }
     }
   };
+
+  useEffect(() => {
+    fetchAd();
+  }, [placement]);
+
+  useEffect(() => {
+    if (ad && !impressionTracked) {
+      trackImpression();
+      setImpressionTracked(true);
+    }
+  }, [ad, impressionTracked]);
+
+  // Debug: Check if element is actually in the DOM
+  useEffect(() => {
+    if (ad) {
+      setTimeout(() => {
+        const elements = document.querySelectorAll('.ad-slot');
+        console.log('[AdSlot] DOM check - Found', elements.length, 'ad elements in DOM');
+        elements.forEach((el, i) => {
+          const rect = el.getBoundingClientRect();
+          console.log(`[AdSlot] Element ${i}:`, {
+            visible: rect.width > 0 && rect.height > 0,
+            width: rect.width,
+            height: rect.height,
+            top: rect.top,
+            left: rect.left
+          });
+        });
+      }, 1000);
+    }
+  }, [ad]);
+
+  // Don't render anything until client-side to avoid hydration mismatch
+  if (!mounted) {
+    return <div style={{ minHeight: '100px', width: '100%' }} />;
+  }
 
   // No mostrar nada durante la carga
   if (loading || !ad) {
