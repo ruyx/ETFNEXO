@@ -196,13 +196,21 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
       <div
         className={`ad-slot ad-slot--text ad-slot--${placement} ${className}`}
         style={{
+          display: 'block',
           border: '5px solid red',
           padding: '20px',
           margin: '20px 0',
           backgroundColor: '#ffeb3b',
-          minHeight: '100px'
+          minHeight: '200px',
+          width: '100%',
+          visibility: 'visible',
+          opacity: 1,
+          position: 'relative'
         }}
       >
+        <div style={{ color: 'black', fontSize: '24px', fontWeight: 'bold' }}>
+          TEST AD VISIBLE
+        </div>
         <div className="ad-slot__label">Publicidad</div>
         <div
           className="ad-slot__text-container"
@@ -211,13 +219,15 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
           tabIndex={0}
           onKeyPress={(e) => e.key === 'Enter' && handleAdClick()}
         >
-          {ad.title && <h3 className="ad-slot__title">{ad.title}</h3>}
-          {ad.description && <p className="ad-slot__description">{ad.description}</p>}
-          {ad.cta_text && (
-            <button className="ad-slot__cta">
-              {ad.cta_text}
-            </button>
-          )}
+          <h3 className="ad-slot__title" style={{ color: 'black', fontSize: '20px' }}>
+            {ad.title || 'No title'}
+          </h3>
+          <p className="ad-slot__description" style={{ color: 'black', fontSize: '16px' }}>
+            {ad.description || 'No description'}
+          </p>
+          <button className="ad-slot__cta" style={{ display: 'inline-block', padding: '10px 20px', backgroundColor: 'blue', color: 'white' }}>
+            {ad.cta_text || 'Click here'}
+          </button>
         </div>
       </div>
     );
