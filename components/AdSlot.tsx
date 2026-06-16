@@ -1,6 +1,21 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import '../app/styles/components/ads.css';
+
+interface Ad {
+  id: string;
+  type: 'image_banner' | 'text_banner' | 'script';
+  name: string;
+  image_url?: string;
+  image_alt?: string;
+  title?: string;
+  description?: string;
+  cta_text?: string;
+  script_code?: string;
+  link_url?: string;
+  target?: string;
+}
 
 interface AdSlotProps {
   placement: 'sidebar_top' | 'sidebar_bottom' | 'article_top' | 'article_mid' | 'article_bottom' | 'feed_inline' | 'header' | 'footer';
@@ -8,34 +23,126 @@ interface AdSlotProps {
 }
 
 export default function AdSlot({ placement, className = '' }: AdSlotProps) {
-  // MINIMAL TEST VERSION - Just render a bright colored box
-  return (
-    <div
-      style={{
-        width: '100%',
-        minHeight: '300px',
-        backgroundColor: '#ff0000',
-        border: '10px solid #0000ff',
-        padding: '40px',
-        margin: '40px 0',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '32px',
-        fontWeight: 'bold',
-        color: '#ffffff',
-        textAlign: 'center',
-        position: 'relative',
-        zIndex: 9999
-      }}
-    >
-      <div>
-        MINIMAL TEST AD
-        <br />
-        Placement: {placement}
-        <br />
-        If you see this, component is rendering
+  const [ad, setAd] = useState<Ad | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Only run on client
+    if (typeof window === 'undefined') return;
+
+    const fetchAd = async () => {
+      try {
+        const pageUrl = window.location.pathname;
+        const apiUrl = `/api/ads/active?placement=${placement}&page_url=${encodeURIComponent(pageUrl)}`;
+
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          setLoading(false);
+          return;
+        }
+
+        const data = await response.json();
+        if (data.ad) {
+          setAd(data.ad);
+          // Track impression
+          fetch('/api/ads/impression', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ad_id: data.ad.id,
+              page_url: window.location.pathname
+            })
+          }).catch(() => {});
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching ad:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchAd();
+  }, [placement]);
+
+  const handleAdClick = () => {
+    if (!ad) return;
+
+    // Track click
+    fetch('/api/ads/click', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ad_id: ad.id,
+        page_url: window.location.pathname
+      })
+    }).catch(() => {});
+
+    // Navigate
+    if (ad.link_url) {
+      if (ad.target === '_blank') {
+        window.open(ad.link_url, '_blank', 'noopener,noreferrer');
+      } else {
+        window.location.href = ad.link_url;
+      }
+    }
+  };
+
+  // Don't render anything while loading or if no ad
+  if (loading || !ad) {
+    return null;
+  }
+
+  // Script ad
+  if (ad.type === 'script') {
+    return (
+      <div
+        className={`ad-slot ad-slot--script ad-slot--${placement} ${className}`}
+        dangerouslySetInnerHTML={{ __html: ad.script_code || '' }}
+      />
+    );
+  }
+
+  // Image banner
+  if (ad.type === 'image_banner') {
+    return (
+      <div className={`ad-slot ad-slot--image ad-slot--${placement} ${className}`}>
+        <div className="ad-slot__label">Publicidad</div>
+        <div
+          className="ad-slot__image-container"
+          onClick={handleAdClick}
+          role="button"
+          tabIndex={0}
+          onKeyPress={(e) => e.key === 'Enter' && handleAdClick()}
+        >
+          <img
+            src={ad.image_url}
+            alt={ad.image_alt || 'Anuncio'}
+            className="ad-slot__image"
+          />
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // Text banner
+  if (ad.type === 'text_banner') {
+    return (
+      <div className={`ad-slot ad-slot--text ad-slot--${placement} ${className}`}>
+        <div className="ad-slot__label">Publicidad</div>
+        <div
+          className="ad-slot__text-container"
+          onClick={handleAdClick}
+          role="button"
+          tabIndex={0}
+          onKeyPress={(e) => e.key === 'Enter' && handleAdClick()}
+        >
+          <h3 className="ad-slot__title">{ad.title}</h3>
+          <p className="ad-slot__description">{ad.description}</p>
+          <button className="ad-slot__cta">{ad.cta_text || 'Saber más'}</button>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }

@@ -2,16 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import RankingSlider from '@/components/RankingSlider';
 import MarketTicker from '@/components/MarketTicker';
-
-// Import AdSlot with client-side only rendering to avoid hydration mismatch
-const AdSlot = dynamic(() => import('@/components/AdSlot'), {
-  ssr: false,
-  loading: () => <div style={{ minHeight: '100px' }} /> // Placeholder during load
-});
+import AdSlot from '@/components/AdSlot';
 
 interface NewsArticle {
   id: string;
@@ -239,27 +233,9 @@ export default function HomePage() {
         </section>
 
         {/* Ad Slot - Feed Inline (después de rankings) */}
-        <section className="py-8 px-6 bg-white" style={{ minHeight: '300px', backgroundColor: '#f0f0f0' }}>
+        <section className="py-8 px-6 bg-white">
           <div className="container max-w-4xl">
-            <div style={{
-              padding: '20px',
-              backgroundColor: '#00ff00',
-              marginBottom: '20px',
-              fontSize: '24px',
-              fontWeight: 'bold'
-            }}>
-              SECTION TEST - If you see this, section is visible
-            </div>
             <AdSlot placement="feed_inline" />
-            <div style={{
-              padding: '20px',
-              backgroundColor: '#ff00ff',
-              marginTop: '20px',
-              fontSize: '24px',
-              fontWeight: 'bold'
-            }}>
-              AFTER AD TEST - If you see this, content after AdSlot renders
-            </div>
           </div>
         </section>
 
