@@ -123,8 +123,10 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   };
 
   useEffect(() => {
-    fetchAd();
-  }, [placement]);
+    if (mounted) {
+      fetchAd();
+    }
+  }, [placement, mounted]);
 
   useEffect(() => {
     if (ad && !impressionTracked) {
