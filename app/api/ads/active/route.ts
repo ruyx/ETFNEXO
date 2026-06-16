@@ -4,6 +4,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
+
 // GET /api/ads/active?placement=sidebar_top&page_url=/noticias/...
 export async function GET(request: NextRequest) {
   try {
