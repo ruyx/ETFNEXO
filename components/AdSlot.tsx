@@ -28,21 +28,30 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
 
   useEffect(() => {
     // Only run on client
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {
+      console.log('[AdSlot] Server-side, skipping fetch');
+      return;
+    }
 
     const fetchAd = async () => {
       try {
         const pageUrl = window.location.pathname;
         const apiUrl = `/api/ads/active?placement=${placement}&page_url=${encodeURIComponent(pageUrl)}`;
 
+        console.log('[AdSlot] Fetching ad:', { placement, pageUrl, apiUrl });
+
         const response = await fetch(apiUrl);
         if (!response.ok) {
+          console.log('[AdSlot] API response not ok:', response.status);
           setLoading(false);
           return;
         }
 
         const data = await response.json();
+        console.log('[AdSlot] API response data:', data);
+
         if (data.ad) {
+          console.log('[AdSlot] Setting ad:', data.ad);
           setAd(data.ad);
           // Track impression
           fetch('/api/ads/impression', {
@@ -53,10 +62,12 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
               page_url: window.location.pathname
             })
           }).catch(() => {});
+        } else {
+          console.log('[AdSlot] No ad returned from API');
         }
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching ad:', error);
+        console.error('[AdSlot] Error fetching ad:', error);
         setLoading(false);
       }
     };
@@ -89,8 +100,11 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
 
   // Don't render anything while loading or if no ad
   if (loading || !ad) {
+    console.log('[AdSlot] Not rendering - loading:', loading, 'ad:', ad);
     return null;
   }
+
+  console.log('[AdSlot] Rendering ad type:', ad.type, 'placement:', placement);
 
   // Script ad
   if (ad.type === 'script') {
