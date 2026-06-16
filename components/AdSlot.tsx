@@ -197,21 +197,22 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     );
   }
 
-  // Text banner
+  // Text banner - TEMPORARY ULTRA VISIBLE STYLES FOR DEBUGGING
   if (ad.type === 'text_banner') {
     return (
       <div
         ref={adRef}
         className={`ad-slot ad-slot--text ad-slot--${placement} ${className}`}
         style={{
-          backgroundColor: '#ffffff',
-          border: '3px solid #3b82f6',
+          backgroundColor: '#ff0000',
+          border: '10px solid #000000',
           borderRadius: '12px',
           padding: '32px',
           margin: '24px 0',
           position: 'relative',
           minHeight: '200px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.8)',
+          zIndex: 9999
         }}
       >
         <div
@@ -220,17 +221,17 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
             position: 'absolute',
             top: '8px',
             right: '8px',
-            fontSize: '12px',
-            color: '#94a3b8',
+            fontSize: '16px',
+            color: '#ffffff',
             textTransform: 'uppercase',
-            fontWeight: '600',
-            backgroundColor: '#f8fafc',
-            padding: '4px 8px',
+            fontWeight: '700',
+            backgroundColor: '#000000',
+            padding: '8px 16px',
             borderRadius: '4px',
-            border: '1px solid #e2e8f0'
+            border: '2px solid #ffffff'
           }}
         >
-          Publicidad
+          🔴 PUBLICIDAD - DEBUG MODE
         </div>
         <div
           className="ad-slot__text-container"
@@ -246,11 +247,13 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
           <h3
             className="ad-slot__title"
             style={{
-              fontSize: '24px',
-              fontWeight: '700',
-              color: '#0f172a',
+              fontSize: '32px',
+              fontWeight: '900',
+              color: '#000000',
               margin: '0 0 16px 0',
-              lineHeight: '1.3'
+              lineHeight: '1.3',
+              backgroundColor: '#ffff00',
+              padding: '10px'
             }}
           >
             {ad.title}
@@ -258,10 +261,11 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
           <p
             className="ad-slot__description"
             style={{
-              fontSize: '16px',
-              color: '#475569',
+              fontSize: '20px',
+              color: '#000000',
               margin: '0 0 20px 0',
-              lineHeight: '1.5'
+              lineHeight: '1.5',
+              fontWeight: '700'
             }}
           >
             {ad.description}
@@ -270,15 +274,15 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
             className="ad-slot__cta"
             style={{
               display: 'inline-block',
-              padding: '14px 28px',
-              backgroundColor: '#3b82f6',
-              color: '#ffffff',
-              fontSize: '16px',
-              fontWeight: '600',
-              border: 'none',
+              padding: '20px 40px',
+              backgroundColor: '#00ff00',
+              color: '#000000',
+              fontSize: '20px',
+              fontWeight: '900',
+              border: '5px solid #000000',
               borderRadius: '8px',
               cursor: 'pointer',
-              boxShadow: '0 2px 4px rgba(59, 130, 246, 0.3)'
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)'
             }}
           >
             {ad.cta_text || 'Saber más'}
