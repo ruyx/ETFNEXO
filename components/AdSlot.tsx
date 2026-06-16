@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import '../app/styles/components/ads.css';
 
 interface Ad {
@@ -26,11 +26,29 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   const [ad, setAd] = useState<Ad | null>(null);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const adRef = useRef<HTMLDivElement>(null);
 
   // Set mounted flag after hydration
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Check if ad element is actually in the DOM after rendering
+  useEffect(() => {
+    if (ad && adRef.current) {
+      console.log('[AdSlot] Element is in DOM:', {
+        placement,
+        elementExists: !!adRef.current,
+        offsetHeight: adRef.current.offsetHeight,
+        offsetWidth: adRef.current.offsetWidth,
+        clientHeight: adRef.current.clientHeight,
+        clientWidth: adRef.current.clientWidth,
+        computedDisplay: window.getComputedStyle(adRef.current).display,
+        computedVisibility: window.getComputedStyle(adRef.current).visibility,
+        computedOpacity: window.getComputedStyle(adRef.current).opacity
+      });
+    }
+  }, [ad, placement]);
 
   useEffect(() => {
     // Only run on client after mount
@@ -183,6 +201,7 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   if (ad.type === 'text_banner') {
     return (
       <div
+        ref={adRef}
         className={`ad-slot ad-slot--text ad-slot--${placement} ${className}`}
         style={{
           backgroundColor: '#ffffff',
