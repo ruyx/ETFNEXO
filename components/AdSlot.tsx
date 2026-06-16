@@ -25,11 +25,17 @@ interface AdSlotProps {
 export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   const [ad, setAd] = useState<Ad | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  // Set mounted flag after hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
-    // Only run on client
-    if (typeof window === 'undefined') {
-      console.log('[AdSlot] Server-side, skipping fetch');
+    // Only run on client after mount
+    if (!mounted) {
+      console.log('[AdSlot] Not mounted yet, skipping fetch');
       return;
     }
 
@@ -73,7 +79,7 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     };
 
     fetchAd();
-  }, [placement]);
+  }, [placement, mounted]);
 
   const handleAdClick = () => {
     if (!ad) return;
@@ -98,10 +104,44 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     }
   };
 
+  // Show diagnostic box before mounting
+  if (!mounted) {
+    return (
+      <div style={{
+        backgroundColor: '#ff0000',
+        color: '#ffffff',
+        padding: '20px',
+        margin: '20px 0',
+        border: '5px solid #000000',
+        fontSize: '18px',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        minHeight: '100px'
+      }}>
+        DIAGNOSTIC: AdSlot component exists but not mounted yet
+      </div>
+    );
+  }
+
   // Don't render anything while loading or if no ad
   if (loading || !ad) {
     console.log('[AdSlot] Not rendering - loading:', loading, 'ad:', ad);
-    return null;
+    // Show loading diagnostic
+    return (
+      <div style={{
+        backgroundColor: '#ffaa00',
+        color: '#000000',
+        padding: '20px',
+        margin: '20px 0',
+        border: '5px solid #ff0000',
+        fontSize: '18px',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        minHeight: '100px'
+      }}>
+        DIAGNOSTIC: Mounted but {loading ? 'LOADING...' : 'NO AD'}
+      </div>
+    );
   }
 
   console.log('[AdSlot] Rendering ad type:', ad.type, 'placement:', placement);
