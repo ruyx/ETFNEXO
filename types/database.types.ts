@@ -39,6 +39,252 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_clicks: {
+        Row: {
+          ad_id: string | null
+          city: string | null
+          country: string | null
+          created_at: string | null
+          id: string
+          impression_id: string | null
+          ip_address: unknown
+          page_url: string | null
+          referrer: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          ad_id?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          impression_id?: string | null
+          ip_address?: unknown
+          page_url?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          ad_id?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          impression_id?: string | null
+          ip_address?: unknown
+          page_url?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_clicks_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_stats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_clicks_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_clicks_impression_id_fkey"
+            columns: ["impression_id"]
+            isOneToOne: false
+            referencedRelation: "ad_impressions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ad_impressions: {
+        Row: {
+          ad_id: string | null
+          city: string | null
+          country: string | null
+          created_at: string | null
+          id: string
+          ip_address: unknown
+          page_url: string | null
+          referrer: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          ad_id?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown
+          page_url?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          ad_id?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown
+          page_url?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_impressions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_stats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_impressions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ads: {
+        Row: {
+          advertiser_id: string | null
+          clicks_count: number | null
+          created_at: string | null
+          cta_text: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          image_alt: string | null
+          image_url: string | null
+          impressions_count: number | null
+          link_url: string | null
+          max_clicks: number | null
+          max_impressions: number | null
+          name: string
+          placement: string
+          priority: number | null
+          script_code: string | null
+          size: string | null
+          start_date: string | null
+          status: string | null
+          target: string | null
+          target_categories: Json | null
+          target_pages: Json | null
+          title: string | null
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          advertiser_id?: string | null
+          clicks_count?: number | null
+          created_at?: string | null
+          cta_text?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_alt?: string | null
+          image_url?: string | null
+          impressions_count?: number | null
+          link_url?: string | null
+          max_clicks?: number | null
+          max_impressions?: number | null
+          name: string
+          placement: string
+          priority?: number | null
+          script_code?: string | null
+          size?: string | null
+          start_date?: string | null
+          status?: string | null
+          target?: string | null
+          target_categories?: Json | null
+          target_pages?: Json | null
+          title?: string | null
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          advertiser_id?: string | null
+          clicks_count?: number | null
+          created_at?: string | null
+          cta_text?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_alt?: string | null
+          image_url?: string | null
+          impressions_count?: number | null
+          link_url?: string | null
+          max_clicks?: number | null
+          max_impressions?: number | null
+          name?: string
+          placement?: string
+          priority?: number | null
+          script_code?: string | null
+          size?: string | null
+          start_date?: string | null
+          status?: string | null
+          target?: string | null
+          target_categories?: Json | null
+          target_pages?: Json | null
+          title?: string | null
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ads_advertiser_id_fkey"
+            columns: ["advertiser_id"]
+            isOneToOne: false
+            referencedRelation: "advertisers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      advertisers: {
+        Row: {
+          contact_person: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          status: string | null
+          updated_at: string | null
+          website: string | null
+        }
+        Insert: {
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          status?: string | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          status?: string | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       affiliate_clicks: {
         Row: {
           broker_name: string
@@ -73,6 +319,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      cron_logs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          executed_at: string
+          id: string
+          job_name: string
+          message: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          executed_at?: string
+          id?: string
+          job_name: string
+          message?: string | null
+          status: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          executed_at?: string
+          id?: string
+          job_name?: string
+          message?: string | null
+          status?: string
+        }
+        Relationships: []
       }
       etf_price_history: {
         Row: {
@@ -112,6 +388,7 @@ export type Database = {
       etfs: {
         Row: {
           aum_millions: number | null
+          average_rating: number | null
           base_currency: string | null
           benchmark_index: string | null
           bid_ask_spread: number | null
@@ -158,6 +435,7 @@ export type Database = {
         }
         Insert: {
           aum_millions?: number | null
+          average_rating?: number | null
           base_currency?: string | null
           benchmark_index?: string | null
           bid_ask_spread?: number | null
@@ -204,6 +482,7 @@ export type Database = {
         }
         Update: {
           aum_millions?: number | null
+          average_rating?: number | null
           base_currency?: string | null
           benchmark_index?: string | null
           bid_ask_spread?: number | null
@@ -532,34 +811,114 @@ export type Database = {
         }
         Relationships: []
       }
-      user_ratings: {
+      user_profiles: {
         Row: {
-          comment: string | null
+          avatar_url: string | null
+          bio: string | null
           created_at: string | null
-          etf_id: string | null
+          email_notifications: boolean | null
+          full_name: string | null
           id: string
-          rating: number
-          user_email: string | null
+          marketing_emails: boolean | null
+          preferred_currency: string | null
+          preferred_language: string | null
+          updated_at: string | null
+          username: string | null
         }
         Insert: {
-          comment?: string | null
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string | null
-          etf_id?: string | null
-          id?: string
-          rating: number
-          user_email?: string | null
+          email_notifications?: boolean | null
+          full_name?: string | null
+          id: string
+          marketing_emails?: boolean | null
+          preferred_currency?: string | null
+          preferred_language?: string | null
+          updated_at?: string | null
+          username?: string | null
         }
         Update: {
-          comment?: string | null
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string | null
-          etf_id?: string | null
+          email_notifications?: boolean | null
+          full_name?: string | null
+          id?: string
+          marketing_emails?: boolean | null
+          preferred_currency?: string | null
+          preferred_language?: string | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      user_ratings: {
+        Row: {
+          created_at: string | null
+          etf_id: string
+          id: string
+          rating: number
+          review_text: string | null
+          review_title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          etf_id: string
+          id?: string
+          rating: number
+          review_text?: string | null
+          review_title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          etf_id?: string
           id?: string
           rating?: number
-          user_email?: string | null
+          review_text?: string | null
+          review_title?: string | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "user_ratings_etf_id_fkey"
+            columns: ["etf_id"]
+            isOneToOne: false
+            referencedRelation: "etfs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_watchlists: {
+        Row: {
+          added_at: string | null
+          etf_id: string
+          id: string
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          added_at?: string | null
+          etf_id: string
+          id?: string
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          added_at?: string | null
+          etf_id?: string
+          id?: string
+          notes?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_watchlists_etf_id_fkey"
             columns: ["etf_id"]
             isOneToOne: false
             referencedRelation: "etfs"
@@ -616,6 +975,70 @@ export type Database = {
       }
     }
     Views: {
+      ad_stats: {
+        Row: {
+          advertiser_id: string | null
+          advertiser_name: string | null
+          clicks_progress: number | null
+          created_at: string | null
+          ctr_percentage: number | null
+          end_date: string | null
+          id: string | null
+          impressions_progress: number | null
+          max_clicks: number | null
+          max_impressions: number | null
+          name: string | null
+          placement: string | null
+          start_date: string | null
+          status: string | null
+          total_clicks: number | null
+          total_impressions: number | null
+          type: string | null
+          updated_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ads_advertiser_id_fkey"
+            columns: ["advertiser_id"]
+            isOneToOne: false
+            referencedRelation: "advertisers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cron_jobs_status: {
+        Row: {
+          job_name: string | null
+          last_error: string | null
+          last_run: string | null
+          last_success: string | null
+          total_errors: number | null
+          total_success: number | null
+        }
+        Relationships: []
+      }
+      etf_ratings_summary: {
+        Row: {
+          average_rating: number | null
+          etf_id: string | null
+          five_stars: number | null
+          four_stars: number | null
+          last_rating_at: string | null
+          one_star: number | null
+          three_stars: number | null
+          total_ratings: number | null
+          two_stars: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_ratings_etf_id_fkey"
+            columns: ["etf_id"]
+            isOneToOne: false
+            referencedRelation: "etfs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       news_articles_with_metadata: {
         Row: {
           author_email: string | null
@@ -657,7 +1080,10 @@ export type Database = {
       }
     }
     Functions: {
+      auto_publish_news_cron: { Args: never; Returns: undefined }
       calculate_community_score: { Args: { etf_uuid: string }; Returns: number }
+      cleanup_old_cron_logs: { Args: never; Returns: undefined }
+      fetch_news_cron: { Args: never; Returns: undefined }
       search_articles: {
         Args: { max_results?: number; search_query: string }
         Returns: {
