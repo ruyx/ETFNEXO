@@ -233,9 +233,27 @@ export default function HomePage() {
         </section>
 
         {/* Ad Slot - Feed Inline (después de rankings) */}
-        <section className="py-8 px-6 bg-white">
+        <section className="py-8 px-6 bg-white" style={{ minHeight: '300px', backgroundColor: '#f0f0f0' }}>
           <div className="container max-w-4xl">
+            <div style={{
+              padding: '20px',
+              backgroundColor: '#00ff00',
+              marginBottom: '20px',
+              fontSize: '24px',
+              fontWeight: 'bold'
+            }}>
+              SECTION TEST - If you see this, section is visible
+            </div>
             <AdSlot placement="feed_inline" />
+            <div style={{
+              padding: '20px',
+              backgroundColor: '#ff00ff',
+              marginTop: '20px',
+              fontSize: '24px',
+              fontWeight: 'bold'
+            }}>
+              AFTER AD TEST - If you see this, content after AdSlot renders
+            </div>
           </div>
         </section>
 
