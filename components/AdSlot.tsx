@@ -33,49 +33,32 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     setMounted(true);
   }, []);
 
-  // Check if ad element is actually in the DOM after rendering
+  // Check if ad element is actually in the DOM after rendering (reduced logging)
   useEffect(() => {
     if (ad && adRef.current) {
-      console.log('[AdSlot] Element is in DOM:', {
-        placement,
-        elementExists: !!adRef.current,
-        offsetHeight: adRef.current.offsetHeight,
-        offsetWidth: adRef.current.offsetWidth,
-        clientHeight: adRef.current.clientHeight,
-        clientWidth: adRef.current.clientWidth,
-        computedDisplay: window.getComputedStyle(adRef.current).display,
-        computedVisibility: window.getComputedStyle(adRef.current).visibility,
-        computedOpacity: window.getComputedStyle(adRef.current).opacity
-      });
+      // Logging disabled in production - enable for debugging
+      // console.log('[AdSlot] Ad rendered:', { placement, type: ad.type });
     }
   }, [ad, placement]);
 
   useEffect(() => {
     // Only run on client after mount
-    if (!mounted) {
-      console.log('[AdSlot] Not mounted yet, skipping fetch');
-      return;
-    }
+    if (!mounted) return;
 
     const fetchAd = async () => {
       try {
         const pageUrl = window.location.pathname;
         const apiUrl = `/api/ads/active?placement=${placement}&page_url=${encodeURIComponent(pageUrl)}`;
 
-        console.log('[AdSlot] Fetching ad:', { placement, pageUrl, apiUrl });
-
         const response = await fetch(apiUrl);
         if (!response.ok) {
-          console.log('[AdSlot] API response not ok:', response.status);
           setLoading(false);
           return;
         }
 
         const data = await response.json();
-        console.log('[AdSlot] API response data:', data);
 
         if (data.ad) {
-          console.log('[AdSlot] Setting ad:', data.ad);
           setAd(data.ad);
           // Track impression
           fetch('/api/ads/impression', {
@@ -86,12 +69,10 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
               page_url: window.location.pathname
             })
           }).catch(() => {});
-        } else {
-          console.log('[AdSlot] No ad returned from API');
         }
         setLoading(false);
       } catch (error) {
-        console.error('[AdSlot] Error fetching ad:', error);
+        console.error('[AdSlot] Error:', error);
         setLoading(false);
       }
     };
@@ -124,11 +105,8 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
 
   // Don't render until mounted and ad is loaded
   if (!mounted || loading || !ad) {
-    console.log('[AdSlot] Not rendering - mounted:', mounted, 'loading:', loading, 'ad:', !!ad);
     return null;
   }
-
-  console.log('[AdSlot] Rendering ad type:', ad.type, 'placement:', placement);
 
   // Script ad
   if (ad.type === 'script') {
@@ -197,41 +175,38 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     );
   }
 
-  // Text banner - TEMPORARY ULTRA VISIBLE STYLES FOR DEBUGGING
+  // Text banner - Professional financial styling
   if (ad.type === 'text_banner') {
     return (
       <div
         ref={adRef}
         className={`ad-slot ad-slot--text ad-slot--${placement} ${className}`}
         style={{
-          backgroundColor: '#ff0000',
-          border: '10px solid #000000',
+          backgroundColor: '#f8fafc',
+          border: '2px solid #e2e8f0',
           borderRadius: '12px',
           padding: '32px',
           margin: '24px 0',
           position: 'relative',
-          minHeight: '200px',
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.8)',
-          zIndex: 9999
+          minHeight: '180px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+          transition: 'all 0.3s ease'
         }}
       >
         <div
           className="ad-slot__label"
           style={{
             position: 'absolute',
-            top: '8px',
-            right: '8px',
-            fontSize: '16px',
-            color: '#ffffff',
+            top: '12px',
+            right: '12px',
+            fontSize: '11px',
+            color: '#94a3b8',
             textTransform: 'uppercase',
-            fontWeight: '700',
-            backgroundColor: '#000000',
-            padding: '8px 16px',
-            borderRadius: '4px',
-            border: '2px solid #ffffff'
+            fontWeight: '600',
+            letterSpacing: '0.5px'
           }}
         >
-          🔴 PUBLICIDAD - DEBUG MODE
+          Publicidad
         </div>
         <div
           className="ad-slot__text-container"
@@ -247,13 +222,11 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
           <h3
             className="ad-slot__title"
             style={{
-              fontSize: '32px',
-              fontWeight: '900',
-              color: '#000000',
-              margin: '0 0 16px 0',
-              lineHeight: '1.3',
-              backgroundColor: '#ffff00',
-              padding: '10px'
+              fontSize: '22px',
+              fontWeight: '700',
+              color: '#0f172a',
+              margin: '0 0 12px 0',
+              lineHeight: '1.3'
             }}
           >
             {ad.title}
@@ -261,11 +234,10 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
           <p
             className="ad-slot__description"
             style={{
-              fontSize: '20px',
-              color: '#000000',
+              fontSize: '15px',
+              color: '#475569',
               margin: '0 0 20px 0',
-              lineHeight: '1.5',
-              fontWeight: '700'
+              lineHeight: '1.6'
             }}
           >
             {ad.description}
@@ -274,15 +246,16 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
             className="ad-slot__cta"
             style={{
               display: 'inline-block',
-              padding: '20px 40px',
-              backgroundColor: '#00ff00',
-              color: '#000000',
-              fontSize: '20px',
-              fontWeight: '900',
-              border: '5px solid #000000',
-              borderRadius: '8px',
+              padding: '12px 28px',
+              backgroundColor: '#3b82f6',
+              color: '#ffffff',
+              fontSize: '15px',
+              fontWeight: '600',
+              border: 'none',
+              borderRadius: '6px',
               cursor: 'pointer',
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)'
+              boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
+              transition: 'all 0.2s ease'
             }}
           >
             {ad.cta_text || 'Saber más'}
