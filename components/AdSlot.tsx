@@ -173,7 +173,16 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   if (ad.type === 'text_banner') {
     console.log('[AdSlot] Rendering text_banner ad');
     return (
-      <div className={`ad-slot ad-slot--text ad-slot--${placement} ${className}`}>
+      <div
+        className={`ad-slot ad-slot--text ad-slot--${placement} ${className}`}
+        style={{
+          border: '5px solid red',
+          padding: '20px',
+          margin: '20px 0',
+          backgroundColor: '#ffeb3b',
+          minHeight: '100px'
+        }}
+      >
         <div className="ad-slot__label">Publicidad</div>
         <div
           className="ad-slot__text-container"
