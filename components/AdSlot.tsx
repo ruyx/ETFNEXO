@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import '../styles/components/ads.css';
+import '../app/styles/components/ads.css';
 
 interface Ad {
   id: string;
