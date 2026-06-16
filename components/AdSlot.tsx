@@ -46,6 +46,26 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     }
   }, [ad, impressionTracked]);
 
+  // Debug: Check if element is actually in the DOM
+  useEffect(() => {
+    if (ad) {
+      setTimeout(() => {
+        const elements = document.querySelectorAll('.ad-slot');
+        console.log('[AdSlot] DOM check - Found', elements.length, 'ad elements in DOM');
+        elements.forEach((el, i) => {
+          const rect = el.getBoundingClientRect();
+          console.log(`[AdSlot] Element ${i}:`, {
+            visible: rect.width > 0 && rect.height > 0,
+            width: rect.width,
+            height: rect.height,
+            top: rect.top,
+            left: rect.left
+          });
+        });
+      }, 1000);
+    }
+  }, [ad]);
+
   const fetchAd = async () => {
     try {
       const pageUrl = window.location.pathname;
