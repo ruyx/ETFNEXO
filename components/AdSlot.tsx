@@ -3,6 +3,15 @@
 import { useEffect, useState } from 'react';
 import '../app/styles/components/ads.css';
 
+// Helper hook to ensure client-side only rendering
+function useClientSide() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  return mounted;
+}
+
 interface Ad {
   id: string;
   type: 'image_banner' | 'text_banner' | 'script';
@@ -31,6 +40,7 @@ interface AdSlotProps {
 }
 
 export default function AdSlot({ placement, className = '' }: AdSlotProps) {
+  const mounted = useClientSide();
   const [ad, setAd] = useState<Ad | null>(null);
   const [loading, setLoading] = useState(true);
   const [impressionTracked, setImpressionTracked] = useState(false);
@@ -65,6 +75,11 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
       }, 1000);
     }
   }, [ad]);
+
+  // Don't render anything until client-side to avoid hydration mismatch
+  if (!mounted) {
+    return <div style={{ minHeight: '100px', width: '100%' }} />;
+  }
 
   const fetchAd = async () => {
     try {
