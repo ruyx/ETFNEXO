@@ -57,7 +57,9 @@ export async function GET(request: NextRequest) {
         }
 
         // Verificar si la URL actual coincide con algún patrón
-        return ad.target_pages.some((pattern: string) => {
+        return ad.target_pages.some((pattern) => {
+          // Validar que el patrón sea un string
+          if (typeof pattern !== 'string') return false;
           if (pattern === '*') return true;
           if (page_url.includes(pattern)) return true;
           return false;
