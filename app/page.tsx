@@ -235,7 +235,7 @@ export default function HomePage() {
         {/* Ad Slot - Feed Inline (después de rankings) */}
         <section className="py-8 px-6 bg-white">
           <div className="container max-w-4xl">
-            <AdSlot placement="feed_inline" />
+            <AdSlot key="feed-inline-after-rankings" placement="feed_inline" />
           </div>
         </section>
 
@@ -318,7 +318,7 @@ export default function HomePage() {
                     {/* Ad after 3rd article */}
                     {index === 2 && (
                       <div className="md:col-span-2 lg:col-span-3">
-                        <AdSlot placement="feed_inline" />
+                        <AdSlot key="feed-inline-after-articles" placement="feed_inline" />
                       </div>
                     )}
                   </>
