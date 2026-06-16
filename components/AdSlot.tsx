@@ -49,23 +49,30 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   const fetchAd = async () => {
     try {
       const pageUrl = window.location.pathname;
-      const response = await fetch(`/api/ads/active?placement=${placement}&page_url=${encodeURIComponent(pageUrl)}`);
+      const apiUrl = `/api/ads/active?placement=${placement}&page_url=${encodeURIComponent(pageUrl)}`;
+      console.log('[AdSlot] Fetching ad from:', apiUrl);
+
+      const response = await fetch(apiUrl);
 
       if (!response.ok) {
-        console.error('Error fetching ad:', response.statusText);
+        console.error('[AdSlot] Error fetching ad:', response.statusText);
         setLoading(false);
         return;
       }
 
       const data = await response.json();
+      console.log('[AdSlot] Response data:', data);
 
       if (data.ad) {
+        console.log('[AdSlot] Ad loaded successfully:', data.ad.name);
         setAd(data.ad);
+      } else {
+        console.log('[AdSlot] No ad available for placement:', placement);
       }
 
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching ad:', error);
+      console.error('[AdSlot] Error fetching ad:', error);
       setLoading(false);
     }
   };
