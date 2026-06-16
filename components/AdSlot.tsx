@@ -125,11 +125,21 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
 
   // No mostrar nada durante la carga
   if (loading || !ad) {
+    console.log('[AdSlot] Not rendering - loading:', loading, 'ad:', ad);
     return null;
   }
 
+  console.log('[AdSlot] Rendering ad type:', ad.type, 'with data:', {
+    title: ad.title,
+    description: ad.description,
+    cta_text: ad.cta_text,
+    image_url: ad.image_url,
+    script_code: ad.script_code ? 'exists' : 'missing'
+  });
+
   // Renderizar según el tipo de anuncio
   if (ad.type === 'script') {
+    console.log('[AdSlot] Rendering script ad');
     return (
       <div
         className={`ad-slot ad-slot--script ad-slot--${placement} ${className}`}
@@ -139,6 +149,7 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   }
 
   if (ad.type === 'image_banner') {
+    console.log('[AdSlot] Rendering image_banner ad');
     return (
       <div className={`ad-slot ad-slot--image ad-slot--${placement} ${className}`}>
         <div className="ad-slot__label">Publicidad</div>
@@ -160,6 +171,7 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   }
 
   if (ad.type === 'text_banner') {
+    console.log('[AdSlot] Rendering text_banner ad');
     return (
       <div className={`ad-slot ad-slot--text ad-slot--${placement} ${className}`}>
         <div className="ad-slot__label">Publicidad</div>
@@ -182,5 +194,6 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     );
   }
 
+  console.log('[AdSlot] No matching ad type, returning null');
   return null;
 }
