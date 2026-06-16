@@ -70,12 +70,12 @@ export async function GET(request: NextRequest) {
     // Verificar límites (max_impressions, max_clicks)
     filteredAds = filteredAds.filter(ad => {
       // Verificar max_impressions
-      if (ad.max_impressions !== null && ad.impressions_count >= ad.max_impressions) {
+      if (ad.max_impressions !== null && (ad.impressions_count ?? 0) >= ad.max_impressions) {
         return false;
       }
 
       // Verificar max_clicks
-      if (ad.max_clicks !== null && ad.clicks_count >= ad.max_clicks) {
+      if (ad.max_clicks !== null && (ad.clicks_count ?? 0) >= ad.max_clicks) {
         return false;
       }
 
