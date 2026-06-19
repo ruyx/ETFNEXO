@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     const minAum = searchParams.get('min_aum');
     const sortBy = searchParams.get('sort') || 'return_1y';
     const order = searchParams.get('order') || 'desc';
-    const limit = parseInt(searchParams.get('limit') || '50');
+    const limit = parseInt(searchParams.get('limit') || '10000'); // Aumentado para mostrar todos los ETFs
     const offset = parseInt(searchParams.get('offset') || '0');
 
     // Build query
