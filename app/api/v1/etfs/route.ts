@@ -42,10 +42,15 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10000'); // Aumentado para mostrar todos los ETFs
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    // Build query
+    // Build query with JOIN to fund_managers
     let query = supabase
       .from('etfs')
-      .select('*', { count: 'exact' });
+      .select(`
+        *,
+        fund_managers!manager_id (
+          name
+        )
+      `, { count: 'exact' });
 
     // Apply filters
     if (search) {
@@ -87,7 +92,7 @@ export async function GET(request: NextRequest) {
     // Transform data to include issuer_name and etfnexo_score
     const transformedData = data?.map((etf: any) => ({
       ...etf,
-      issuer_name: null, // TODO: Add JOIN with managers table when relationship is configured
+      issuer_name: etf.fund_managers?.name || null, // Extract name from JOIN
       etfnexo_score: calculateETFScore(etf) // Calculate score
     }));
 
