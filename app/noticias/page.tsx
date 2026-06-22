@@ -1,276 +1,195 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
-import { createAdminClient } from '@/lib/supabase/admin';
-
-interface NewsArticle {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string | null;
-  featured_image_url: string | null;
-  published_at: string;
-  source_published_at: string;
-  category_name: string | null;
-  category_slug: string | null;
-  category_color: string | null;
-  author_name: string | null;
-  views_count: number | null;
-  source_name: string | null;
-}
-
-const CATEGORIES = [
-  { name: 'Todas', value: '' },
-  { name: 'ETFs', value: 'etfs' },
-  { name: 'Gestoras', value: 'gestoras' },
-  { name: 'Mercados', value: 'mercados' },
-  { name: 'Regulación', value: 'regulacion' },
-  { name: 'Educación', value: 'educacion' },
-  { name: 'Opinión', value: 'opinion' },
-];
+import NewsCard, { NewsArticle } from '@/components/NewsCard';
 
 export default function NoticiasPage() {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
-  const [filteredArticles, setFilteredArticles] = useState<NewsArticle[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [currentCategory, setCurrentCategory] = useState('');
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  // Load more articles
+  const loadArticles = useCallback(async (pageNum: number) => {
+    if (loading) return;
+
     setLoading(true);
-    fetch('/api/v1/noticias')
-      .then(res => {
-        if (!res.ok) throw new Error('Error al cargar noticias');
-        return res.json();
-      })
-      .then(data => {
-        setArticles(data.data || []);
-        setFilteredArticles(data.data || []);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching news:', err);
-        setError('No se pudieron cargar las noticias. Intenta de nuevo más tarde.');
-        setLoading(false);
-      });
+    try {
+      const limit = 12;
+      const offset = (pageNum - 1) * limit;
+      const response = await fetch(`/api/v1/noticias?limit=${limit}&offset=${offset}`);
+      const data = await response.json();
+
+      if (data.data && data.data.length > 0) {
+        setArticles(prev => pageNum === 1 ? data.data : [...prev, ...data.data]);
+        // Check if there are more articles based on total count
+        const hasMoreArticles = offset + limit < data.count;
+        setHasMore(hasMoreArticles);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error('Error loading articles:', error);
+    } finally {
+      setLoading(false);
+      if (pageNum === 1) {
+        setInitialLoading(false);
+      }
+    }
+  }, [loading]);
+
+  // Initial load
+  useEffect(() => {
+    loadArticles(1);
   }, []);
 
+  // Infinite scroll observer
   useEffect(() => {
-    let filtered = [...articles];
+    const target = observerTarget.current;
+    if (!target || !hasMore || loading) return;
 
-    // Search filter
-    if (searchTerm) {
-      filtered = filtered.filter(article =>
-        article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (article.excerpt && article.excerpt.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          const nextPage = page + 1;
+          setPage(nextPage);
+          loadArticles(nextPage);
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-    // Category filter
-    if (currentCategory) {
-      filtered = filtered.filter(article =>
-        article.category_slug === currentCategory
-      );
-    }
+    observer.observe(target);
 
-    setFilteredArticles(filtered);
-  }, [articles, searchTerm, currentCategory]);
-
-  // Format date helper
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+    return () => {
+      if (target) {
+        observer.unobserve(target);
+      }
+    };
+  }, [hasMore, loading, page, loadArticles]);
 
   return (
-    <div>
+    <div className="bg-white min-h-screen">
       <Header />
+
       <main>
         {/* Hero Section */}
-        <section className="noticias-hero">
-          <div className="container">
-            <div className="noticias-hero__container">
-              <div className="noticias-hero__badge">
-                <div className="noticias-hero__badge-dot"></div>
-                <span>Actualizado diariamente</span>
-              </div>
-
-              <h1 className="noticias-hero__title">
-                Noticias sobre ETFs
-              </h1>
-              <p className="noticias-hero__description">
-                Mantente informado con las últimas noticias del mundo de los fondos cotizados.
-                Análisis de mercado, lanzamientos de productos y tendencias de inversión.
-              </p>
+        <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-16 px-6">
+          <div className="container max-w-4xl text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600/20 border border-blue-400/30 rounded-full text-xs font-semibold text-blue-300 mb-6">
+              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+              <span>Actualizado diariamente</span>
             </div>
-          </div>
-        </section>
 
-        {/* Filters & Search */}
-        <section className="noticias-filters">
-          <div className="container">
-            <div className="noticias-filters__container">
-              <div className="noticias-filters__content">
-                <div className="noticias-filters__search">
-                  <input
-                    type="text"
-                    placeholder="Buscar noticias por título o contenido..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="noticias-filters__input"
-                  />
-                </div>
-
-                <div className="noticias-filters__count">
-                  <span className="noticias-filters__count-number">{filteredArticles.length}</span>
-                  <span>Noticias encontradas</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Categories */}
-        <section className="noticias-categories">
-          <div className="container">
-            <div className="noticias-categories__list">
-              {CATEGORIES.map((category) => (
-                <button
-                  key={category.value}
-                  onClick={() => setCurrentCategory(category.value)}
-                  className={currentCategory === category.value ? 'noticias-categories__button noticias-categories__button--active' : 'noticias-categories__button'}
-                >
-                  {category.name}
-                </button>
-              ))}
-            </div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+              Noticias sobre ETFs
+            </h1>
+            <p className="text-xl text-slate-300 leading-relaxed">
+              Mantente informado con las últimas noticias del mundo de los fondos cotizados.
+              Análisis de mercado, lanzamientos de productos y tendencias de inversión.
+            </p>
           </div>
         </section>
 
         {/* News Grid */}
-        <section className="noticias-main">
-          <div className="container">
-            {loading && (
-              <div className="noticias-loading">
-                <div className="noticias-loading__spinner"></div>
-                <p className="noticias-loading__text">Cargando noticias...</p>
-              </div>
-            )}
-
-            {error && (
-              <div className="noticias-error">
-                <p className="noticias-error__text">{error}</p>
-              </div>
-            )}
-
-            {!loading && !error && filteredArticles.length === 0 && (
-              <div className="noticias-empty">
-                <p className="noticias-empty__text">No se encontraron noticias con los filtros aplicados.</p>
-              </div>
-            )}
-
-            {!loading && !error && filteredArticles.length > 0 && (
-              <div className="noticias-grid">
-                {filteredArticles.map((article) => (
-                  <Link
-                    key={article.id}
-                    href={`/noticias/${article.slug}`}
-                    className="news-card group"
-                  >
-                    {/* Image */}
-                    <div className="news-card-image">
-                      {article.featured_image_url ? (
-                        <img
-                          src={article.featured_image_url}
-                          alt={article.title}
-                          className="group-hover:scale-105 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="news-card-image__placeholder">
-                          <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                          </svg>
-                        </div>
-                      )}
-                      <div className="absolute top-3 left-3 px-2 py-1 bg-blue-600 text-white text-xs font-semibold rounded">
-                        {article.category_name}
+        <section className="py-16 px-6">
+          <div className="container max-w-7xl">
+            {initialLoading ? (
+              // Initial loading state
+              <div className="grid gap-6">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => (
+                  <div key={i} className="animate-pulse">
+                    <div className="flex gap-4">
+                      <div className="w-24 h-24 bg-slate-200 rounded"></div>
+                      <div className="flex-1">
+                        <div className="h-4 bg-slate-200 rounded mb-2 w-3/4"></div>
+                        <div className="h-3 bg-slate-200 rounded mb-2 w-full"></div>
+                        <div className="h-3 bg-slate-200 rounded w-1/2"></div>
                       </div>
                     </div>
-
-                    {/* Content */}
-                    <div className="news-card__content">
-                      {/* Meta Info */}
-                      <div className="news-card__meta">
-                        <div className="news-card__meta-item">
-                          <svg className="news-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                          <time dateTime={article.published_at}>
-                            {formatDate(article.published_at)}
-                          </time>
-                        </div>
-                        {article.views_count !== null && article.views_count > 0 && (
-                          <div className="news-card__meta-item">
-                            <svg className="news-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                            <span>{article.views_count}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Title */}
-                      <h2 className="news-card__title">
-                        {article.title}
-                      </h2>
-
-                      {/* Excerpt */}
-                      {article.excerpt && (
-                        <p className="news-card__excerpt">
-                          {article.excerpt}
-                        </p>
-                      )}
-
-                      {/* Source */}
-                      {article.source_name && (
-                        <div className="news-card__source">
-                          Fuente: {article.source_name}
-                        </div>
-                      )}
-
-                      {/* Read More */}
-                      <div className="news-card__cta">
-                        <span>Leer más</span>
-                        <svg className="news-card__cta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
+            ) : articles.length === 0 ? (
+              // Empty state
+              <div className="text-center py-20">
+                <div className="mb-6">
+                  <svg className="w-24 h-24 mx-auto text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                  No hay noticias disponibles
+                </h3>
+                <p className="text-slate-600 mb-8 max-w-md mx-auto">
+                  Próximamente estaremos publicando noticias y análisis sobre ETFs
+                </p>
+                <Link
+                  href="/rankings"
+                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all"
+                >
+                  Ver Rankings de ETFs
+                </Link>
+              </div>
+            ) : (
+              <>
+                {/* Articles Grid */}
+                <div className="grid gap-6 mb-12">
+                  {articles.map((article, index) => (
+                    <NewsCard
+                      key={article.id}
+                      article={article}
+                      variant={index === 0 ? 'featured' : 'default'}
+                    />
+                  ))}
+                </div>
+
+                {/* Loading more indicator */}
+                {hasMore && (
+                  <div ref={observerTarget} className="py-8">
+                    {loading && (
+                      <div className="flex items-center justify-center gap-3">
+                        <div className="w-6 h-6 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                        <p className="text-slate-600 font-medium">Cargando más noticias...</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* End of list indicator */}
+                {!hasMore && articles.length > 0 && (
+                  <div className="text-center py-8 border-t border-slate-200">
+                    <p className="text-slate-500">
+                      Has visto todas las noticias disponibles
+                    </p>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </section>
 
         {/* CTA Section */}
-        <section className="noticias-cta">
-          <div className="container noticias-cta__container">
-            <h2 className="noticias-cta__title">
+        <section className="py-16 px-6 bg-slate-900 text-white">
+          <div className="container max-w-4xl text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
               ¿Buscas los mejores ETFs?
             </h2>
-            <p className="noticias-cta__description">
+            <p className="text-xl text-slate-300 mb-8">
               Descubre nuestro ranking completo de ETFs evaluados con nuestro algoritmo propietario ETFNexo Score
             </p>
-            <Link href="/rankings" className="btn-primary">
+            <Link
+              href="/rankings"
+              className="inline-flex items-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all shadow-lg"
+            >
               Ver Rankings de ETFs
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
             </Link>
           </div>
         </section>
