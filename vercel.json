@@ -9,6 +9,10 @@
       "schedule": "0 1 * * *"
     },
     {
+      "path": "/api/admin/import-gsheets-news",
+      "schedule": "0 13 * * *"
+    },
+    {
       "path": "/api/admin/update-etf-data",
       "schedule": "0 22 * * 5"
     }

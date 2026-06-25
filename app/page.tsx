@@ -6,34 +6,17 @@ import Header from '@/components/Header';
 import RankingSlider from '@/components/RankingSlider';
 import MarketTicker from '@/components/MarketTicker';
 import AdSlot from '@/components/AdSlot';
-
-interface NewsArticle {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  featured_image_url: string | null;
-  published_at: string;
-  category_name: string;
-  category_slug: string;
-  category_color: string;
-  author_name: string;
-  views_count: number;
-}
+import NewsCard, { NewsArticle } from '@/components/NewsCard';
 
 export default function HomePage() {
-  const [featuredArticles, setFeaturedArticles] = useState<NewsArticle[]>([]);
   const [recentArticles, setRecentArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      fetch('/api/v1/noticias?featured=true').then(res => res.json()),
-      fetch('/api/v1/noticias?limit=6').then(res => res.json())
-    ])
-      .then(([featured, recent]) => {
-        setFeaturedArticles(featured.data || []);
-        setRecentArticles(recent.data || []);
+    fetch('/api/news?page=1&limit=6')
+      .then(res => res.json())
+      .then(data => {
+        setRecentArticles(data.articles || []);
         setLoading(false);
       })
       .catch(err => {
@@ -42,21 +25,12 @@ export default function HomePage() {
       });
   }, []);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('es-ES', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }).format(date);
-  };
-
   return (
     <div className="bg-white">
       <Header />
       <MarketTicker />
 
-      {/* Hero Editorial Section - Featured Article */}
+      {/* Hero Editorial Section */}
       <section className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
@@ -70,106 +44,32 @@ export default function HomePage() {
         </div>
 
         <div className="container py-20 px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
-            {/* Left: Main Featured Article */}
-            <div>
-              <div className="inline-block px-3 py-1 bg-blue-600/20 border border-blue-400/30 rounded-full text-xs font-semibold text-blue-300 mb-6">
-                ARTÍCULO DESTACADO
-              </div>
-              {loading ? (
-                <div className="animate-pulse">
-                  <div className="h-12 bg-slate-700 rounded mb-6 w-3/4"></div>
-                  <div className="h-6 bg-slate-700 rounded mb-4"></div>
-                  <div className="h-6 bg-slate-700 rounded w-5/6"></div>
-                </div>
-              ) : featuredArticles[0] ? (
-                <>
-                  <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                    {featuredArticles[0].title}
-                  </h1>
-                  <p className="text-xl text-slate-300 mb-8 leading-relaxed">
-                    {featuredArticles[0].excerpt}
-                  </p>
-                  <div className="flex items-center gap-6 mb-8">
-                    <span className="text-sm text-slate-400">
-                      {formatDate(featuredArticles[0].published_at)}
-                    </span>
-                    <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
-                    <span className="text-sm text-slate-400">
-                      {featuredArticles[0].author_name}
-                    </span>
-                  </div>
-                  <Link
-                    href={`/noticias/${featuredArticles[0].slug}`}
-                    className="inline-flex items-center px-6 py-3 bg-white text-slate-900 font-semibold rounded-lg hover:bg-slate-100 transition-all"
-                  >
-                    Leer artículo completo
-                    <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </>
-              ) : (
-                <div>
-                  <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                    Información y Análisis de ETFs
-                  </h1>
-                  <p className="text-xl text-slate-300 mb-8 leading-relaxed">
-                    La plataforma de referencia para inversores que buscan información transparente y análisis objetivo sobre ETFs
-                  </p>
-                  <Link
-                    href="/rankings"
-                    className="inline-flex items-center px-6 py-3 bg-white text-slate-900 font-semibold rounded-lg hover:bg-slate-100 transition-all"
-                  >
-                    Ver Rankings de ETFs
-                    <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            {/* Right: Secondary Featured Articles */}
-            <div className="space-y-6">
-              {loading ? (
-                <>
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="animate-pulse bg-slate-800 rounded-lg p-6">
-                      <div className="h-4 bg-slate-700 rounded mb-3 w-3/4"></div>
-                      <div className="h-3 bg-slate-700 rounded w-1/2"></div>
-                    </div>
-                  ))}
-                </>
-              ) : featuredArticles.length > 1 ? (
-                featuredArticles.slice(1, 4).map((article) => (
-                  <Link
-                    key={article.id}
-                    href={`/noticias/${article.slug}`}
-                    className="block bg-slate-800/50 rounded-lg p-6 border border-slate-700/50 hover:bg-slate-800 hover:border-slate-600 transition-all"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-bold text-white mb-2 leading-snug">
-                          {article.title}
-                        </h3>
-                        <div className="flex items-center gap-3 text-sm text-slate-400">
-                          <span>{formatDate(article.published_at)}</span>
-                          <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
-                          <span className="text-blue-400">{article.category_name}</span>
-                        </div>
-                      </div>
-                      <svg className="w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </Link>
-                ))
-              ) : (
-                <div className="bg-slate-800/50 rounded-lg p-6 border border-slate-700/50 text-center">
-                  <p className="text-slate-400">Próximamente más noticias y análisis</p>
-                </div>
-              )}
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+              Información y Análisis de ETFs
+            </h1>
+            <p className="text-xl text-slate-300 mb-8 leading-relaxed">
+              La plataforma de referencia para inversores que buscan información transparente y análisis objetivo sobre ETFs
+            </p>
+            <div className="flex gap-4 justify-center">
+              <Link
+                href="/rankings"
+                className="inline-flex items-center px-6 py-3 bg-white text-slate-900 font-semibold rounded-lg hover:bg-slate-100 transition-all"
+              >
+                Ver Rankings de ETFs
+                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+              <Link
+                href="/noticias"
+                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all"
+              >
+                Últimas Noticias
+                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                </svg>
+              </Link>
             </div>
           </div>
         </div>
@@ -259,69 +159,32 @@ export default function HomePage() {
             </div>
 
             {loading ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[1, 2, 3, 4, 5, 6].map(i => (
+              <div className="grid gap-6">
+                {[1, 2, 3, 4].map(i => (
                   <div key={i} className="animate-pulse">
-                    <div className="h-48 bg-slate-200 rounded-lg mb-4"></div>
-                    <div className="h-6 bg-slate-200 rounded mb-3"></div>
-                    <div className="h-4 bg-slate-200 rounded mb-2"></div>
-                    <div className="h-4 bg-slate-200 rounded w-2/3"></div>
+                    <div className="flex gap-4">
+                      <div className="w-24 h-24 bg-slate-200 rounded"></div>
+                      <div className="flex-1">
+                        <div className="h-4 bg-slate-200 rounded mb-2 w-3/4"></div>
+                        <div className="h-3 bg-slate-200 rounded mb-2 w-full"></div>
+                        <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
             ) : recentArticles.length > 0 ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid gap-6">
                 {recentArticles.map((article, index) => (
-                  <>
-                    <Link
-                      key={article.id}
-                      href={`/noticias/${article.slug}`}
-                      className="group"
-                    >
-                      <article className="h-full flex flex-col bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-lg transition-all">
-                        {/* Image */}
-                        <div className="news-card-image">
-                          {article.featured_image_url ? (
-                            <img
-                              src={article.featured_image_url}
-                              alt={article.title}
-                              className="group-hover:scale-105 transition-transform duration-300"
-                            />
-                          ) : (
-                            <div className="news-card-image__placeholder">
-                              <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                              </svg>
-                            </div>
-                          )}
-                          <div className="absolute top-3 left-3 px-2 py-1 bg-blue-600 text-white text-xs font-semibold rounded">
-                            {article.category_name}
-                          </div>
-                        </div>
-
-                        {/* Content */}
-                        <div className="flex-1 flex flex-col p-6">
-                          <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
-                            {article.title}
-                          </h3>
-                          <p className="text-slate-600 mb-4 line-clamp-2 flex-1">
-                            {article.excerpt}
-                          </p>
-                          <div className="flex items-center gap-3 text-sm text-slate-500">
-                            <time>{formatDate(article.published_at)}</time>
-                            <span className="w-1 h-1 bg-slate-400 rounded-full"></span>
-                            <span>{article.views_count} vistas</span>
-                          </div>
-                        </div>
-                      </article>
-                    </Link>
+                  <div key={article.id}>
+                    <NewsCard article={article} variant="default" />
                     {/* Ad after 3rd article */}
                     {index === 2 && (
-                      <div className="md:col-span-2 lg:col-span-3">
+                      <div className="mt-6">
                         <AdSlot key="feed-inline-after-articles" placement="feed_inline" />
                       </div>
                     )}
-                  </>
+                  </div>
                 ))}
               </div>
             ) : (

@@ -245,30 +245,28 @@ export default function ETFsPage() {
                       <p className="etf-card__issuer">{etf.issuer_name}</p>
                     )}
                     <div className="etf-card__stats">
-                      {etf.return_1y !== null && (
-                        <div className="etf-card__stat">
-                          <span className="etf-card__stat-label">Rent. 1Y</span>
-                          <span className={`etf-card__stat-value ${etf.return_1y >= 0 ? 'positive' : 'negative'}`}>
-                            {formatPercent(etf.return_1y)}
-                          </span>
-                        </div>
-                      )}
-                      {etf.ter !== null && (
-                        <div className="etf-card__stat">
-                          <span className="etf-card__stat-label">TER</span>
-                          <span className="etf-card__stat-value">{etf.ter.toFixed(2)}%</span>
-                        </div>
-                      )}
-                      {etf.aum_millions !== null && (
-                        <div className="etf-card__stat">
-                          <span className="etf-card__stat-label">AUM</span>
-                          <span className="etf-card__stat-value">
-                            {etf.aum_millions >= 1000
-                              ? `¬${(etf.aum_millions / 1000).toFixed(1)}B`
-                              : `¬${etf.aum_millions.toFixed(0)}M`}
-                          </span>
-                        </div>
-                      )}
+                      <div className="etf-card__stat">
+                        <span className="etf-card__stat-label">Rent. 1Y</span>
+                        <span className={`etf-card__stat-value ${etf.return_1y !== null && etf.return_1y >= 0 ? 'positive' : etf.return_1y !== null && etf.return_1y < 0 ? 'negative' : ''}`}>
+                          {formatPercent(etf.return_1y)}
+                        </span>
+                      </div>
+                      <div className="etf-card__stat">
+                        <span className="etf-card__stat-label">TER</span>
+                        <span className="etf-card__stat-value">
+                          {etf.ter !== null ? `${etf.ter.toFixed(2)}%` : 'N/A'}
+                        </span>
+                      </div>
+                      <div className="etf-card__stat">
+                        <span className="etf-card__stat-label">AUM</span>
+                        <span className="etf-card__stat-value">
+                          {etf.aum_millions !== null
+                            ? (etf.aum_millions >= 1000
+                              ? `$${(etf.aum_millions / 1000).toFixed(1)}B`
+                              : `$${etf.aum_millions.toFixed(0)}M`)
+                            : 'N/A'}
+                        </span>
+                      </div>
                     </div>
                     {etf.category && (
                       <div className="etf-card__category">{etf.category}</div>
