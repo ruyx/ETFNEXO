@@ -5,6 +5,9 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import NewsCard, { NewsArticle } from '@/components/NewsCard';
 
+// Force dynamic rendering - prevent static generation
+export const dynamic = 'force-dynamic';
+
 export default function NoticiasPage() {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [page, setPage] = useState(1);
