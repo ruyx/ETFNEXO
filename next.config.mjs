@@ -69,10 +69,29 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      // CDN Expansión
+      {
+        protocol: 'https',
+        hostname: '**.uecdn.es',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'expansion.uecdn.es',
+        port: '',
+        pathname: '/**',
+      },
       // Catch-all for any other news sources
       {
         protocol: 'https',
         hostname: '**.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.es',
         port: '',
         pathname: '/**',
       },

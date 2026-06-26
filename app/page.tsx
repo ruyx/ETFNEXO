@@ -13,10 +13,10 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/news?page=1&limit=6')
+    fetch('/api/v1/noticias?limit=6')
       .then(res => res.json())
       .then(data => {
-        setRecentArticles(data.articles || []);
+        setRecentArticles(data.data || []);
         setLoading(false);
       })
       .catch(err => {
@@ -174,10 +174,10 @@ export default function HomePage() {
                 ))}
               </div>
             ) : recentArticles.length > 0 ? (
-              <div className="grid gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {recentArticles.map((article, index) => (
                   <div key={article.id}>
-                    <NewsCard article={article} variant="default" />
+                    <NewsCard article={article} variant="card" />
                     {/* Ad after 3rd article */}
                     {index === 2 && (
                       <div className="mt-6">
