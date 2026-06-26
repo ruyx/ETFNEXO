@@ -40,7 +40,7 @@ export default function NewsCard({
 
   if (variant === 'featured') {
     return (
-      <a href={article.source_url} target="_blank" rel="noopener noreferrer" className="block">
+      <Link href={`/noticias/${article.slug}`} className="block">
         <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden">
           <div className="grid md:grid-cols-[300px_1fr] gap-6">
             {/* Featured Image */}
@@ -97,14 +97,14 @@ export default function NewsCard({
             </div>
           </div>
         </div>
-      </a>
+      </Link>
     )
   }
 
   // Card variant (vertical card with image on top)
   if (variant === 'card') {
     return (
-      <a href={article.source_url} target="_blank" rel="noopener noreferrer" className="block h-full">
+      <Link href={`/noticias/${article.slug}`} className="block h-full">
         <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden flex flex-col h-full">
           {/* Featured Image */}
           {article.featured_image_url && (
@@ -157,13 +157,13 @@ export default function NewsCard({
             </div>
           </div>
         </div>
-      </a>
+      </Link>
     )
   }
 
   // Default variant (compact)
   return (
-    <a href={article.source_url} target="_blank" rel="noopener noreferrer" className="block">
+    <Link href={`/noticias/${article.slug}`} className="block">
       <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden">
         <div className="flex gap-4">
           {/* Thumbnail */}
@@ -210,6 +210,6 @@ export default function NewsCard({
           </div>
         </div>
       </div>
-    </a>
+    </Link>
   )
 }
