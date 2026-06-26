@@ -2,9 +2,11 @@
 
 ## ✅ Estado Actual del Sistema
 
-**Base de datos**: 0 artículos (limpia)
+**Base de datos**: 56 artículos (del Google Sheet)
 **Fuentes permitidas**: Solo Google Sheet
-**Sistemas deshabilitados**: RSS feeds automáticos (Expansión, Finect, Rankia, Funds Society)
+**Sistemas deshabilitados**: RSS feeds automáticos (Expansión bloqueado)
+**Sistema automático**: ✅ ACTIVO - Importación diaria a las 06:00 UTC
+**Última importación**: 26 de junio de 2026
 
 ---
 
@@ -29,12 +31,35 @@ Este script:
 2. Extrae metadata de cada URL (título, imagen, autor, contenido)
 3. Inserta solo las noticias que están en el Sheet
 
-### Opción 2: Supabase Edge Function (Automático)
+### Opción 2: Sistema Automático Diario (ACTIVO)
 
+✅ **El sistema automático está configurado y activo**
+
+- **Horario**: Todos los días a las 06:00 UTC
+- **Cron job**: `import-gsheets-daily`
+- **Función**: Llama a la Edge Function `import-gsheets-news`
+
+**Verificar que el cron está activo:**
+```sql
+-- Conectar a Supabase Dashboard → SQL Editor
+SELECT jobname, schedule, active
+FROM cron.job
+WHERE jobname = 'import-gsheets-daily';
+```
+
+**Ver logs de ejecuciones:**
+```sql
+SELECT job_name, status, message, executed_at
+FROM cron_logs
+WHERE job_name = 'import-gsheets'
+ORDER BY executed_at DESC
+LIMIT 10;
+```
+
+**Ejecutar manualmente (si es necesario):**
 ```bash
-# Ejecutar función desde Supabase
 curl -X POST \
-  https://[PROJECT_ID].supabase.co/functions/v1/import-gsheets-news \
+  https://utvioubcqkwwzvufhups.supabase.co/functions/v1/import-gsheets-news \
   -H "Authorization: Bearer [SERVICE_ROLE_KEY]"
 ```
 
@@ -129,25 +154,52 @@ El sistema scrapeará automáticamente:
 2. Verifica que el Sheet sea público o tengas permisos
 3. Ejecuta el script con logs:
    ```bash
-   pnpm tsx scripts/import-google-sheet-with-scraping.ts
+   npx tsx scripts/import-google-sheet-with-scraping.ts
    ```
 
 ### "Aparecen noticias de Expansión otra vez"
 
 Alguien reactivó el sistema RSS. Ejecuta:
 ```bash
-pnpm tsx scripts/cleanup-rss-news.ts
+npx tsx scripts/cleanup-rss-news.ts
 ```
+
+### "Los artículos no tienen imágenes destacadas"
+
+**Problema conocido**: El scraper intenta extraer imágenes de las URLs pero muchas fallan con 404.
+
+**Causas posibles:**
+- Enlaces antiguos en el Google Sheet (páginas eliminadas o movidas)
+- Sitios bloqueando el scraping
+- Cambios en estructura HTML de las páginas
+
+**Soluciones:**
+1. **Verificar URLs**: Asegúrate que los enlaces en el Google Sheet sean actuales
+2. **Revisar scraper**: El scraper está en `lib/scraper.ts` - podría necesitar actualizaciones
+3. **Agregar imágenes manualmente**: Por ahora, los artículos se publican sin imagen pero con todo el contenido
 
 ---
 
 ## 📝 Cambios Aplicados (2026-06-26)
 
+### Fase 1: Limpieza (Completada)
 - ✅ Deshabilitado `fetch-news` Supabase Function
-- ✅ Eliminados 98 artículos de fuentes RSS
+- ✅ Eliminados 98 artículos de fuentes RSS no autorizadas
 - ✅ Creado script de limpieza `cleanup-rss-news.ts`
 - ✅ Creado script de verificación `check-sources.ts`
-- ✅ Base de datos limpia (0 artículos)
+- ✅ Base de datos limpiada completamente
+
+### Fase 2: Sistema Automático (Completada)
+- ✅ Migración `20260624181500_sistema_blindado_google_sheets.sql` aplicada
+- ✅ Cron job `import-gsheets-daily` configurado (06:00 UTC)
+- ✅ Función `import_gsheets_cron()` creada
+- ✅ Sistema de monitoreo con vista `news_system_status`
+- ✅ Función de verificación `verify_news_system()`
+
+### Fase 3: Población Inicial (Completada)
+- ✅ Importados 56 artículos del Google Sheet
+- ✅ Distribución: Finect (21), Rankia (16), Funds Society (13), Morningstar (5), Cinco Días (1)
+- ⚠️ Problema conocido: Artículos sin imágenes (URLs antiguas o bloqueadas)
 
 ---
 
