@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import AdSlot from '@/components/AdSlot';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { formatArticleContent } from '@/lib/format-article-content';
 
 interface PageProps {
   params: { slug: string };
@@ -202,7 +203,7 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
               {article.content && (
                 <div
                   className="article-content"
-                  dangerouslySetInnerHTML={{ __html: article.content || '' }}
+                  dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content) }}
                 />
               )}
 
