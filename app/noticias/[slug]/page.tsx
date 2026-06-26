@@ -6,6 +6,9 @@ import AdSlot from '@/components/AdSlot';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { formatArticleContent } from '@/lib/format-article-content';
 
+// Revalidate every hour to ensure fresh content from database
+export const revalidate = 3600;
+
 interface PageProps {
   params: { slug: string };
 }
