@@ -159,48 +159,51 @@ export default function HomePage() {
             </div>
 
             {loading ? (
-              <div className="space-y-12">
-                {/* Cards skeleton */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[1, 2, 3, 4, 5, 6].map(i => (
-                    <div key={i} className="animate-pulse bg-white rounded-lg overflow-hidden border border-slate-200">
-                      <div className="h-48 bg-slate-200"></div>
-                      <div className="p-5">
-                        <div className="h-4 bg-slate-200 rounded mb-2 w-3/4"></div>
-                        <div className="h-3 bg-slate-200 rounded mb-2 w-full"></div>
-                        <div className="h-3 bg-slate-200 rounded w-1/2"></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {/* List skeleton */}
-                <div className="grid gap-4 max-w-4xl">
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="animate-pulse bg-white rounded-lg overflow-hidden border border-slate-200 p-4">
-                      <div className="flex gap-4">
-                        <div className="w-24 h-24 bg-slate-200 rounded"></div>
-                        <div className="flex-1">
+              <div className="grid lg:grid-cols-3 gap-8">
+                {/* Two columns skeleton */}
+                <div className="lg:col-span-2">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {[1, 2, 3, 4, 5, 6].map(i => (
+                      <div key={i} className="animate-pulse bg-white rounded-lg overflow-hidden border border-slate-200">
+                        <div className="h-48 bg-slate-200"></div>
+                        <div className="p-5">
                           <div className="h-4 bg-slate-200 rounded mb-2 w-3/4"></div>
                           <div className="h-3 bg-slate-200 rounded mb-2 w-full"></div>
                           <div className="h-3 bg-slate-200 rounded w-1/2"></div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                </div>
+                {/* Sidebar skeleton */}
+                <div className="lg:col-span-1">
+                  <div className="space-y-4">
+                    {[1, 2, 3, 4, 5, 6].map(i => (
+                      <div key={i} className="animate-pulse bg-white rounded-lg overflow-hidden border border-slate-200 p-4">
+                        <div className="flex gap-3">
+                          <div className="w-20 h-20 bg-slate-200 rounded flex-shrink-0"></div>
+                          <div className="flex-1 min-w-0">
+                            <div className="h-3 bg-slate-200 rounded mb-2 w-full"></div>
+                            <div className="h-3 bg-slate-200 rounded w-3/4"></div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             ) : recentArticles.length > 0 ? (
-              <div className="space-y-12">
-                {/* Primeras 6 noticias como CARDS (grid 3 columnas) */}
-                <div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-6">Destacadas</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid lg:grid-cols-3 gap-8">
+                {/* Primeras 6 noticias en DOS COLUMNAS (cards) */}
+                <div className="lg:col-span-2">
+                  <h3 className="text-2xl font-bold text-slate-900 mb-6">Noticias Destacadas</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
                     {recentArticles.slice(0, 6).map((article, index) => (
                       <div key={article.id}>
                         <NewsCard article={article} variant="card" />
                         {/* Ad after 3rd article */}
                         {index === 2 && (
-                          <div className="mt-6">
+                          <div className="mt-6 md:col-span-2">
                             <AdSlot key="feed-inline-after-articles" placement="feed_inline" />
                           </div>
                         )}
@@ -209,17 +212,15 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Siguientes 6 noticias en FORMATO LISTA */}
-                {recentArticles.length > 6 && (
-                  <div className="max-w-4xl">
-                    <h3 className="text-2xl font-bold text-slate-900 mb-6">Más Noticias</h3>
-                    <div className="grid gap-4">
-                      {recentArticles.slice(6, 12).map(article => (
-                        <NewsCard key={article.id} article={article} variant="default" />
-                      ))}
-                    </div>
+                {/* Siguientes 6 noticias en TERCERA COLUMNA (lista) */}
+                <div className="lg:col-span-1">
+                  <h3 className="text-2xl font-bold text-slate-900 mb-6">Más Noticias</h3>
+                  <div className="space-y-4">
+                    {recentArticles.slice(6, 12).map(article => (
+                      <NewsCard key={article.id} article={article} variant="default" />
+                    ))}
                   </div>
-                )}
+                </div>
               </div>
             ) : (
               <div className="text-center py-12">
