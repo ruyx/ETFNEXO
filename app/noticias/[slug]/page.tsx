@@ -91,11 +91,9 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
       })
     : 'Fecha no disponible';
 
-  // Check if author is a URL and extract source name
-  const authorIsUrl = article.author_name && isUrl(article.author_name);
-  const displayAuthorName = authorIsUrl
-    ? getSourceNameFromUrl(article.author_name!)
-    : (article.author_name || 'Redacción ETF Nexo');
+  // Priorizar fuente original sobre author_name
+  const displayAuthorName = article.source_name || article.author_name || 'ETF Nexo';
+  const authorLink = article.source_url || (article.author_name && isUrl(article.author_name) ? article.author_name : null);
 
   return (
     <>
@@ -145,16 +143,16 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
               <div className="article-detail__meta">
                 <div className="article-detail__meta-item">
                   <svg className="article-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
-                  {authorIsUrl ? (
+                  {authorLink ? (
                     <a
-                      href={article.author_name!}
+                      href={authorLink}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="article-detail__author-link"
                     >
-                      🔗 {displayAuthorName}
+                      {displayAuthorName}
                     </a>
                   ) : (
                     <span>{displayAuthorName}</span>
