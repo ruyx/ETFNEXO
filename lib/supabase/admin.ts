@@ -5,6 +5,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database.types';
+import WebSocket from 'ws';
 
 export function createAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -18,6 +19,18 @@ export function createAdminClient() {
     auth: {
       autoRefreshToken: false,
       persistSession: false
+    },
+    realtime: {
+      // @ts-ignore - ws transport for Node.js 20
+      transport: WebSocket,
+      params: {
+        eventsPerSecond: 0
+      }
+    },
+    global: {
+      headers: {
+        'x-client-info': 'supabase-admin-js'
+      }
     }
   });
 }
