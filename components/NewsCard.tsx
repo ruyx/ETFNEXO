@@ -40,7 +40,7 @@ export default function NewsCard({
 
   if (variant === 'featured') {
     return (
-      <Link href={`/noticias/${article.slug}`} className="block">
+      <a href={article.source_url} target="_blank" rel="noopener noreferrer" className="block">
         <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden">
           <div className="grid md:grid-cols-[300px_1fr] gap-6">
             {/* Featured Image */}
@@ -86,27 +86,25 @@ export default function NewsCard({
 
               {/* Footer */}
               <div className="flex items-center justify-between">
-                {article.author_name && (
-                  <p className="text-xs text-slate-500">
-                    Por <span className="font-medium text-slate-700">{article.author_name}</span>
-                  </p>
-                )}
+                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                  <ExternalLink className="w-3 h-3" />
+                  <span>Fuente: <span className="font-medium text-slate-700">{article.source_name}</span></span>
+                </div>
                 <div className="flex items-center gap-1.5 text-xs text-blue-600 font-medium group-hover:text-blue-700">
-                  Leer más
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  Leer en {article.source_name}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </Link>
+      </a>
     )
   }
 
   // Card variant (vertical card with image on top)
   if (variant === 'card') {
     return (
-      <Link href={`/noticias/${article.slug}`} className="block h-full">
+      <a href={article.source_url} target="_blank" rel="noopener noreferrer" className="block h-full">
         <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden flex flex-col h-full">
           {/* Featured Image */}
           {article.featured_image_url && (
@@ -148,26 +146,24 @@ export default function NewsCard({
             </p>
 
             {/* Footer */}
-            <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-              {article.author_name && (
-                <p className="text-xs text-slate-500 truncate">
-                  Por <span className="font-medium text-slate-700">{article.author_name}</span>
-                </p>
-              )}
-              <div className="flex items-center gap-1.5 text-xs text-blue-600 font-medium group-hover:text-blue-700">
-                Leer más
-                <ExternalLink className="w-3.5 h-3.5" />
+            <div className="flex flex-col gap-2 pt-3 border-t border-slate-100">
+              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <ExternalLink className="w-3 h-3" />
+                <span>Fuente: <span className="font-medium text-slate-700">{article.source_name}</span></span>
+              </div>
+              <div className="text-xs text-blue-600 font-medium group-hover:text-blue-700">
+                Leer artículo completo en {article.source_name} →
               </div>
             </div>
           </div>
         </div>
-      </Link>
+      </a>
     )
   }
 
   // Default variant (compact)
   return (
-    <Link href={`/noticias/${article.slug}`} className="block">
+    <a href={article.source_url} target="_blank" rel="noopener noreferrer" className="block">
       <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden">
         <div className="flex gap-4">
           {/* Thumbnail */}
@@ -206,11 +202,14 @@ export default function NewsCard({
                 </time>
               </div>
               <span>•</span>
-              <span className="font-medium">{article.source_name}</span>
+              <div className="flex items-center gap-1">
+                <ExternalLink className="w-2.5 h-2.5" />
+                <span className="font-medium">{article.source_name}</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </Link>
+    </a>
   )
 }
