@@ -105,15 +105,11 @@ async function scrapeArticleContent(url: string): Promise<ScrapedArticle> {
     const finalUrl = response.url || url;
     const buffer = await response.arrayBuffer();
 
-    // Intentar decodificar como windows-1252 primero (común en sitios españoles)
-    let html: string;
-    try {
-      const decoder = new TextDecoder('windows-1252');
-      html = decoder.decode(buffer);
-    } catch {
-      const decoder = new TextDecoder('utf-8');
-      html = decoder.decode(buffer);
-    }
+    // SIEMPRE decodificar como UTF-8 (estándar web moderno)
+    // El problema anterior era intentar windows-1252 primero, lo que causaba
+    // que los caracteres UTF-8 se interpretaran incorrectamente
+    const decoder = new TextDecoder('utf-8');
+    const html = decoder.decode(buffer);
 
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');

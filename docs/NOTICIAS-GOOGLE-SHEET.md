@@ -6,7 +6,8 @@
 **Fuentes permitidas**: Solo Google Sheet
 **Sistemas deshabilitados**: RSS feeds automáticos (Expansión bloqueado)
 **Sistema automático**: ✅ ACTIVO - Importación diaria a las 06:00 UTC
-**Última importación**: 26 de junio de 2026
+**Última importación**: 1 de julio de 2026
+**Encoding**: ✅ UTF-8 correcto (problema resuelto)
 
 ---
 
@@ -200,6 +201,14 @@ npx tsx scripts/cleanup-rss-news.ts
 - ✅ Importados 56 artículos del Google Sheet
 - ✅ Distribución: Finect (21), Rankia (16), Funds Society (13), Morningstar (5), Cinco Días (1)
 - ⚠️ Problema conocido: Artículos sin imágenes (URLs antiguas o bloqueadas)
+
+### Fase 4: Corrección Encoding UTF-8 (Completada - 2026-07-01)
+- ✅ Detectado problema: Caracteres españoles mostraban "Ã©" en lugar de "é"
+- ✅ Root cause: Edge Function intentaba `windows-1252` antes de UTF-8
+- ✅ Solución: Modificado para usar SIEMPRE UTF-8 (estándar web moderno)
+- ✅ Limpieza: 8 artículos afectados eliminados y reimportados
+- ✅ Verificación: 100% artículos sin problemas (0/20 con errores)
+- 📄 Documentación: Ver `/docs/RESOLUCION_ENCODING_UTF8.md`
 
 ---
 
