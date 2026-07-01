@@ -2,6 +2,11 @@
    RANKINGS - Estilo Corporativo Minimalista
    ============================================ */
 
+/* ==================== CONTAINER OVERRIDE ==================== */
+.rankings-main .container {
+  max-width: 88rem; /* 1408px */
+}
+
 /* ==================== HERO SECTION ==================== */
 .rankings-hero {
   background-color: var(--color-slate-50);
