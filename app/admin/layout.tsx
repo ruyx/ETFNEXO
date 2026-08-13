@@ -21,8 +21,8 @@ export default async function AdminLayout({
   const authUser = await getAuthenticatedUser();
 
   if (!authUser) {
-    // No autenticado → redirigir a login
-    redirect('/admin/login');
+    // No autenticado → redirigir a login con returnTo
+    redirect('/login?redirectTo=/admin');
   }
 
   // Verificar que tenga permisos (al menos redactor)
