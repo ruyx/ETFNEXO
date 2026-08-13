@@ -354,10 +354,12 @@ export default function CrearAgentePage() {
                 checked={formData.is_active}
                 onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
               />
-              <span className="admin-form-checkbox__label">Agente activo</span>
-              <p className="admin-form-checkbox__help">
-                El agente aparecerá en listados y podrá ser seleccionado
-              </p>
+              <div className="admin-form-checkbox__content">
+                <span className="admin-form-checkbox__label">Agente activo</span>
+                <p className="admin-form-checkbox__help">
+                  El agente aparecerá en listados y podrá ser seleccionado
+                </p>
+              </div>
             </label>
 
             <label className="admin-form-checkbox">
@@ -366,10 +368,12 @@ export default function CrearAgentePage() {
                 checked={formData.can_publish}
                 onChange={(e) => setFormData(prev => ({ ...prev, can_publish: e.target.checked }))}
               />
-              <span className="admin-form-checkbox__label">Puede publicar</span>
-              <p className="admin-form-checkbox__help">
-                El agente puede ser asignado como autor de artículos
-              </p>
+              <div className="admin-form-checkbox__content">
+                <span className="admin-form-checkbox__label">Puede publicar</span>
+                <p className="admin-form-checkbox__help">
+                  El agente puede ser asignado como autor de artículos
+                </p>
+              </div>
             </label>
           </div>
         </div>

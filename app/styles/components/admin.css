@@ -845,23 +845,37 @@
 .admin-form-checkbox-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--spacing-5);
 }
 
 .admin-form-checkbox {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  background-color: var(--color-slate-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-slate-200);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-form-checkbox:hover {
+  background-color: var(--color-slate-100);
+  border-color: var(--color-slate-300);
 }
 
 .admin-form-checkbox input[type="checkbox"] {
   width: 20px;
   height: 20px;
+  min-width: 20px;
+  min-height: 20px;
   border: 2px solid var(--color-slate-300);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  margin-right: var(--spacing-2);
+  margin-top: 2px;
   flex-shrink: 0;
+  transition: all 0.2s;
 }
 
 .admin-form-checkbox input[type="checkbox"]:checked {
@@ -869,20 +883,31 @@
   border-color: var(--color-primary);
 }
 
+.admin-form-checkbox input[type="checkbox"]:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.admin-form-checkbox__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
 .admin-form-checkbox__label {
-  font-size: 1rem; line-height: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
   font-weight: 600;
   color: var(--color-slate-900);
-  display: flex;
-  align-items: center;
   cursor: pointer;
 }
 
 .admin-form-checkbox__help {
-  font-size: 0.875rem; line-height: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
   color: var(--color-slate-600);
   margin: 0;
-  margin-left: 28px;
 }
 
 /* ==================== LOADING STATE ==================== */
