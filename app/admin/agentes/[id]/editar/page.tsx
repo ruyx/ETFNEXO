@@ -262,120 +262,169 @@ export default function EditarAgentePage() {
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="admin-form">
-        {/* Información Básica */}
-        <div className="admin-form-section">
-          <h2 className="admin-form-section__title">Información Básica</h2>
-
-          {/* Name */}
-          <div className="admin-form-group">
-            <label htmlFor="name" className="admin-form-label admin-form-label--required">
-              Nombre del Agente
-            </label>
-            <input
-              type="text"
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              className="admin-form-input"
-              required
-            />
-          </div>
-
-          {/* Slug */}
-          <div className="admin-form-group">
-            <label htmlFor="slug" className="admin-form-label admin-form-label--required">
-              Slug (URL)
-            </label>
-            <input
-              type="text"
-              id="slug"
-              value={formData.slug}
-              onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-              className="admin-form-input"
-              required
-            />
-            <p className="admin-form-help">
-              URL del perfil: /agentes/{formData.slug || 'slug'}
+      <form onSubmit={handleSubmit} className="admin-form admin-form--grid">
+        {/* SIDEBAR - Avatar + Info Básica */}
+        <div className="admin-form-sidebar">
+          {/* Avatar Card Destacado */}
+          <div className="admin-avatar-card">
+            <div className="admin-avatar-card__preview">
+              {formData.avatar_url ? (
+                <div className="admin-avatar-card__image-container">
+                  <img
+                    src={formData.avatar_url}
+                    alt={formData.display_name}
+                    className="admin-avatar-card__image"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, avatar_url: '' }))}
+                    className="admin-avatar-card__remove"
+                  >
+                    ×
+                  </button>
+                </div>
+              ) : (
+                <div className="admin-avatar-card__placeholder">
+                  <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+              )}
+            </div>
+            <h3 className="admin-avatar-card__name">{formData.display_name || 'Nuevo Agente'}</h3>
+            <p className="admin-avatar-card__role">
+              {formData.role === 'analyst' ? 'Analista' : formData.role === 'editor' ? 'Editor' : 'Investigador'}
             </p>
+            <div className="admin-avatar-card__upload" style={{ width: '100%' }}>
+              <AvatarUpload
+                currentAvatarUrl={formData.avatar_url}
+                onAvatarChange={(url) => setFormData(prev => ({ ...prev, avatar_url: url }))}
+                agentSlug={formData.slug}
+              />
+            </div>
           </div>
 
-          {/* Display Name */}
-          <div className="admin-form-group">
-            <label htmlFor="display_name" className="admin-form-label admin-form-label--required">
-              Nombre para Mostrar
-            </label>
-            <input
-              type="text"
-              id="display_name"
-              value={formData.display_name}
-              onChange={(e) => setFormData(prev => ({ ...prev, display_name: e.target.value }))}
-              className="admin-form-input"
-              required
-            />
-          </div>
+          {/* Info Básica Compacta */}
+          <div className="admin-form-section--compact">
+            <h2 className="admin-form-section__title">Información Básica</h2>
 
-          {/* Email */}
-          <div className="admin-form-group">
-            <label htmlFor="email" className="admin-form-label admin-form-label--required">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={formData.email}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              className="admin-form-input"
-              required
-            />
-          </div>
+            <div className="admin-form-group">
+              <label htmlFor="name" className="admin-form-label admin-form-label--required">
+                Nombre
+              </label>
+              <input
+                type="text"
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                className="admin-form-input"
+                required
+              />
+            </div>
 
-          {/* Role */}
-          <div className="admin-form-group">
-            <label htmlFor="role" className="admin-form-label admin-form-label--required">
-              Rol
-            </label>
-            <select
-              id="role"
-              value={formData.role}
-              onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as any }))}
-              className="admin-form-select"
-              required
-            >
-              <option value="analyst">Analista</option>
-              <option value="editor">Editor</option>
-              <option value="researcher">Investigador</option>
-            </select>
+            <div className="admin-form-group">
+              <label htmlFor="display_name" className="admin-form-label admin-form-label--required">
+                Nombre para Mostrar
+              </label>
+              <input
+                type="text"
+                id="display_name"
+                value={formData.display_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, display_name: e.target.value }))}
+                className="admin-form-input"
+                required
+              />
+            </div>
+
+            <div className="admin-form-group">
+              <label htmlFor="slug" className="admin-form-label admin-form-label--required">
+                Slug
+              </label>
+              <input
+                type="text"
+                id="slug"
+                value={formData.slug}
+                onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
+                className="admin-form-input"
+                required
+              />
+              <p className="admin-form-help">
+                /agentes/{formData.slug || '...'}
+              </p>
+            </div>
+
+            <div className="admin-form-group">
+              <label htmlFor="email" className="admin-form-label admin-form-label--required">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={formData.email}
+                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                className="admin-form-input"
+                required
+              />
+            </div>
+
+            <div className="admin-form-group">
+              <label htmlFor="role" className="admin-form-label admin-form-label--required">
+                Rol
+              </label>
+              <select
+                id="role"
+                value={formData.role}
+                onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as any }))}
+                className="admin-form-select"
+                required
+              >
+                <option value="analyst">Analista</option>
+                <option value="editor">Editor</option>
+                <option value="researcher">Investigador</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        {/* Perfil y Experticia */}
-        <div className="admin-form-section">
-          <h2 className="admin-form-section__title">Perfil y Experticia</h2>
+        {/* MAIN - Perfil + Experticia + Permisos */}
+        <div className="admin-form-main">
+          {/* Perfil */}
+          <div className="admin-form-section--compact">
+            <h2 className="admin-form-section__title">Perfil</h2>
 
-          {/* Bio */}
-          <div className="admin-form-group">
-            <label htmlFor="bio" className="admin-form-label">
-              Biografía
-            </label>
-            <textarea
-              id="bio"
-              value={formData.bio}
-              onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-              className="admin-form-input admin-form-input--textarea"
-              rows={8}
-              placeholder="Describe la especialidad y enfoque del agente..."
-            />
-            <p className="admin-form-help">
-              Descripción del agente que aparecerá en su perfil
-            </p>
+            <div className="admin-form-group">
+              <label htmlFor="bio" className="admin-form-label">
+                Biografía
+              </label>
+              <textarea
+                id="bio"
+                value={formData.bio}
+                onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+                className="admin-form-input admin-form-input--textarea"
+                rows={6}
+                placeholder="Describe la especialidad y enfoque del agente..."
+              />
+            </div>
+
+            <div className="admin-form-group">
+              <label htmlFor="signature" className="admin-form-label">
+                Firma
+              </label>
+              <input
+                type="text"
+                id="signature"
+                value={formData.signature}
+                onChange={(e) => setFormData(prev => ({ ...prev, signature: e.target.value }))}
+                className="admin-form-input"
+                placeholder="— Nombre, Título en ETF Nexo"
+              />
+            </div>
           </div>
 
-          {/* Expertise */}
-          <div className="admin-form-group">
-            <label htmlFor="expertise" className="admin-form-label admin-form-label--required">
-              Áreas de Experticia
-            </label>
+          {/* Experticia */}
+          <div className="admin-form-section--compact">
+            <h2 className="admin-form-section__title">Áreas de Experticia</h2>
+
             <div className="admin-tag-input">
               <input
                 type="text"
@@ -395,7 +444,6 @@ export default function EditarAgentePage() {
               </button>
             </div>
 
-            {/* Tags list */}
             {formData.expertise.length > 0 && (
               <div className="admin-tag-list">
                 {formData.expertise.map((skill) => (
@@ -414,89 +462,65 @@ export default function EditarAgentePage() {
             )}
           </div>
 
-          {/* Signature */}
-          <div className="admin-form-group">
-            <label htmlFor="signature" className="admin-form-label">
-              Firma
-            </label>
-            <input
-              type="text"
-              id="signature"
-              value={formData.signature}
-              onChange={(e) => setFormData(prev => ({ ...prev, signature: e.target.value }))}
-              className="admin-form-input"
-            />
-          </div>
+          {/* Permisos */}
+          <div className="admin-form-section--compact">
+            <h2 className="admin-form-section__title">Permisos</h2>
 
-          {/* Avatar */}
-          <div className="admin-form-group">
-            <label className="admin-form-label">
-              Avatar del Agente
-            </label>
-            <AvatarUpload
-              currentAvatarUrl={formData.avatar_url}
-              onAvatarChange={(url) => setFormData(prev => ({ ...prev, avatar_url: url }))}
-              agentSlug={formData.slug}
-            />
-          </div>
-        </div>
+            <div className="admin-form-checkbox-group">
+              <label className="admin-form-checkbox">
+                <input
+                  type="checkbox"
+                  checked={formData.is_active}
+                  onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
+                />
+                <div className="admin-form-checkbox__content">
+                  <span className="admin-form-checkbox__label">Agente activo</span>
+                  <p className="admin-form-checkbox__help">
+                    Aparecerá en listados y podrá ser seleccionado
+                  </p>
+                </div>
+              </label>
 
-        {/* Permisos */}
-        <div className="admin-form-section">
-          <h2 className="admin-form-section__title">Permisos</h2>
-
-          <div className="admin-form-checkbox-group">
-            <label className="admin-form-checkbox">
-              <input
-                type="checkbox"
-                checked={formData.is_active}
-                onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
-              />
-              <div className="admin-form-checkbox__content">
-                <span className="admin-form-checkbox__label">Agente activo</span>
-                <p className="admin-form-checkbox__help">
-                  El agente aparecerá en listados y podrá ser seleccionado
-                </p>
-              </div>
-            </label>
-
-            <label className="admin-form-checkbox">
-              <input
-                type="checkbox"
-                checked={formData.can_publish}
-                onChange={(e) => setFormData(prev => ({ ...prev, can_publish: e.target.checked }))}
-              />
-              <div className="admin-form-checkbox__content">
-                <span className="admin-form-checkbox__label">Puede publicar</span>
-                <p className="admin-form-checkbox__help">
-                  El agente puede ser asignado como autor de artículos
-                </p>
-              </div>
-            </label>
+              <label className="admin-form-checkbox">
+                <input
+                  type="checkbox"
+                  checked={formData.can_publish}
+                  onChange={(e) => setFormData(prev => ({ ...prev, can_publish: e.target.checked }))}
+                />
+                <div className="admin-form-checkbox__content">
+                  <span className="admin-form-checkbox__label">Puede publicar</span>
+                  <p className="admin-form-checkbox__help">
+                    Puede ser asignado como autor de artículos
+                  </p>
+                </div>
+              </label>
+            </div>
           </div>
         </div>
 
-        {/* Form Actions */}
-        <div className="admin-form-actions">
-          <button
-            type="button"
-            onClick={handleDelete}
-            disabled={deleting || saving}
-            className="btn btn-danger"
-          >
-            {deleting ? 'Eliminando...' : 'Eliminar Agente'}
-          </button>
-          <div className="admin-form-actions__right">
-            <Link href="/admin/agentes" className="btn btn-secondary">
-              Cancelar
-            </Link>
+        {/* Form Actions - Span full grid */}
+        <div style={{ gridColumn: '1 / -1' }}>
+          <div className="admin-form-actions">
             <button
-              type="submit"
-              disabled={saving || deleting}
-              className="btn btn-primary"
+              type="button"
+              onClick={handleDelete}
+              disabled={deleting || saving}
+              className="btn btn-danger"
             >
-              {saving ? 'Guardando...' : 'Guardar Cambios'}
+              {deleting ? 'Eliminando...' : 'Eliminar Agente'}
             </button>
+            <div className="admin-form-actions__right">
+              <Link href="/admin/agentes" className="btn btn-secondary">
+                Cancelar
+              </Link>
+              <button
+                type="submit"
+                disabled={saving || deleting}
+                className="btn btn-primary"
+              >
+                {saving ? 'Guardando...' : 'Guardar Cambios'}
+              </button>
+            </div>
           </div>
         </div>
       </form>
