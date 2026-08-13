@@ -10,15 +10,16 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient();
+    const { id } = await params;
 
     const { data: agent, error } = await supabase
       .from('ai_agents')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (error) throw error;
@@ -54,11 +55,15 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient();
     const body = await request.json();
+    const { id } = await params;
+
+    console.log('[PUT /api/admin/agentes/[id]] Agent ID:', id);
+    console.log('[PUT /api/admin/agentes/[id]] Update data:', body);
 
     const updateData: any = {};
 
@@ -76,11 +81,15 @@ export async function PUT(
     if (body.is_active !== undefined) updateData.is_active = body.is_active;
     if (body.can_publish !== undefined) updateData.can_publish = body.can_publish;
 
+    console.log('[PUT /api/admin/agentes/[id]] Fields to update:', updateData);
+
     const { data: agents, error } = await supabase
       .from('ai_agents')
       .update(updateData)
-      .eq('id', params.id)
+      .eq('id', id)
       .select();
+
+    console.log('[PUT /api/admin/agentes/[id]] Update result:', { agents, error });
 
     if (error) throw error;
 
@@ -115,15 +124,16 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient();
+    const { id } = await params;
 
     const { error } = await supabase
       .from('ai_agents')
       .delete()
-      .eq('id', params.id);
+      .eq('id', id);
 
     if (error) throw error;
 
