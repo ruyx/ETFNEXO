@@ -833,12 +833,13 @@
 /* ==================== TAG INPUT ==================== */
 .admin-tag-input {
   display: flex;
-  gap: var(--spacing-2);
-  align-items: flex-start;
+  gap: var(--spacing-3);
+  align-items: stretch;
 }
 
 .admin-tag-input .admin-form-input {
   flex: 1;
+  min-width: 0;
 }
 
 /* ==================== CHECKBOX GROUP ==================== */
