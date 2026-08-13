@@ -125,7 +125,7 @@ export default function AvatarUpload({ currentAvatarUrl, onAvatarChange, agentSl
           type="button"
           onClick={handleClick}
           disabled={uploading}
-          className="btn btn--secondary btn--sm"
+          className="btn btn-secondary btn-sm"
         >
           <Upload className="w-4 h-4" />
           {uploading ? 'Subiendo...' : 'Subir Avatar'}

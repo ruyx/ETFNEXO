@@ -1,4 +1,18 @@
--- Crear bucket público para avatares de agentes
+-- ============================================
+-- Storage Bucket para Archivos Públicos
+-- ============================================
+-- Crear bucket público para avatares y assets
+-- Los archivos de avatares se guardarán en: public/avatars/*
+--
+-- IMPORTANTE: Este SQL debe ejecutarse manualmente en Supabase Dashboard
+-- (npx supabase db push falla si ya existen otras migraciones)
+--
+-- Instrucciones:
+-- 1. Ve a Supabase Dashboard → SQL Editor
+-- 2. Copia y pega este SQL completo
+-- 3. Click en "Run"
+-- ============================================
+
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
   'public',
