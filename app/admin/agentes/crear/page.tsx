@@ -9,6 +9,7 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import AvatarUpload from '@/components/admin/AvatarUpload';
 
 export default function CrearAgentePage() {
   const router = useRouter();
@@ -255,8 +256,8 @@ export default function CrearAgentePage() {
               id="bio"
               value={formData.bio}
               onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-              className="admin-form-textarea"
-              rows={4}
+              className="admin-form-input admin-form-input--textarea"
+              rows={8}
               placeholder="Describe la especialidad y enfoque del agente..."
             />
             <p className="admin-form-help">
@@ -329,22 +330,16 @@ export default function CrearAgentePage() {
             </p>
           </div>
 
-          {/* Avatar URL */}
+          {/* Avatar */}
           <div className="admin-form-group">
-            <label htmlFor="avatar_url" className="admin-form-label">
-              URL del Avatar
+            <label className="admin-form-label">
+              Avatar del Agente
             </label>
-            <input
-              type="url"
-              id="avatar_url"
-              value={formData.avatar_url}
-              onChange={(e) => setFormData(prev => ({ ...prev, avatar_url: e.target.value }))}
-              className="admin-form-input"
-              placeholder="https://..."
+            <AvatarUpload
+              currentAvatarUrl={formData.avatar_url}
+              onAvatarChange={(url) => setFormData(prev => ({ ...prev, avatar_url: url }))}
+              agentSlug={formData.slug || 'new-agent'}
             />
-            <p className="admin-form-help">
-              URL de la imagen de perfil del agente
-            </p>
           </div>
         </div>
 

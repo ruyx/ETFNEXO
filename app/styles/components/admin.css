@@ -557,7 +557,7 @@
 }
 
 .admin-form-input--textarea {
-  min-height: 6rem;
+  min-height: 12rem;
   resize: vertical;
 }
 

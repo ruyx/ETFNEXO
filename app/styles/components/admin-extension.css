@@ -247,3 +247,83 @@
   color: var(--color-slate-500);
   margin-top: 0.25rem;
 }
+
+/* ==================== AVATAR UPLOAD ==================== */
+.admin-avatar-upload {
+  display: flex;
+  gap: var(--spacing-4);
+  align-items: flex-start;
+}
+
+.admin-avatar-upload__preview {
+  flex-shrink: 0;
+}
+
+.admin-avatar-upload__image-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--color-slate-100);
+}
+
+.admin-avatar-upload__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-avatar-upload__remove {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.admin-avatar-upload__remove:hover {
+  background-color: rgba(220, 38, 38, 0.8);
+}
+
+.admin-avatar-upload__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  background-color: var(--color-slate-100);
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--color-slate-300);
+}
+
+.admin-avatar-upload__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.admin-avatar-upload__input {
+  display: none;
+}
+
+.admin-avatar-upload__help {
+  font-size: 0.75rem;
+  color: var(--color-slate-500);
+  margin: 0;
+}
+
+.admin-avatar-upload__error {
+  font-size: 0.875rem;
+  color: var(--color-danger);
+  margin-top: var(--spacing-2);
+}
