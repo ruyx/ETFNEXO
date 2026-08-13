@@ -22,6 +22,22 @@ interface Tag {
   slug: string;
 }
 
+interface Agent {
+  id: string;
+  name: string;
+  slug: string;
+  display_name: string;
+  email: string;
+  signature: string;
+}
+
+interface CurrentUser {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+}
+
 interface ArticleFormProps {
   initialData?: {
     id?: string;
@@ -56,6 +72,12 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
   const [loadingData, setLoadingData] = useState(true);
 
+  // Agentes y usuario actual
+  const [availableAgents, setAvailableAgents] = useState<Agent[]>([]);
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+  const [authorType, setAuthorType] = useState<'ai_agent' | 'current_user'>('current_user');
+  const [selectedAgentId, setSelectedAgentId] = useState<string>('');
+
   // Form state
   const [title, setTitle] = useState(initialData?.title || '');
   const [slug, setSlug] = useState(initialData?.slug || '');
@@ -65,8 +87,6 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   const [selectedTags, setSelectedTags] = useState<string[]>(
     initialData?.tags?.map(t => t.id) || []
   );
-  const [authorName, setAuthorName] = useState(initialData?.author_name || '');
-  const [authorEmail, setAuthorEmail] = useState(initialData?.author_email || '');
   const [metaTitle, setMetaTitle] = useState(initialData?.meta_title || '');
   const [metaDescription, setMetaDescription] = useState(initialData?.meta_description || '');
   const [featuredImageUrl, setFeaturedImageUrl] = useState(initialData?.featured_image_url || '');
@@ -75,16 +95,18 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   const [sourceUrl, setSourceUrl] = useState(initialData?.source_url || '');
   const [status, setStatus] = useState<'draft' | 'published' | 'archived'>(initialData?.status || 'draft');
 
-  // Cargar categorías y etiquetas al montar
+  // Cargar datos al montar
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoadingData(true);
 
-        // Cargar categorías y etiquetas en paralelo
-        const [categoriesRes, tagsRes] = await Promise.all([
+        // Cargar categorías, etiquetas, agentes y usuario actual en paralelo
+        const [categoriesRes, tagsRes, agentsRes, userRes] = await Promise.all([
           fetch('/api/admin/categorias'),
-          fetch('/api/admin/etiquetas')
+          fetch('/api/admin/etiquetas'),
+          fetch('/api/admin/agentes'),
+          fetch('/api/me')
         ]);
 
         if (categoriesRes.ok) {
@@ -96,8 +118,18 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
           const tagsData = await tagsRes.json();
           setAvailableTags(tagsData.data.tags || []);
         }
+
+        if (agentsRes.ok) {
+          const agentsData = await agentsRes.json();
+          setAvailableAgents(agentsData.data.agents || []);
+        }
+
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          setCurrentUser(userData.data.user);
+        }
       } catch (err) {
-        console.error('Error loading categories/tags:', err);
+        console.error('Error loading data:', err);
       } finally {
         setLoadingData(false);
       }
@@ -120,14 +152,12 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
     setError('');
 
     try {
-      const articleData = {
+      const articleData: any = {
         title,
         slug: slug || undefined,
         excerpt: excerpt || undefined,
         content,
         category_id: categoryId || undefined,
-        author_name: authorName || undefined,
-        author_email: authorEmail || undefined,
         meta_title: metaTitle || title,
         meta_description: metaDescription || excerpt || undefined,
         featured_image_url: featuredImageUrl || undefined,
@@ -138,6 +168,19 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
         tags: selectedTags
       };
 
+      // Determinar autor según tipo seleccionado
+      if (authorType === 'ai_agent' && selectedAgentId) {
+        // Firmar con agente AI
+        articleData.author_id = selectedAgentId;
+        articleData.author_name = null;
+        articleData.author_email = null;
+      } else if (authorType === 'current_user' && currentUser) {
+        // Firmar con usuario actual
+        articleData.author_id = null;
+        articleData.author_name = currentUser.name;
+        articleData.author_email = currentUser.email;
+      }
+
       await onSubmit(articleData);
     } catch (err: any) {
       setError(err.message || 'Error al guardar el artículo');
@@ -146,23 +189,23 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   };
 
   return (
-    <form onSubmit={(e) => handleSubmit(e, false)} className="space-y-8">
+    <form onSubmit={(e) => handleSubmit(e, false)} className="admin-form">
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+        <div className="admin-form-error">
           {error}
         </div>
       )}
 
       {/* Main Content Section */}
-      <div className="card">
-        <h2 className="heading-4 text-slate-900 mb-6">Contenido Principal</h2>
+      <div className="admin-form-section">
+        <h2 className="admin-form-section__title">Contenido Principal</h2>
 
-        <div className="space-y-6">
+        <div className="admin-form-fields">
           {/* Title */}
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-slate-700 mb-2">
-              Título <span className="text-red-500">*</span>
+          <div className="admin-form-field">
+            <label htmlFor="title" className="admin-form-label admin-form-label--required">
+              Título
             </label>
             <input
               type="text"
@@ -170,14 +213,14 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="admin-form-input"
               placeholder="Título del artículo"
             />
           </div>
 
           {/* Slug */}
-          <div>
-            <label htmlFor="slug" className="block text-sm font-medium text-slate-700 mb-2">
+          <div className="admin-form-field">
+            <label htmlFor="slug" className="admin-form-label">
               Slug (URL)
             </label>
             <input
@@ -185,17 +228,17 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               id="slug"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="admin-form-input"
               placeholder="Se generará automáticamente si se deja vacío"
             />
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="admin-form-hint">
               URL amigable del artículo. Dejar vacío para generar automáticamente.
             </p>
           </div>
 
           {/* Excerpt */}
-          <div>
-            <label htmlFor="excerpt" className="block text-sm font-medium text-slate-700 mb-2">
+          <div className="admin-form-field">
+            <label htmlFor="excerpt" className="admin-form-label">
               Extracto
             </label>
             <textarea
@@ -203,18 +246,18 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
               rows={3}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="admin-form-input admin-form-input--textarea"
               placeholder="Breve resumen del artículo (opcional)"
             />
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="admin-form-hint">
               {excerpt.length} caracteres. Recomendado: 150-200.
             </p>
           </div>
 
           {/* Content */}
-          <div>
-            <label htmlFor="content" className="block text-sm font-medium text-slate-700 mb-2">
-              Contenido <span className="text-red-500">*</span>
+          <div className="admin-form-field">
+            <label htmlFor="content" className="admin-form-label admin-form-label--required">
+              Contenido
             </label>
             <textarea
               id="content"
@@ -222,10 +265,10 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={16}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
+              className="admin-form-input admin-form-input--textarea admin-form-input--code"
               placeholder="Contenido del artículo en HTML"
             />
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="admin-form-hint">
               Acepta HTML. {content.length} caracteres.
             </p>
           </div>
@@ -233,23 +276,23 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
       </div>
 
       {/* Category and Tags Section */}
-      <div className="card">
-        <h2 className="heading-4 text-slate-900 mb-6">Categoría y Etiquetas</h2>
+      <div className="admin-form-section">
+        <h2 className="admin-form-section__title">Categoría y Etiquetas</h2>
 
-        <div className="space-y-6">
+        <div className="admin-form-fields">
           {/* Category */}
-          <div>
-            <label htmlFor="category" className="block text-sm font-medium text-slate-700 mb-2">
+          <div className="admin-form-field">
+            <label htmlFor="category" className="admin-form-label">
               Categoría
             </label>
             {loadingData ? (
-              <div className="text-sm text-slate-500">Cargando categorías...</div>
+              <div className="admin-form-hint">Cargando categorías...</div>
             ) : (
               <select
                 id="category"
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="admin-form-select"
               >
                 <option value="">Sin categoría</option>
                 {categories.map((category) => (
@@ -262,14 +305,14 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
           </div>
 
           {/* Tags */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+          <div className="admin-form-field">
+            <label className="admin-form-label">
               Etiquetas
             </label>
             {loadingData ? (
-              <div className="text-sm text-slate-500">Cargando etiquetas...</div>
+              <div className="admin-form-hint">Cargando etiquetas...</div>
             ) : (
-              <div className="flex flex-wrap gap-2">
+              <div className="admin-tag-selector">
                 {availableTags.map((tag) => {
                   const isSelected = selectedTags.includes(tag.id);
                   return (
@@ -277,10 +320,10 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
                       key={tag.id}
                       type="button"
                       onClick={() => handleToggleTag(tag.id)}
-                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                      className={`admin-tag-button ${
                         isSelected
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
-                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                          ? 'admin-tag-button--selected'
+                          : 'admin-tag-button--unselected'
                       }`}
                     >
                       <TagIcon className="w-3 h-3" />
@@ -289,13 +332,13 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
                   );
                 })}
                 {availableTags.length === 0 && (
-                  <p className="text-sm text-slate-500">
+                  <p className="admin-form-hint">
                     No hay etiquetas disponibles. Crea una desde la gestión de etiquetas.
                   </p>
                 )}
               </div>
             )}
-            <p className="mt-2 text-xs text-slate-500">
+            <p className="admin-form-hint" style={{ marginTop: 'var(--spacing-2)' }}>
               {selectedTags.length} etiqueta(s) seleccionada(s)
             </p>
           </div>
@@ -303,27 +346,28 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
       </div>
 
       {/* Featured Image Section */}
-      <div className="card">
-        <h2 className="heading-4 text-slate-900 mb-6">Imagen Destacada</h2>
+      <div className="admin-form-section">
+        <h2 className="admin-form-section__title">Imagen Destacada</h2>
 
-        <div className="space-y-6">
+        <div className="admin-form-fields">
           {/* Image URL */}
-          <div>
-            <label htmlFor="featured_image_url" className="block text-sm font-medium text-slate-700 mb-2">
+          <div className="admin-form-field">
+            <label htmlFor="featured_image_url" className="admin-form-label">
               URL de la imagen
             </label>
-            <div className="flex gap-2">
+            <div className="admin-image-upload-group">
               <input
                 type="url"
                 id="featured_image_url"
                 value={featuredImageUrl}
                 onChange={(e) => setFeaturedImageUrl(e.target.value)}
-                className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="admin-form-input"
+                style={{ flex: 1 }}
                 placeholder="https://ejemplo.com/imagen.jpg"
               />
               <button
                 type="button"
-                className="btn-secondary flex items-center gap-2"
+                className="btn btn-secondary"
               >
                 <Upload className="w-4 h-4" />
                 Subir
@@ -332,8 +376,8 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
           </div>
 
           {/* Image Alt */}
-          <div>
-            <label htmlFor="featured_image_alt" className="block text-sm font-medium text-slate-700 mb-2">
+          <div className="admin-form-field">
+            <label htmlFor="featured_image_alt" className="admin-form-label">
               Texto alternativo
             </label>
             <input
@@ -341,18 +385,17 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               id="featured_image_alt"
               value={featuredImageAlt}
               onChange={(e) => setFeaturedImageAlt(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="admin-form-input"
               placeholder="Descripción de la imagen para accesibilidad"
             />
           </div>
 
           {/* Image Preview */}
           {featuredImageUrl && (
-            <div className="relative w-full h-48 bg-slate-100 rounded-lg overflow-hidden">
+            <div className="admin-image-preview">
               <img
                 src={featuredImageUrl}
                 alt={featuredImageAlt || 'Preview'}
-                className="w-full h-full object-cover"
               />
             </div>
           )}
@@ -360,13 +403,13 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
       </div>
 
       {/* Meta & SEO Section */}
-      <div className="card">
-        <h2 className="heading-4 text-slate-900 mb-6">SEO y Metadatos</h2>
+      <div className="admin-form-section">
+        <h2 className="admin-form-section__title">SEO y Metadatos</h2>
 
-        <div className="space-y-6">
+        <div className="admin-form-fields">
           {/* Meta Title */}
-          <div>
-            <label htmlFor="meta_title" className="block text-sm font-medium text-slate-700 mb-2">
+          <div className="admin-form-field">
+            <label htmlFor="meta_title" className="admin-form-label">
               Título SEO
             </label>
             <input
@@ -374,17 +417,17 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               id="meta_title"
               value={metaTitle}
               onChange={(e) => setMetaTitle(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="admin-form-input"
               placeholder="Se usará el título principal si se deja vacío"
             />
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="admin-form-hint">
               {metaTitle.length} caracteres. Óptimo: 50-60.
             </p>
           </div>
 
           {/* Meta Description */}
-          <div>
-            <label htmlFor="meta_description" className="block text-sm font-medium text-slate-700 mb-2">
+          <div className="admin-form-field">
+            <label htmlFor="meta_description" className="admin-form-label">
               Descripción SEO
             </label>
             <textarea
@@ -392,54 +435,116 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               value={metaDescription}
               onChange={(e) => setMetaDescription(e.target.value)}
               rows={3}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="admin-form-input admin-form-input--textarea"
               placeholder="Descripción para motores de búsqueda"
             />
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="admin-form-hint">
               {metaDescription.length} caracteres. Óptimo: 150-160.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Author & Source Section */}
-      <div className="card">
-        <h2 className="heading-4 text-slate-900 mb-6">Autor y Fuente</h2>
+      {/* Author Section */}
+      <div className="admin-form-section">
+        <h2 className="admin-form-section__title">Autor</h2>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Author Name */}
-          <div>
-            <label htmlFor="author_name" className="block text-sm font-medium text-slate-700 mb-2">
-              Nombre del autor
+        <div className="admin-form-fields">
+          {/* Author Type Selector */}
+          <div className="admin-form-field">
+            <label className="admin-form-label">
+              Firmar artículo como
             </label>
-            <input
-              type="text"
-              id="author_name"
-              value={authorName}
-              onChange={(e) => setAuthorName(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Redacción ETF Nexo"
-            />
+            <div className="admin-tag-selector">
+              <button
+                type="button"
+                onClick={() => setAuthorType('current_user')}
+                className={`admin-tag-button ${
+                  authorType === 'current_user'
+                    ? 'admin-tag-button--selected'
+                    : 'admin-tag-button--unselected'
+                }`}
+              >
+                Tu perfil
+              </button>
+              <button
+                type="button"
+                onClick={() => setAuthorType('ai_agent')}
+                className={`admin-tag-button ${
+                  authorType === 'ai_agent'
+                    ? 'admin-tag-button--selected'
+                    : 'admin-tag-button--unselected'
+                }`}
+              >
+                Agente AI
+              </button>
+            </div>
           </div>
 
-          {/* Author Email */}
-          <div>
-            <label htmlFor="author_email" className="block text-sm font-medium text-slate-700 mb-2">
-              Email del autor
-            </label>
-            <input
-              type="email"
-              id="author_email"
-              value={authorEmail}
-              onChange={(e) => setAuthorEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="autor@ejemplo.com"
-            />
+          {/* Agent Selector (only if ai_agent selected) */}
+          {authorType === 'ai_agent' && (
+            <div className="admin-form-field">
+              <label htmlFor="agent_selector" className="admin-form-label admin-form-label--required">
+                Seleccionar Agente
+              </label>
+              {loadingData ? (
+                <div className="admin-form-hint">Cargando agentes...</div>
+              ) : (
+                <select
+                  id="agent_selector"
+                  value={selectedAgentId}
+                  onChange={(e) => setSelectedAgentId(e.target.value)}
+                  className="admin-form-select"
+                  required={authorType === 'ai_agent'}
+                >
+                  <option value="">Selecciona un agente</option>
+                  {availableAgents.map((agent) => (
+                    <option key={agent.id} value={agent.id}>
+                      {agent.display_name} - {agent.email}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          )}
+
+          {/* Author Preview */}
+          <div className="admin-form-field">
+            <div className="card" style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-slate-50)' }}>
+              <p className="admin-form-label" style={{ marginBottom: 'var(--spacing-2)' }}>
+                Vista previa del autor:
+              </p>
+              {authorType === 'current_user' && currentUser ? (
+                <div>
+                  <p className="admin-form-hint" style={{ marginBottom: 'var(--spacing-1)' }}>
+                    <strong>{currentUser.name}</strong>
+                  </p>
+                  <p className="admin-form-hint">{currentUser.email}</p>
+                </div>
+              ) : authorType === 'ai_agent' && selectedAgentId ? (
+                (() => {
+                  const selected = availableAgents.find(a => a.id === selectedAgentId);
+                  return selected ? (
+                    <div>
+                      <p className="admin-form-hint" style={{ marginBottom: 'var(--spacing-1)' }}>
+                        <strong>{selected.display_name}</strong>
+                      </p>
+                      <p className="admin-form-hint">{selected.email}</p>
+                      <p className="admin-form-hint" style={{ marginTop: 'var(--spacing-2)', fontStyle: 'italic' }}>
+                        {selected.signature}
+                      </p>
+                    </div>
+                  ) : <p className="admin-form-hint">Selecciona un agente</p>;
+                })()
+              ) : (
+                <p className="admin-form-hint">Selecciona un tipo de autor</p>
+              )}
+            </div>
           </div>
 
           {/* Source Name */}
-          <div>
-            <label htmlFor="source_name" className="block text-sm font-medium text-slate-700 mb-2">
+          <div className="admin-form-field">
+            <label htmlFor="source_name" className="admin-form-label">
               Nombre de la fuente
             </label>
             <input
@@ -447,14 +552,14 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               id="source_name"
               value={sourceName}
               onChange={(e) => setSourceName(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Para artículos externos"
+              className="admin-form-input"
+              placeholder="Para artículos externos (opcional)"
             />
           </div>
 
           {/* Source URL */}
-          <div>
-            <label htmlFor="source_url" className="block text-sm font-medium text-slate-700 mb-2">
+          <div className="admin-form-field">
+            <label htmlFor="source_url" className="admin-form-label">
               URL de la fuente
             </label>
             <input
@@ -462,7 +567,7 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               id="source_url"
               value={sourceUrl}
               onChange={(e) => setSourceUrl(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="admin-form-input"
               placeholder="https://fuente.com/articulo"
             />
           </div>
@@ -470,18 +575,18 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
       </div>
 
       {/* Status Section */}
-      <div className="card">
-        <h2 className="heading-4 text-slate-900 mb-6">Estado de Publicación</h2>
+      <div className="admin-form-section">
+        <h2 className="admin-form-section__title">Estado de Publicación</h2>
 
-        <div>
-          <label htmlFor="status" className="block text-sm font-medium text-slate-700 mb-2">
+        <div className="admin-form-field">
+          <label htmlFor="status" className="admin-form-label">
             Estado
           </label>
           <select
             id="status"
             value={status}
             onChange={(e) => setStatus(e.target.value as any)}
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="admin-form-select"
           >
             <option value="draft">Borrador</option>
             <option value="published">Publicado</option>
@@ -491,24 +596,24 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+      <div className="admin-form-actions">
         <button
           type="button"
           onClick={() => router.back()}
           disabled={loading}
-          className="btn-ghost flex items-center gap-2 w-full sm:w-auto"
+          className="btn btn-ghost"
         >
           <X className="w-4 h-4" />
           Cancelar
         </button>
 
-        <div className="flex gap-3 w-full sm:w-auto">
+        <div className="admin-form-actions__group">
           {!isEditing && (
             <button
               type="button"
               onClick={(e) => handleSubmit(e as any, true)}
               disabled={loading}
-              className="btn-secondary flex items-center gap-2"
+              className="btn btn-secondary"
             >
               <Eye className="w-4 h-4" />
               Publicar Ahora
@@ -518,7 +623,7 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary flex items-center gap-2"
+            className="btn btn-primary"
           >
             <Save className="w-4 h-4" />
             {loading ? 'Guardando...' : isEditing ? 'Actualizar' : 'Guardar Borrador'}

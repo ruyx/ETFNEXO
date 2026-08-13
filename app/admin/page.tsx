@@ -130,7 +130,7 @@ export default async function AdminDashboardPage() {
         <h2 className="text-lg font-medium text-gray-900 mb-4">
           Acciones Rápidas
         </h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link
             href="/admin/noticias/crear"
             className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
@@ -142,6 +142,12 @@ export default async function AdminDashboardPage() {
             className="flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
           >
             📋 Ver Noticias
+          </Link>
+          <Link
+            href="/admin/agentes"
+            className="flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+          >
+            🤖 Gestionar Agentes
           </Link>
           <Link
             href="/admin/categorias"
