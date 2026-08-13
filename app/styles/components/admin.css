@@ -532,6 +532,7 @@
   font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--color-slate-700);
+  margin-top: var(--spacing-5);
   margin-bottom: var(--spacing-2);
 }
 
