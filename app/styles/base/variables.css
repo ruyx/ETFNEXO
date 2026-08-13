@@ -58,6 +58,16 @@
   --color-warning: #F59E0B;     /* Amber-500 */
   --color-info: #3B82F6;        /* Blue-600 */
 
+  /* Admin Components - Light backgrounds and dark text */
+  --color-blue-100: #DBEAFE;    /* Light blue background */
+  --color-blue-800: #1E40AF;    /* Dark blue text */
+  --color-amber-100: #FEF3C7;   /* Light amber background */
+  --color-amber-700: #B45309;   /* Dark amber text */
+  --color-emerald-100: #D1FAE5; /* Light emerald background */
+  --color-emerald-800: #065F46; /* Dark emerald text */
+  --color-indigo-100: #E0E7FF;  /* Light indigo background */
+  --color-indigo-700: #4338CA;  /* Dark indigo text */
+
   /* ==================== COMPONENTES ==================== */
   /* Header */
   --header-height: 4.5rem;      /* 72px */
