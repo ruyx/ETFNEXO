@@ -13,6 +13,8 @@
 @import './styles/components/gestoras.css';
 @import './styles/components/noticias.css';
 @import './styles/components/etfs.css';
+@import './styles/components/admin.css';
+@import './styles/components/admin-extension.css';
 
 @tailwind base;
 @tailwind components;

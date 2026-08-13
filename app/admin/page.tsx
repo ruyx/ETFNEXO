@@ -5,6 +5,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
+import { FileText, FileEdit, Folder, Tags, Plus, List, Users, FolderOpen } from 'lucide-react';
 
 export const metadata = {
   title: 'Dashboard Admin - ETF Nexo',
@@ -49,159 +50,124 @@ async function getStats() {
 export default async function AdminDashboardPage() {
   const stats = await getStats();
 
-  const statCards = [
-    {
-      title: 'Total Artículos',
-      value: stats.totalArticles,
-      subtitle: `${stats.publishedArticles} publicados`,
-      color: 'bg-blue-500',
-      icon: '📰'
-    },
-    {
-      title: 'Borradores',
-      value: stats.draftArticles,
-      subtitle: 'Sin publicar',
-      color: 'bg-yellow-500',
-      icon: '✏️'
-    },
-    {
-      title: 'Categorías',
-      value: stats.totalCategories,
-      subtitle: 'Activas',
-      color: 'bg-green-500',
-      icon: '📁'
-    },
-    {
-      title: 'Etiquetas',
-      value: stats.totalTags,
-      subtitle: 'Disponibles',
-      color: 'bg-purple-500',
-      icon: '🏷️'
-    }
-  ];
-
   return (
-    <div className="space-y-8">
+    <div className="admin-container">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Resumen general del panel de administración
-        </p>
+      <div className="admin-header">
+        <div>
+          <h1 className="admin-header__title">Dashboard</h1>
+          <p className="admin-header__description">
+            Resumen general del panel de administración
+          </p>
+        </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {statCards.map((stat) => (
-          <div
-            key={stat.title}
-            className="bg-white overflow-hidden shadow rounded-lg"
-          >
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className={`rounded-md p-3 ${stat.color}`}>
-                    <span className="text-2xl">{stat.icon}</span>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      {stat.title}
-                    </dt>
-                    <dd>
-                      <div className="text-2xl font-semibold text-gray-900">
-                        {stat.value}
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        {stat.subtitle}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
+      <div className="admin-stats-grid">
+        <div className="admin-stat-card">
+          <div className="admin-stat-card__icon">
+            <FileText className="w-6 h-6" />
           </div>
-        ))}
+          <div className="admin-stat-card__content">
+            <p className="admin-stat-card__label">Total Artículos</p>
+            <p className="admin-stat-card__value">{stats.totalArticles}</p>
+            <p className="admin-stat-card__subtitle">{stats.publishedArticles} publicados</p>
+          </div>
+        </div>
+
+        <div className="admin-stat-card">
+          <div className="admin-stat-card__icon admin-stat-card__icon--warning">
+            <FileEdit className="w-6 h-6" />
+          </div>
+          <div className="admin-stat-card__content">
+            <p className="admin-stat-card__label">Borradores</p>
+            <p className="admin-stat-card__value">{stats.draftArticles}</p>
+            <p className="admin-stat-card__subtitle">Sin publicar</p>
+          </div>
+        </div>
+
+        <div className="admin-stat-card">
+          <div className="admin-stat-card__icon admin-stat-card__icon--success">
+            <Folder className="w-6 h-6" />
+          </div>
+          <div className="admin-stat-card__content">
+            <p className="admin-stat-card__label">Categorías</p>
+            <p className="admin-stat-card__value">{stats.totalCategories}</p>
+            <p className="admin-stat-card__subtitle">Activas</p>
+          </div>
+        </div>
+
+        <div className="admin-stat-card">
+          <div className="admin-stat-card__icon admin-stat-card__icon--info">
+            <Tags className="w-6 h-6" />
+          </div>
+          <div className="admin-stat-card__content">
+            <p className="admin-stat-card__label">Etiquetas</p>
+            <p className="admin-stat-card__value">{stats.totalTags}</p>
+            <p className="admin-stat-card__subtitle">Disponibles</p>
+          </div>
+        </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white shadow rounded-lg p-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">
-          Acciones Rápidas
-        </h2>
+      <div className="admin-card">
+        <h2 className="admin-card__title">Acciones Rápidas</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Link
-            href="/admin/noticias/crear"
-            className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
-          >
-            ➕ Crear Noticia
+          <Link href="/admin/noticias/crear" className="btn btn-primary">
+            <Plus className="w-4 h-4" />
+            Crear Noticia
           </Link>
-          <Link
-            href="/admin/noticias"
-            className="flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-          >
-            📋 Ver Noticias
+          <Link href="/admin/noticias" className="btn btn-secondary">
+            <List className="w-4 h-4" />
+            Ver Noticias
           </Link>
-          <Link
-            href="/admin/agentes"
-            className="flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-          >
-            🤖 Gestionar Agentes
+          <Link href="/admin/agentes" className="btn btn-secondary">
+            <Users className="w-4 h-4" />
+            Gestionar Agentes
           </Link>
-          <Link
-            href="/admin/categorias"
-            className="flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-          >
-            🗂️ Gestionar Categorías
+          <Link href="/admin/categorias" className="btn btn-secondary">
+            <FolderOpen className="w-4 h-4" />
+            Gestionar Categorías
           </Link>
         </div>
       </div>
 
       {/* Recent Articles */}
-      <div className="bg-white shadow rounded-lg">
-        <div className="px-6 py-5 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">
-            Artículos Recientes
-          </h2>
-        </div>
-        <ul className="divide-y divide-gray-200">
+      <div className="admin-card">
+        <h2 className="admin-card__title">Artículos Recientes</h2>
+        <div className="admin-list">
           {stats.recentArticles.length === 0 ? (
-            <li className="px-6 py-4 text-sm text-gray-500 text-center">
+            <div className="admin-list__empty">
               No hay artículos aún
-            </li>
+            </div>
           ) : (
             stats.recentArticles.map((article) => (
-              <li key={article.id} className="px-6 py-4 hover:bg-gray-50">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1 min-w-0">
-                    <Link
-                      href={`/admin/noticias/${article.id}`}
-                      className="text-sm font-medium text-blue-600 hover:text-blue-800 truncate block"
-                    >
-                      {article.title}
-                    </Link>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {article.author_name || 'Sin autor'} •{' '}
-                      {new Date(article.created_at).toLocaleDateString('es-ES')}
-                    </p>
-                  </div>
-                  <div className="ml-4 flex-shrink-0">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        article.status === 'published'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}
-                    >
-                      {article.status === 'published' ? 'Publicado' : 'Borrador'}
-                    </span>
-                  </div>
+              <div key={article.id} className="admin-list__item">
+                <div className="admin-list__item-content">
+                  <Link
+                    href={`/admin/noticias/${article.id}`}
+                    className="admin-list__item-title"
+                  >
+                    {article.title}
+                  </Link>
+                  <p className="admin-list__item-meta">
+                    {article.author_name || 'Sin autor'} •{' '}
+                    {new Date(article.created_at).toLocaleDateString('es-ES')}
+                  </p>
                 </div>
-              </li>
+                <span
+                  className={`admin-badge ${
+                    article.status === 'published'
+                      ? 'admin-badge--success'
+                      : 'admin-badge--inactive'
+                  }`}
+                >
+                  {article.status === 'published' ? 'Publicado' : 'Borrador'}
+                </span>
+              </div>
             ))
           )}
-        </ul>
+        </div>
       </div>
     </div>
   );

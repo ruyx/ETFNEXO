@@ -195,6 +195,23 @@ export default function UserNav() {
               </svg>
               Mis Valoraciones
             </Link>
+
+            {/* Redactar artículos - Solo para admin y redactor */}
+            {(profile?.role === 'admin' || profile?.role === 'redactor') && (
+              <Link
+                href="/admin/noticias"
+                className="user-nav-dropdown-link"
+                onClick={() => setIsOpen(false)}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M14 2H8.5L7.5 0H2C0.9 0 0 0.9 0 2V14C0 15.1 0.9 16 2 16H14C15.1 16 16 15.1 16 14V4C16 2.9 15.1 2 14 2ZM4 12V10H12V12H4ZM12 8H4V6H12V8Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                Redactar artículos
+              </Link>
+            )}
           </nav>
 
           <div className="user-nav-dropdown-divider"></div>

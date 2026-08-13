@@ -41,26 +41,23 @@ export default function CrearNoticiaPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="admin-form-container">
       {/* Header */}
-      <div className="mb-8">
-        <Link
-          href="/admin/noticias"
-          className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4"
-        >
+      <div className="admin-form-header">
+        <Link href="/admin/noticias" className="admin-form-back-link">
           <ArrowLeft className="w-4 h-4" />
           Volver al listado
         </Link>
 
-        <h1 className="heading-1 text-slate-900">Crear Nueva Noticia</h1>
-        <p className="mt-2 text-slate-600">
+        <h1 className="admin-form-title">Crear Nueva Noticia</h1>
+        <p className="admin-form-description">
           Completa los campos para crear un nuevo artículo
         </p>
       </div>
 
       {/* Error global */}
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+        <div className="admin-form-error" style={{ marginBottom: 'var(--spacing-6)' }}>
           {error}
         </div>
       )}

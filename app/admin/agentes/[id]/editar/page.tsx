@@ -8,6 +8,7 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 interface Agent {
   id: string;
@@ -233,7 +234,8 @@ export default function EditarAgentePage() {
     <div className="admin-form-container">
       {/* Back link */}
       <Link href="/admin/agentes" className="admin-form-back-link">
-        ← Volver a Agentes
+        <ArrowLeft className="w-4 h-4" />
+        Volver a Agentes
       </Link>
 
       {/* Header */}
@@ -384,7 +386,7 @@ export default function EditarAgentePage() {
                 onClick={addExpertise}
                 className="btn btn--secondary btn--sm"
               >
-                + Añadir
+                Añadir
               </button>
             </div>
 

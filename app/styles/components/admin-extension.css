@@ -1,0 +1,249 @@
+/* ============================================
+   ADMIN PANEL EXTENSIONS - Clases adicionales
+   ============================================ */
+
+/* ==================== BADGES ==================== */
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.admin-badge--success {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.admin-badge--inactive {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.admin-badge--neutral {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.admin-badge--info {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+/* ==================== TAGS ==================== */
+.admin-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.admin-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  background-color: #f3f4f6;
+  color: #374151;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.admin-tag--muted {
+  background-color: #e5e7eb;
+  color: #6b7280;
+}
+
+.admin-tag__remove {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: #6b7280;
+  transition: color 0.2s;
+}
+
+.admin-tag__remove:hover {
+  color: #374151;
+}
+
+/* ==================== EMPTY STATE ==================== */
+.admin-empty {
+  background: var(--color-white);
+  border-radius: var(--btn-radius);
+  padding: var(--spacing-8);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.admin-empty__title {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  color: var(--color-slate-900);
+  margin: 0;
+}
+
+.admin-empty__description {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: var(--color-slate-600);
+  margin: 0;
+  max-width: 500px;
+}
+
+/* ==================== TABLE EXTENSIONS ==================== */
+.admin-table__actions {
+  display: flex;
+  gap: var(--spacing-3);
+  justify-content: flex-end;
+}
+
+.admin-table__actions-header {
+  text-align: right;
+}
+
+.admin-table__action {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.admin-table__action:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.admin-table-cell--number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==================== STAT CARD EXTENSIONS ==================== */
+.admin-stat-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-md);
+  background-color: #dbeafe;
+  color: #1e40af;
+  flex-shrink: 0;
+}
+
+.admin-stat-card__icon--warning {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.admin-stat-card__icon--success {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.admin-stat-card__icon--info {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.admin-stat-card__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-stat-card__subtitle {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--color-slate-500);
+  margin-top: 0.25rem;
+}
+
+/* ==================== CARD ==================== */
+.admin-card {
+  background: var(--color-white);
+  border-radius: var(--btn-radius);
+  padding: var(--spacing-6);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  margin-bottom: var(--spacing-6);
+}
+
+.admin-card__title {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 500;
+  color: var(--color-slate-900);
+  margin-bottom: var(--spacing-4);
+}
+
+/* ==================== LIST ==================== */
+.admin-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-list__empty {
+  padding: var(--spacing-4) var(--spacing-6);
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-slate-500);
+}
+
+.admin-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-4) var(--spacing-6);
+  border-top: 1px solid var(--color-slate-200);
+  transition: background-color 0.2s;
+}
+
+.admin-list__item:first-child {
+  border-top: none;
+}
+
+.admin-list__item:hover {
+  background-color: var(--color-slate-50);
+}
+
+.admin-list__item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-list__item-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-list__item-title:hover {
+  color: var(--color-primary-dark);
+}
+
+.admin-list__item-meta {
+  font-size: 0.875rem;
+  color: var(--color-slate-500);
+  margin-top: 0.25rem;
+}

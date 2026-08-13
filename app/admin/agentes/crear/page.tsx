@@ -1,13 +1,14 @@
+'use client';
+
 /**
  * Página de creación de Agentes AI
  * /admin/agentes/crear
  */
 
-'use client';
-
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 export default function CrearAgentePage() {
   const router = useRouter();
@@ -127,7 +128,8 @@ export default function CrearAgentePage() {
     <div className="admin-form-container">
       {/* Back link */}
       <Link href="/admin/agentes" className="admin-form-back-link">
-        ← Volver a Agentes
+        <ArrowLeft className="w-4 h-4" />
+        Volver a Agentes
       </Link>
 
       {/* Header */}
@@ -282,7 +284,7 @@ export default function CrearAgentePage() {
                 onClick={addExpertise}
                 className="btn btn--secondary btn--sm"
               >
-                + Añadir
+                Añadir
               </button>
             </div>
 
