@@ -6,6 +6,7 @@
  */
 
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
@@ -58,7 +59,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();  // Use admin client to bypass RLS
     const body = await request.json();
     const { id } = await params;
 
@@ -127,7 +128,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();  // Use admin client to bypass RLS
     const { id } = await params;
 
     const { error } = await supabase
