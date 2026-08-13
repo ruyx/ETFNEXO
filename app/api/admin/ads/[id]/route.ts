@@ -4,6 +4,8 @@
 // @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireAdmin, handleAuthError } from '@/lib/auth/check-admin';
+import { successResponse, errorResponse } from '@/lib/auth/api-response';
 
 // GET /api/admin/ads/[id] - Obtener un anuncio específico
 export async function GET(
@@ -11,6 +13,9 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Verificar autenticación y rol de admin
+    await requireAdmin();
+
     const supabase = createAdminClient();
 
     const { data: ad, error } = await supabase
@@ -24,20 +29,14 @@ export async function GET(
       .single();
 
     if (error || !ad) {
-      return NextResponse.json(
-        { error: 'Anuncio no encontrado' },
-        { status: 404 }
-      );
+      return errorResponse('Anuncio no encontrado', 'NOT_FOUND', 404);
     }
 
-    return NextResponse.json({ ad });
+    return successResponse({ ad });
 
   } catch (error: any) {
     console.error('Error in GET /api/admin/ads/[id]:', error);
-    return NextResponse.json(
-      { error: 'Error inesperado', details: error.message },
-      { status: 500 }
-    );
+    return handleAuthError(error);
   }
 }
 
@@ -47,6 +46,9 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Verificar autenticación y rol de admin
+    await requireAdmin();
+
     const supabase = createAdminClient();
     const body = await request.json();
 
@@ -88,20 +90,19 @@ export async function PATCH(
 
     if (error || !ad) {
       console.error('Error updating ad:', error);
-      return NextResponse.json(
-        { error: 'Error al actualizar anuncio', details: error?.message },
-        { status: 500 }
+      return errorResponse(
+        'Error al actualizar anuncio',
+        'INTERNAL_ERROR',
+        500,
+        error?.message
       );
     }
 
-    return NextResponse.json({ ad });
+    return successResponse({ ad }, 'Anuncio actualizado exitosamente');
 
   } catch (error: any) {
     console.error('Error in PATCH /api/admin/ads/[id]:', error);
-    return NextResponse.json(
-      { error: 'Error inesperado', details: error.message },
-      { status: 500 }
-    );
+    return handleAuthError(error);
   }
 }
 
@@ -111,6 +112,9 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Verificar autenticación y rol de admin
+    await requireAdmin();
+
     const supabase = createAdminClient();
 
     const { error } = await supabase
@@ -120,22 +124,21 @@ export async function DELETE(
 
     if (error) {
       console.error('Error deleting ad:', error);
-      return NextResponse.json(
-        { error: 'Error al eliminar anuncio', details: error.message },
-        { status: 500 }
+      return errorResponse(
+        'Error al eliminar anuncio',
+        'INTERNAL_ERROR',
+        500,
+        error.message
       );
     }
 
-    return NextResponse.json(
-      { message: 'Anuncio eliminado correctamente' },
-      { status: 200 }
+    return successResponse(
+      { deleted: true },
+      'Anuncio eliminado correctamente'
     );
 
   } catch (error: any) {
     console.error('Error in DELETE /api/admin/ads/[id]:', error);
-    return NextResponse.json(
-      { error: 'Error inesperado', details: error.message },
-      { status: 500 }
-    );
+    return handleAuthError(error);
   }
 }

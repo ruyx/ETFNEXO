@@ -11,6 +11,8 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import * as cheerio from 'cheerio';
+import { requireEditor, handleAuthError } from '@/lib/auth/check-admin';
+import { successResponse } from '@/lib/auth/api-response';
 
 // ============================================
 // Interfaces
@@ -248,6 +250,9 @@ async function fetchGoogleSheetCSV(): Promise<GoogleSheetRow[]> {
 // ============================================
 export async function POST(req: NextRequest) {
   try {
+    // Verificar autenticación y permisos de edición (admin o redactor)
+    await requireEditor();
+
     console.log('🚀 Starting import...');
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -330,13 +335,10 @@ export async function POST(req: NextRequest) {
 
     console.log('📊 Complete:', summary);
 
-    return NextResponse.json(summary);
+    return successResponse(summary, `Importación completada: ${imported} importadas, ${skipped} omitidas`);
 
   } catch (error: any) {
     console.error('❌ Fatal:', error);
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    );
+    return handleAuthError(error);
   }
 }

@@ -8,6 +8,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { requireAdmin, handleAuthError } from '@/lib/auth/check-admin';
+import { successResponse } from '@/lib/auth/api-response';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -106,6 +108,11 @@ async function fetchYahooFinanceData(ticker: string): Promise<YahooFinanceData> 
 
 export async function POST(request: NextRequest) {
   try {
+    // Verificar autenticación y rol de admin
+    // Nota: Este endpoint también es llamado por Vercel Cron, que debe configurar
+    // un header de autenticación especial o usar un token en el request
+    await requireAdmin();
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: { persistSession: false }
     });
@@ -191,20 +198,16 @@ export async function POST(request: NextRequest) {
 
     console.log(`[Update ETF Data] Completed: ${updated} updated, ${failed} failed`);
 
-    return NextResponse.json({
-      message: 'ETF data update completed',
+    return successResponse({
       total: etfs.length,
       updated,
       failed,
       timestamp: new Date().toISOString(),
       results: results.slice(0, 50) // Limitar resultados a 50 para no saturar respuesta
-    });
+    }, 'ETF data update completed');
 
   } catch (error: any) {
     console.error('[Update ETF Data] Fatal error:', error);
-    return NextResponse.json(
-      { error: 'Unexpected error', details: error.message },
-      { status: 500 }
-    );
+    return handleAuthError(error);
   }
 }

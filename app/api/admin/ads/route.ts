@@ -4,10 +4,15 @@
 // ============================================
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireAdmin, handleAuthError } from '@/lib/auth/check-admin';
+import { successResponse } from '@/lib/auth/api-response';
 
 // GET /api/admin/ads - Listar todos los anuncios
 export async function GET(request: NextRequest) {
   try {
+    // Verificar autenticación y rol de admin
+    await requireAdmin();
+
     const supabase = createAdminClient();
     const { searchParams } = new URL(request.url);
 
@@ -45,20 +50,20 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ ads, count: ads?.length || 0 });
+    return successResponse({ ads, count: ads?.length || 0 });
 
   } catch (error: any) {
     console.error('Unexpected error in GET /api/admin/ads:', error);
-    return NextResponse.json(
-      { error: 'Error inesperado', details: error.message },
-      { status: 500 }
-    );
+    return handleAuthError(error);
   }
 }
 
 // POST /api/admin/ads - Crear nuevo anuncio
 export async function POST(request: NextRequest) {
   try {
+    // Verificar autenticación y rol de admin
+    await requireAdmin();
+
     const supabase = createAdminClient();
     const body = await request.json();
 
@@ -165,13 +170,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ ad }, { status: 201 });
+    return successResponse({ ad }, 'Anuncio creado exitosamente', 201);
 
   } catch (error: any) {
     console.error('Unexpected error in POST /api/admin/ads:', error);
-    return NextResponse.json(
-      { error: 'Error inesperado', details: error.message },
-      { status: 500 }
-    );
+    return handleAuthError(error);
   }
 }

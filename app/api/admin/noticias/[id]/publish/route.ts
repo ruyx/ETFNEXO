@@ -1,0 +1,79 @@
+/**
+ * API Admin - Publicar/Despublicar Artículo
+ * Endpoint simple para cambiar el estado de publicación
+ */
+
+import { NextRequest } from 'next/server';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { requireEditor, handleAuthError } from '@/lib/auth/check-admin';
+import { successResponse, errorResponse } from '@/lib/auth/api-response';
+
+// POST /api/admin/noticias/[id]/publish
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    // Verificar permisos de editor
+    await requireEditor();
+
+    const supabase = createAdminClient();
+    const body = await request.json();
+
+    const publish = body.publish !== false; // Por defecto publicar
+
+    // Obtener artículo actual
+    const { data: article } = await supabase
+      .from('news_articles')
+      .select('id, title, status')
+      .eq('id', params.id)
+      .single();
+
+    if (!article) {
+      return errorResponse('Artículo no encontrado', 'NOT_FOUND', 404);
+    }
+
+    // Determinar nuevo estado
+    const newStatus = publish ? 'published' : 'draft';
+    const updateData: any = {
+      status: newStatus,
+      updated_at: new Date().toISOString()
+    };
+
+    // Si se está publicando, agregar fecha de publicación
+    if (publish) {
+      updateData.published_at = new Date().toISOString();
+    } else {
+      // Si se despublica, limpiar fecha de publicación
+      updateData.published_at = null;
+    }
+
+    const { data: updated, error } = await supabase
+      .from('news_articles')
+      .update(updateData)
+      .eq('id', params.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating article status:', error);
+      return errorResponse(
+        'Error al cambiar estado del artículo',
+        'INTERNAL_ERROR',
+        500,
+        error.message
+      );
+    }
+
+    return successResponse(
+      { article: updated },
+      publish
+        ? 'Artículo publicado exitosamente'
+        : 'Artículo despublicado exitosamente'
+    );
+
+  } catch (error: any) {
+    console.error('Error in POST /api/admin/noticias/[id]/publish:', error);
+    return handleAuthError(error);
+  }
+}
