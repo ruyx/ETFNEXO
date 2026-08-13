@@ -224,7 +224,7 @@ export default function EditarAgentePage() {
         <div className="admin-alert admin-alert--error">
           <strong>Error:</strong> Agente no encontrado
         </div>
-        <Link href="/admin/agentes" className="btn btn--secondary">
+        <Link href="/admin/agentes" className="btn btn-secondary">
           Volver a Agentes
         </Link>
       </div>
@@ -389,7 +389,7 @@ export default function EditarAgentePage() {
               <button
                 type="button"
                 onClick={addExpertise}
-                className="btn btn--secondary btn--sm"
+                className="btn btn-secondary btn-sm"
               >
                 Añadir
               </button>
@@ -482,18 +482,18 @@ export default function EditarAgentePage() {
             type="button"
             onClick={handleDelete}
             disabled={deleting || saving}
-            className="btn btn--danger"
+            className="btn btn-danger"
           >
             {deleting ? 'Eliminando...' : 'Eliminar Agente'}
           </button>
           <div className="admin-form-actions__right">
-            <Link href="/admin/agentes" className="btn btn--secondary">
+            <Link href="/admin/agentes" className="btn btn-secondary">
               Cancelar
             </Link>
             <button
               type="submit"
               disabled={saving || deleting}
-              className="btn btn--primary"
+              className="btn btn-primary"
             >
               {saving ? 'Guardando...' : 'Guardar Cambios'}
             </button>

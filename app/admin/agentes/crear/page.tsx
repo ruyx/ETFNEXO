@@ -283,7 +283,7 @@ export default function CrearAgentePage() {
               <button
                 type="button"
                 onClick={addExpertise}
-                className="btn btn--secondary btn--sm"
+                className="btn btn-secondary btn-sm"
               >
                 Añadir
               </button>
@@ -380,13 +380,13 @@ export default function CrearAgentePage() {
 
         {/* Form Actions */}
         <div className="admin-form-actions">
-          <Link href="/admin/agentes" className="btn btn--secondary">
+          <Link href="/admin/agentes" className="btn btn-secondary">
             Cancelar
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="btn btn--primary"
+            className="btn btn-primary"
           >
             {loading ? 'Creando...' : 'Crear Agente'}
           </button>
