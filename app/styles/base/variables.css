@@ -54,6 +54,7 @@
   /* Semánticos */
   --color-success: #10B981;     /* Emerald-500 */
   --color-error: #EF4444;       /* Red-500 */
+  --color-danger: #EF4444;      /* Red-500 - Alias de error */
   --color-warning: #F59E0B;     /* Amber-500 */
   --color-info: #3B82F6;        /* Blue-600 */
 

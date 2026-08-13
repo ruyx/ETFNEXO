@@ -150,7 +150,7 @@ export default function EditarAgentePage() {
       };
 
       const response = await fetch(`/api/admin/agentes/${agentId}`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(agentData)
       });
