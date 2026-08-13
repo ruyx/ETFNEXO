@@ -532,3 +532,203 @@
   font-size: 0.75rem;
   text-align: center;
 }
+
+/* ==================== AGENT PROFILE CARD ==================== */
+.agent-profile-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--btn-radius);
+  padding: var(--spacing-6);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  transition: all var(--transition-base);
+  cursor: pointer;
+  height: 100%;
+  position: relative;
+}
+
+.agent-profile-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
+  transform: translateY(-2px);
+}
+
+/* Header - Avatar and Status */
+.agent-profile-card__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+  position: relative;
+}
+
+.agent-profile-card__avatar-container {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid var(--color-slate-200);
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.1);
+  transition: border-color var(--transition-base);
+}
+
+.agent-profile-card:hover .agent-profile-card__avatar-container {
+  border-color: var(--color-primary);
+}
+
+.agent-profile-card__avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.agent-profile-card__avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--color-slate-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-slate-400);
+}
+
+.agent-profile-card__status {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* Body - User Info */
+.agent-profile-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+  flex: 1;
+}
+
+.agent-profile-card__name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-slate-900);
+  text-align: center;
+  margin: 0;
+  transition: color var(--transition-base);
+}
+
+.agent-profile-card:hover .agent-profile-card__name {
+  color: var(--color-primary);
+}
+
+.agent-profile-card__username {
+  font-size: 0.875rem;
+  color: var(--color-slate-500);
+  margin: 0;
+  text-align: center;
+}
+
+.agent-profile-card__role {
+  margin-top: var(--spacing-2);
+}
+
+.agent-profile-card__bio {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-slate-600);
+  text-align: center;
+  margin: var(--spacing-3) 0 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.agent-profile-card__expertise {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  justify-content: center;
+  margin-top: var(--spacing-3);
+}
+
+.agent-profile-card__tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: var(--color-slate-100);
+  color: var(--color-slate-700);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.agent-profile-card__tag--more {
+  background-color: var(--color-slate-200);
+  color: var(--color-slate-600);
+}
+
+/* Footer - Stats */
+.agent-profile-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--color-slate-200);
+  margin-top: auto;
+}
+
+.agent-profile-card__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.agent-profile-card__stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-slate-900);
+  font-variant-numeric: tabular-nums;
+}
+
+.agent-profile-card__stat-label {
+  font-size: 0.75rem;
+  color: var(--color-slate-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.agent-profile-card__stat-divider {
+  width: 1px;
+  height: 2rem;
+  background-color: var(--color-slate-200);
+}
+
+/* Action - Hover */
+.agent-profile-card__action {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, var(--color-white) 0%, transparent 100%);
+  padding: var(--spacing-6) var(--spacing-6) var(--spacing-4);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+}
+
+.agent-profile-card:hover .agent-profile-card__action {
+  opacity: 1;
+}
+
+.agent-profile-card__action-text {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}

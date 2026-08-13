@@ -33,97 +33,94 @@ export default function AgentCard({ agent }: AgentCardProps) {
 
   return (
     <Link href={`/admin/agentes/${agent.id}/editar`} className="block h-full">
-      <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden flex flex-col h-full">
-        {/* Avatar */}
-        <div className="relative w-full h-48 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden flex items-center justify-center">
-          {agent.avatar_url ? (
-            <img
-              src={agent.avatar_url}
-              alt={agent.display_name}
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-              style={{ width: '100%', height: '100%' }}
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-slate-400">
-              <User className="w-20 h-20" />
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="p-5 flex flex-col flex-1">
-          {/* Name and Status */}
-          <div className="mb-3">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                {agent.display_name}
-              </h3>
-              <span
-                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
-                  agent.is_active
-                    ? 'bg-emerald-50 text-emerald-700'
-                    : 'bg-slate-100 text-slate-600'
-                }`}
-              >
-                {agent.is_active ? 'Activo' : 'Inactivo'}
-              </span>
-            </div>
-            <p className="text-xs text-slate-500">@{agent.slug}</p>
+      <div className="agent-profile-card">
+        {/* Avatar Section */}
+        <div className="agent-profile-card__header">
+          <div className="agent-profile-card__avatar-container">
+            {agent.avatar_url ? (
+              <img
+                src={agent.avatar_url}
+                alt={agent.display_name}
+                className="agent-profile-card__avatar"
+              />
+            ) : (
+              <div className="agent-profile-card__avatar-placeholder">
+                <User className="w-12 h-12" />
+              </div>
+            )}
           </div>
 
+          {/* Status Badge */}
+          <div className="agent-profile-card__status">
+            <span className={`admin-badge ${agent.is_active ? 'admin-badge--success' : 'admin-badge--inactive'}`}>
+              {agent.is_active ? 'Activo' : 'Inactivo'}
+            </span>
+          </div>
+        </div>
+
+        {/* User Info */}
+        <div className="agent-profile-card__body">
+          <h3 className="agent-profile-card__name">
+            {agent.display_name}
+          </h3>
+
+          <p className="agent-profile-card__username">
+            @{agent.slug}
+          </p>
+
           {/* Role Badge */}
-          <div className="mb-3">
-            <span className="inline-flex items-center px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full">
+          <div className="agent-profile-card__role">
+            <span className="admin-badge admin-badge--neutral">
               {getRoleLabel(agent.role)}
             </span>
           </div>
 
           {/* Bio */}
           {agent.bio && (
-            <p className="text-sm text-slate-600 line-clamp-2 mb-3 flex-1">
+            <p className="agent-profile-card__bio">
               {agent.bio}
             </p>
           )}
 
           {/* Expertise Tags */}
           {agent.expertise && agent.expertise.length > 0 && (
-            <div className="mb-4">
-              <div className="flex flex-wrap gap-1.5">
-                {agent.expertise.slice(0, 3).map((skill, idx) => (
-                  <span
-                    key={idx}
-                    className="inline-flex items-center px-2 py-1 bg-slate-100 text-slate-700 text-xs font-medium rounded-full"
-                  >
-                    {skill}
-                  </span>
-                ))}
-                {agent.expertise.length > 3 && (
-                  <span className="inline-flex items-center px-2 py-1 bg-slate-100 text-slate-500 text-xs font-medium rounded-full">
-                    +{agent.expertise.length - 3}
-                  </span>
-                )}
-              </div>
+            <div className="agent-profile-card__expertise">
+              {agent.expertise.slice(0, 3).map((skill, idx) => (
+                <span key={idx} className="agent-profile-card__tag">
+                  {skill}
+                </span>
+              ))}
+              {agent.expertise.length > 3 && (
+                <span className="agent-profile-card__tag agent-profile-card__tag--more">
+                  +{agent.expertise.length - 3}
+                </span>
+              )}
             </div>
           )}
+        </div>
 
-          {/* Stats */}
-          <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-            <div className="flex flex-col">
-              <span className="text-xs text-slate-500">Artículos</span>
-              <span className="text-sm font-semibold text-slate-900 tabular-nums">
-                {agent.articles_count || 0}
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs text-slate-500">Vistas</span>
-              <span className="text-sm font-semibold text-slate-900 tabular-nums">
-                {(agent.total_views || 0).toLocaleString()}
-              </span>
-            </div>
-            <div className="text-xs text-blue-600 font-medium group-hover:text-blue-700">
-              Editar →
-            </div>
+        {/* Stats Footer */}
+        <div className="agent-profile-card__footer">
+          <div className="agent-profile-card__stat">
+            <span className="agent-profile-card__stat-value">
+              {agent.articles_count || 0}
+            </span>
+            <span className="agent-profile-card__stat-label">Artículos</span>
           </div>
+          <div className="agent-profile-card__stat-divider" />
+          <div className="agent-profile-card__stat">
+            <span className="agent-profile-card__stat-value">
+              {(agent.total_views || 0).toLocaleString()}
+            </span>
+            <span className="agent-profile-card__stat-label">Vistas</span>
+          </div>
+        </div>
+
+        {/* Hover Action */}
+        <div className="agent-profile-card__action">
+          <span className="agent-profile-card__action-text">
+            Ver perfil →
+          </span>
         </div>
       </div>
     </Link>
