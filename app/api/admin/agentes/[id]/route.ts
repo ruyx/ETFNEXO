@@ -76,19 +76,28 @@ export async function PUT(
     if (body.is_active !== undefined) updateData.is_active = body.is_active;
     if (body.can_publish !== undefined) updateData.can_publish = body.can_publish;
 
-    const { data: agent, error } = await supabase
+    const { data: agents, error } = await supabase
       .from('ai_agents')
       .update(updateData)
       .eq('id', params.id)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
+
+    if (!agents || agents.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Agente no encontrado o no se pudo actualizar'
+        },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
       data: {
-        agent
+        agent: agents[0]
       }
     });
 
