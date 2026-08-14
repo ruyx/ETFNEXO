@@ -732,3 +732,163 @@
   font-weight: 600;
   color: var(--color-primary);
 }
+
+/* ==================== ARTICLE FORM COMPONENTS ==================== */
+
+/* Form Group - Basic container for form fields */
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.admin-form-group:last-child {
+  margin-bottom: 0;
+}
+
+/* Form Actions Right Group */
+.admin-form-actions__right {
+  display: flex;
+  gap: var(--spacing-3);
+  align-items: center;
+}
+
+/* WYSIWYG Editor Containers */
+.article-form-editor {
+  background: var(--color-white);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--btn-radius);
+  overflow: hidden;
+}
+
+.article-form-editor--large {
+  min-height: 400px;
+}
+
+/* Quill Editor Overrides */
+.article-form-editor :global(.ql-container) {
+  font-family: var(--font-sans);
+  font-size: 0.938rem;
+  min-height: 150px;
+}
+
+.article-form-editor--large :global(.ql-container) {
+  min-height: 350px;
+}
+
+.article-form-editor :global(.ql-toolbar) {
+  border: none;
+  border-bottom: 1px solid var(--color-slate-200);
+  background: var(--color-slate-50);
+  padding: var(--spacing-3);
+}
+
+.article-form-editor :global(.ql-editor) {
+  padding: var(--spacing-4);
+  line-height: 1.6;
+}
+
+.article-form-editor :global(.ql-editor.ql-blank::before) {
+  color: var(--color-slate-400);
+  font-style: normal;
+}
+
+/* Image Preview */
+.article-form-image-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--btn-radius);
+  overflow: hidden;
+  background: var(--color-slate-100);
+}
+
+.article-form-image-preview__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.article-form-image-preview__remove {
+  position: absolute;
+  top: var(--spacing-2);
+  right: var(--spacing-2);
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--color-danger);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  transition: all var(--transition-base);
+}
+
+.article-form-image-preview__remove:hover {
+  background-color: var(--color-error);
+  transform: scale(1.1);
+}
+
+/* Image Placeholder */
+.article-form-image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--color-slate-100);
+  border: 2px dashed var(--color-slate-300);
+  border-radius: var(--btn-radius);
+  color: var(--color-slate-400);
+  gap: var(--spacing-2);
+}
+
+.article-form-image-placeholder p {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Author Preview */
+.article-form-author-preview {
+  background: var(--color-slate-50);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--btn-radius);
+  padding: var(--spacing-4);
+}
+
+.article-form-author-preview__name {
+  font-size: 0.938rem;
+  font-weight: 600;
+  color: var(--color-slate-900);
+  margin: 0 0 var(--spacing-1) 0;
+}
+
+.article-form-author-preview__email {
+  font-size: 0.813rem;
+  color: var(--color-slate-600);
+  margin: 0;
+}
+
+.article-form-author-preview__signature {
+  font-size: 0.813rem;
+  font-style: italic;
+  color: var(--color-slate-500);
+  margin: var(--spacing-2) 0 0 0;
+  padding-top: var(--spacing-2);
+  border-top: 1px solid var(--color-slate-200);
+}
+
+/* Large Title Input */
+.admin-form-input--large {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: var(--spacing-4);
+  line-height: 1.3;
+}

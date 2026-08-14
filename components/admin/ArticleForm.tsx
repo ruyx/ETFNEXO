@@ -1,13 +1,18 @@
 'use client';
 
 /**
- * ArticleForm - Formulario reutilizable para crear/editar artículos
- * Sigue el sistema de diseño del proyecto (slate/blue, sin emojis)
+ * ArticleForm - Formulario moderno para crear/editar artículos
+ * Layout 2 columnas con editores WYSIWYG
  */
 
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Eye, Upload, Tag as TagIcon } from 'lucide-react';
+import { Save, X, Eye, Upload, Tag as TagIcon, Image as ImageIcon } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import 'react-quill/dist/quill.snow.css';
+
+// Import Quill dynamically to avoid SSR issues
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 interface Category {
   id: string;
@@ -95,13 +100,29 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   const [sourceUrl, setSourceUrl] = useState(initialData?.source_url || '');
   const [status, setStatus] = useState<'draft' | 'published' | 'archived'>(initialData?.status || 'draft');
 
+  // Quill modules configuration
+  const quillModules = useMemo(() => ({
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'align': [] }],
+      ['link', 'blockquote', 'code-block'],
+      ['clean']
+    ],
+  }), []);
+
+  const quillFormats = [
+    'header', 'bold', 'italic', 'underline', 'strike',
+    'list', 'bullet', 'align', 'link', 'blockquote', 'code-block'
+  ];
+
   // Cargar datos al montar
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoadingData(true);
 
-        // Cargar categorías, etiquetas, agentes y usuario actual en paralelo
         const [categoriesRes, tagsRes, agentsRes, userRes] = await Promise.all([
           fetch('/api/admin/categorias'),
           fetch('/api/admin/etiquetas'),
@@ -170,12 +191,10 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
 
       // Determinar autor según tipo seleccionado
       if (authorType === 'ai_agent' && selectedAgentId) {
-        // Firmar con agente AI
         articleData.author_id = selectedAgentId;
         articleData.author_name = null;
         articleData.author_email = null;
       } else if (authorType === 'current_user' && currentUser) {
-        // Firmar con usuario actual
         articleData.author_id = null;
         articleData.author_name = currentUser.name;
         articleData.author_email = currentUser.email;
@@ -189,104 +208,92 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   };
 
   return (
-    <form onSubmit={(e) => handleSubmit(e, false)} className="admin-form">
-      {/* Error Message */}
-      {error && (
-        <div className="admin-form-error">
-          {error}
-        </div>
-      )}
+    <form onSubmit={(e) => handleSubmit(e, false)} className="admin-form admin-form--grid">
+      {/* SIDEBAR - Imagen destacada + Metadata + Opciones */}
+      <div className="admin-form-sidebar">
+        {/* Featured Image Card */}
+        <div className="admin-form-section--compact">
+          <h2 className="admin-form-section__title">Imagen Destacada</h2>
 
-      {/* Main Content Section */}
-      <div className="admin-form-section">
-        <h2 className="admin-form-section__title">Contenido Principal</h2>
+          {featuredImageUrl && (
+            <div className="article-form-image-preview">
+              <img
+                src={featuredImageUrl}
+                alt={featuredImageAlt || 'Preview'}
+                className="article-form-image-preview__img"
+              />
+              <button
+                type="button"
+                onClick={() => setFeaturedImageUrl('')}
+                className="article-form-image-preview__remove"
+              >
+                ×
+              </button>
+            </div>
+          )}
 
-        <div className="admin-form-fields">
-          {/* Title */}
-          <div className="admin-form-field">
-            <label htmlFor="title" className="admin-form-label admin-form-label--required">
-              Título
+          {!featuredImageUrl && (
+            <div className="article-form-image-placeholder">
+              <ImageIcon className="w-12 h-12" />
+              <p>Sin imagen</p>
+            </div>
+          )}
+
+          <div className="admin-form-group" style={{ marginTop: 'var(--spacing-4)' }}>
+            <label htmlFor="featured_image_url" className="admin-form-label">
+              URL de imagen
+            </label>
+            <input
+              type="url"
+              id="featured_image_url"
+              value={featuredImageUrl}
+              onChange={(e) => setFeaturedImageUrl(e.target.value)}
+              className="admin-form-input"
+              placeholder="https://..."
+            />
+          </div>
+
+          <div className="admin-form-group">
+            <label htmlFor="featured_image_alt" className="admin-form-label">
+              Texto alternativo
             </label>
             <input
               type="text"
-              id="title"
-              required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              id="featured_image_alt"
+              value={featuredImageAlt}
+              onChange={(e) => setFeaturedImageAlt(e.target.value)}
               className="admin-form-input"
-              placeholder="Título del artículo"
+              placeholder="Descripción"
             />
-          </div>
-
-          {/* Slug */}
-          <div className="admin-form-field">
-            <label htmlFor="slug" className="admin-form-label">
-              Slug (URL)
-            </label>
-            <input
-              type="text"
-              id="slug"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              className="admin-form-input"
-              placeholder="Se generará automáticamente si se deja vacío"
-            />
-            <p className="admin-form-hint">
-              URL amigable del artículo. Dejar vacío para generar automáticamente.
-            </p>
-          </div>
-
-          {/* Excerpt */}
-          <div className="admin-form-field">
-            <label htmlFor="excerpt" className="admin-form-label">
-              Extracto
-            </label>
-            <textarea
-              id="excerpt"
-              value={excerpt}
-              onChange={(e) => setExcerpt(e.target.value)}
-              rows={3}
-              className="admin-form-input admin-form-input--textarea"
-              placeholder="Breve resumen del artículo (opcional)"
-            />
-            <p className="admin-form-hint">
-              {excerpt.length} caracteres. Recomendado: 150-200.
-            </p>
-          </div>
-
-          {/* Content */}
-          <div className="admin-form-field">
-            <label htmlFor="content" className="admin-form-label admin-form-label--required">
-              Contenido
-            </label>
-            <textarea
-              id="content"
-              required
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              rows={16}
-              className="admin-form-input admin-form-input--textarea admin-form-input--code"
-              placeholder="Contenido del artículo en HTML"
-            />
-            <p className="admin-form-hint">
-              Acepta HTML. {content.length} caracteres.
-            </p>
           </div>
         </div>
-      </div>
 
-      {/* Category and Tags Section */}
-      <div className="admin-form-section">
-        <h2 className="admin-form-section__title">Categoría y Etiquetas</h2>
+        {/* Publish Options */}
+        <div className="admin-form-section--compact">
+          <h2 className="admin-form-section__title">Publicación</h2>
 
-        <div className="admin-form-fields">
-          {/* Category */}
-          <div className="admin-form-field">
+          <div className="admin-form-group">
+            <label htmlFor="status" className="admin-form-label">
+              Estado
+            </label>
+            <select
+              id="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as any)}
+              className="admin-form-select"
+            >
+              <option value="draft">Borrador</option>
+              <option value="published">Publicado</option>
+              <option value="archived">Archivado</option>
+            </select>
+          </div>
+
+          <div className="admin-form-group">
             <label htmlFor="category" className="admin-form-label">
               Categoría
             </label>
             {loadingData ? (
-              <div className="admin-form-hint">Cargando categorías...</div>
+              <div className="admin-form-help">Cargando...</div>
             ) : (
               <select
                 id="category"
@@ -304,111 +311,29 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
             )}
           </div>
 
-          {/* Tags */}
-          <div className="admin-form-field">
-            <label className="admin-form-label">
-              Etiquetas
-            </label>
-            {loadingData ? (
-              <div className="admin-form-hint">Cargando etiquetas...</div>
-            ) : (
-              <div className="admin-tag-selector">
-                {availableTags.map((tag) => {
-                  const isSelected = selectedTags.includes(tag.id);
-                  return (
-                    <button
-                      key={tag.id}
-                      type="button"
-                      onClick={() => handleToggleTag(tag.id)}
-                      className={`admin-tag-button ${
-                        isSelected
-                          ? 'admin-tag-button--selected'
-                          : 'admin-tag-button--unselected'
-                      }`}
-                    >
-                      <TagIcon className="w-3 h-3" />
-                      {tag.name}
-                    </button>
-                  );
-                })}
-                {availableTags.length === 0 && (
-                  <p className="admin-form-hint">
-                    No hay etiquetas disponibles. Crea una desde la gestión de etiquetas.
-                  </p>
-                )}
-              </div>
-            )}
-            <p className="admin-form-hint" style={{ marginTop: 'var(--spacing-2)' }}>
-              {selectedTags.length} etiqueta(s) seleccionada(s)
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Featured Image Section */}
-      <div className="admin-form-section">
-        <h2 className="admin-form-section__title">Imagen Destacada</h2>
-
-        <div className="admin-form-fields">
-          {/* Image URL */}
-          <div className="admin-form-field">
-            <label htmlFor="featured_image_url" className="admin-form-label">
-              URL de la imagen
-            </label>
-            <div className="admin-image-upload-group">
-              <input
-                type="url"
-                id="featured_image_url"
-                value={featuredImageUrl}
-                onChange={(e) => setFeaturedImageUrl(e.target.value)}
-                className="admin-form-input"
-                style={{ flex: 1 }}
-                placeholder="https://ejemplo.com/imagen.jpg"
-              />
-              <button
-                type="button"
-                className="btn btn-secondary"
-              >
-                <Upload className="w-4 h-4" />
-                Subir
-              </button>
-            </div>
-          </div>
-
-          {/* Image Alt */}
-          <div className="admin-form-field">
-            <label htmlFor="featured_image_alt" className="admin-form-label">
-              Texto alternativo
+          <div className="admin-form-group">
+            <label htmlFor="slug" className="admin-form-label">
+              Slug (URL)
             </label>
             <input
               type="text"
-              id="featured_image_alt"
-              value={featuredImageAlt}
-              onChange={(e) => setFeaturedImageAlt(e.target.value)}
+              id="slug"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
               className="admin-form-input"
-              placeholder="Descripción de la imagen para accesibilidad"
+              placeholder="Auto-generado"
             />
+            <p className="admin-form-help">
+              /noticias/{slug || '...'}
+            </p>
           </div>
-
-          {/* Image Preview */}
-          {featuredImageUrl && (
-            <div className="admin-image-preview">
-              <img
-                src={featuredImageUrl}
-                alt={featuredImageAlt || 'Preview'}
-              />
-            </div>
-          )}
         </div>
-      </div>
 
-      {/* Meta & SEO Section */}
-      <div className="admin-form-section">
-        <h2 className="admin-form-section__title">SEO y Metadatos</h2>
+        {/* SEO Metadata */}
+        <div className="admin-form-section--compact">
+          <h2 className="admin-form-section__title">SEO</h2>
 
-        <div className="admin-form-fields">
-          {/* Meta Title */}
-          <div className="admin-form-field">
+          <div className="admin-form-group">
             <label htmlFor="meta_title" className="admin-form-label">
               Título SEO
             </label>
@@ -418,15 +343,14 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               value={metaTitle}
               onChange={(e) => setMetaTitle(e.target.value)}
               className="admin-form-input"
-              placeholder="Se usará el título principal si se deja vacío"
+              placeholder="Usa el título principal"
             />
-            <p className="admin-form-hint">
-              {metaTitle.length} caracteres. Óptimo: 50-60.
+            <p className="admin-form-help">
+              {metaTitle.length} / 60 caracteres
             </p>
           </div>
 
-          {/* Meta Description */}
-          <div className="admin-form-field">
+          <div className="admin-form-group">
             <label htmlFor="meta_description" className="admin-form-label">
               Descripción SEO
             </label>
@@ -436,24 +360,124 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               onChange={(e) => setMetaDescription(e.target.value)}
               rows={3}
               className="admin-form-input admin-form-input--textarea"
-              placeholder="Descripción para motores de búsqueda"
+              placeholder="Descripción para buscadores"
             />
-            <p className="admin-form-hint">
-              {metaDescription.length} caracteres. Óptimo: 150-160.
+            <p className="admin-form-help">
+              {metaDescription.length} / 160 caracteres
             </p>
           </div>
         </div>
       </div>
 
-      {/* Author Section */}
-      <div className="admin-form-section">
-        <h2 className="admin-form-section__title">Autor</h2>
+      {/* MAIN - Contenido principal */}
+      <div className="admin-form-main">
+        {/* Error Message */}
+        {error && (
+          <div className="admin-alert admin-alert--error">
+            <strong>Error:</strong> {error}
+          </div>
+        )}
 
-        <div className="admin-form-fields">
-          {/* Author Type Selector */}
-          <div className="admin-form-field">
+        {/* Content Section */}
+        <div className="admin-form-section--compact">
+          <h2 className="admin-form-section__title">Contenido</h2>
+
+          <div className="admin-form-group">
+            <label htmlFor="title" className="admin-form-label admin-form-label--required">
+              Título
+            </label>
+            <input
+              type="text"
+              id="title"
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="admin-form-input admin-form-input--large"
+              placeholder="Título del artículo"
+            />
+          </div>
+
+          <div className="admin-form-group">
             <label className="admin-form-label">
-              Firmar artículo como
+              Extracto
+            </label>
+            <div className="article-form-editor">
+              <ReactQuill
+                theme="snow"
+                value={excerpt}
+                onChange={setExcerpt}
+                modules={quillModules}
+                formats={quillFormats}
+                placeholder="Breve resumen del artículo..."
+              />
+            </div>
+            <p className="admin-form-help">
+              Resumen que aparecerá en listados y redes sociales
+            </p>
+          </div>
+
+          <div className="admin-form-group">
+            <label className="admin-form-label admin-form-label--required">
+              Contenido principal
+            </label>
+            <div className="article-form-editor article-form-editor--large">
+              <ReactQuill
+                theme="snow"
+                value={content}
+                onChange={setContent}
+                modules={quillModules}
+                formats={quillFormats}
+                placeholder="Escribe el contenido del artículo..."
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Tags Section */}
+        <div className="admin-form-section--compact">
+          <h2 className="admin-form-section__title">Etiquetas</h2>
+
+          {loadingData ? (
+            <div className="admin-form-help">Cargando etiquetas...</div>
+          ) : (
+            <div className="admin-tag-selector">
+              {availableTags.map((tag) => {
+                const isSelected = selectedTags.includes(tag.id);
+                return (
+                  <button
+                    key={tag.id}
+                    type="button"
+                    onClick={() => handleToggleTag(tag.id)}
+                    className={`admin-tag-button ${
+                      isSelected
+                        ? 'admin-tag-button--selected'
+                        : 'admin-tag-button--unselected'
+                    }`}
+                  >
+                    <TagIcon className="w-3 h-3" />
+                    {tag.name}
+                  </button>
+                );
+              })}
+              {availableTags.length === 0 && (
+                <p className="admin-form-help">
+                  No hay etiquetas disponibles
+                </p>
+              )}
+            </div>
+          )}
+          <p className="admin-form-help" style={{ marginTop: 'var(--spacing-2)' }}>
+            {selectedTags.length} seleccionada(s)
+          </p>
+        </div>
+
+        {/* Author Section */}
+        <div className="admin-form-section--compact">
+          <h2 className="admin-form-section__title">Autor</h2>
+
+          <div className="admin-form-group">
+            <label className="admin-form-label">
+              Firmar como
             </label>
             <div className="admin-tag-selector">
               <button
@@ -481,14 +505,13 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
             </div>
           </div>
 
-          {/* Agent Selector (only if ai_agent selected) */}
           {authorType === 'ai_agent' && (
-            <div className="admin-form-field">
+            <div className="admin-form-group">
               <label htmlFor="agent_selector" className="admin-form-label admin-form-label--required">
                 Seleccionar Agente
               </label>
               {loadingData ? (
-                <div className="admin-form-hint">Cargando agentes...</div>
+                <div className="admin-form-help">Cargando agentes...</div>
               ) : (
                 <select
                   id="agent_selector"
@@ -500,7 +523,7 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
                   <option value="">Selecciona un agente</option>
                   {availableAgents.map((agent) => (
                     <option key={agent.id} value={agent.id}>
-                      {agent.display_name} - {agent.email}
+                      {agent.display_name}
                     </option>
                   ))}
                 </select>
@@ -509,125 +532,98 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
           )}
 
           {/* Author Preview */}
-          <div className="admin-form-field">
-            <div className="card" style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-slate-50)' }}>
-              <p className="admin-form-label" style={{ marginBottom: 'var(--spacing-2)' }}>
-                Vista previa del autor:
-              </p>
-              {authorType === 'current_user' && currentUser ? (
-                <div>
-                  <p className="admin-form-hint" style={{ marginBottom: 'var(--spacing-1)' }}>
-                    <strong>{currentUser.name}</strong>
-                  </p>
-                  <p className="admin-form-hint">{currentUser.email}</p>
-                </div>
-              ) : authorType === 'ai_agent' && selectedAgentId ? (
-                (() => {
-                  const selected = availableAgents.find(a => a.id === selectedAgentId);
-                  return selected ? (
-                    <div>
-                      <p className="admin-form-hint" style={{ marginBottom: 'var(--spacing-1)' }}>
-                        <strong>{selected.display_name}</strong>
-                      </p>
-                      <p className="admin-form-hint">{selected.email}</p>
-                      <p className="admin-form-hint" style={{ marginTop: 'var(--spacing-2)', fontStyle: 'italic' }}>
-                        {selected.signature}
-                      </p>
-                    </div>
-                  ) : <p className="admin-form-hint">Selecciona un agente</p>;
-                })()
-              ) : (
-                <p className="admin-form-hint">Selecciona un tipo de autor</p>
-              )}
+          <div className="article-form-author-preview">
+            {authorType === 'current_user' && currentUser ? (
+              <>
+                <p className="article-form-author-preview__name">{currentUser.name}</p>
+                <p className="article-form-author-preview__email">{currentUser.email}</p>
+              </>
+            ) : authorType === 'ai_agent' && selectedAgentId ? (
+              (() => {
+                const selected = availableAgents.find(a => a.id === selectedAgentId);
+                return selected ? (
+                  <>
+                    <p className="article-form-author-preview__name">{selected.display_name}</p>
+                    <p className="article-form-author-preview__email">{selected.email}</p>
+                    {selected.signature && (
+                      <p className="article-form-author-preview__signature">{selected.signature}</p>
+                    )}
+                  </>
+                ) : <p className="admin-form-help">Selecciona un agente</p>;
+              })()
+            ) : (
+              <p className="admin-form-help">Selecciona un autor</p>
+            )}
+          </div>
+
+          {/* Source (optional) */}
+          <div className="admin-form-grid">
+            <div className="admin-form-group">
+              <label htmlFor="source_name" className="admin-form-label">
+                Fuente
+              </label>
+              <input
+                type="text"
+                id="source_name"
+                value={sourceName}
+                onChange={(e) => setSourceName(e.target.value)}
+                className="admin-form-input"
+                placeholder="Opcional"
+              />
+            </div>
+
+            <div className="admin-form-group">
+              <label htmlFor="source_url" className="admin-form-label">
+                URL fuente
+              </label>
+              <input
+                type="url"
+                id="source_url"
+                value={sourceUrl}
+                onChange={(e) => setSourceUrl(e.target.value)}
+                className="admin-form-input"
+                placeholder="https://..."
+              />
             </div>
           </div>
-
-          {/* Source Name */}
-          <div className="admin-form-field">
-            <label htmlFor="source_name" className="admin-form-label">
-              Nombre de la fuente
-            </label>
-            <input
-              type="text"
-              id="source_name"
-              value={sourceName}
-              onChange={(e) => setSourceName(e.target.value)}
-              className="admin-form-input"
-              placeholder="Para artículos externos (opcional)"
-            />
-          </div>
-
-          {/* Source URL */}
-          <div className="admin-form-field">
-            <label htmlFor="source_url" className="admin-form-label">
-              URL de la fuente
-            </label>
-            <input
-              type="url"
-              id="source_url"
-              value={sourceUrl}
-              onChange={(e) => setSourceUrl(e.target.value)}
-              className="admin-form-input"
-              placeholder="https://fuente.com/articulo"
-            />
-          </div>
         </div>
       </div>
 
-      {/* Status Section */}
-      <div className="admin-form-section">
-        <h2 className="admin-form-section__title">Estado de Publicación</h2>
-
-        <div className="admin-form-field">
-          <label htmlFor="status" className="admin-form-label">
-            Estado
-          </label>
-          <select
-            id="status"
-            value={status}
-            onChange={(e) => setStatus(e.target.value as any)}
-            className="admin-form-select"
-          >
-            <option value="draft">Borrador</option>
-            <option value="published">Publicado</option>
-            <option value="archived">Archivado</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="admin-form-actions">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          disabled={loading}
-          className="btn btn-ghost"
-        >
-          <X className="w-4 h-4" />
-          Cancelar
-        </button>
-
-        <div className="admin-form-actions__group">
-          {!isEditing && (
-            <button
-              type="button"
-              onClick={(e) => handleSubmit(e as any, true)}
-              disabled={loading}
-              className="btn btn-secondary"
-            >
-              <Eye className="w-4 h-4" />
-              Publicar Ahora
-            </button>
-          )}
-
+      {/* Form Actions - Full width */}
+      <div style={{ gridColumn: '1 / -1' }}>
+        <div className="admin-form-actions">
           <button
-            type="submit"
+            type="button"
+            onClick={() => router.back()}
             disabled={loading}
-            className="btn btn-primary"
+            className="btn btn-secondary"
           >
-            <Save className="w-4 h-4" />
-            {loading ? 'Guardando...' : isEditing ? 'Actualizar' : 'Guardar Borrador'}
+            <X className="w-4 h-4" />
+            Cancelar
           </button>
+
+          <div className="admin-form-actions__right">
+            {!isEditing && status === 'draft' && (
+              <button
+                type="button"
+                onClick={(e) => handleSubmit(e as any, true)}
+                disabled={loading}
+                className="btn btn-secondary"
+              >
+                <Eye className="w-4 h-4" />
+                Publicar Ahora
+              </button>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary"
+            >
+              <Save className="w-4 h-4" />
+              {loading ? 'Guardando...' : isEditing ? 'Actualizar' : 'Guardar'}
+            </button>
+          </div>
         </div>
       </div>
     </form>
