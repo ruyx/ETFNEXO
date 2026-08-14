@@ -42,23 +42,26 @@ export default function CrearNoticiaPage() {
 
   return (
     <div className="admin-form-container">
+      {/* Back link */}
+      <Link href="/admin/noticias" className="admin-form-back-link">
+        <ArrowLeft className="w-4 h-4" />
+        Volver al listado
+      </Link>
+
       {/* Header */}
       <div className="admin-form-header">
-        <Link href="/admin/noticias" className="admin-form-back-link">
-          <ArrowLeft className="w-4 h-4" />
-          Volver al listado
-        </Link>
-
-        <h1 className="admin-form-title">Crear Nueva Noticia</h1>
-        <p className="admin-form-description">
-          Completa los campos para crear un nuevo artículo
-        </p>
+        <div>
+          <h1 className="admin-form-title">Crear Nueva Noticia</h1>
+          <p className="admin-form-description">
+            Completa los campos y usa los editores para crear un nuevo artículo
+          </p>
+        </div>
       </div>
 
       {/* Error global */}
       {error && (
-        <div className="admin-form-error" style={{ marginBottom: 'var(--spacing-6)' }}>
-          {error}
+        <div className="admin-alert admin-alert--error">
+          <strong>Error:</strong> {error}
         </div>
       )}
 
