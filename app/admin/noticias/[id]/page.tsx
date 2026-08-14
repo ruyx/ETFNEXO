@@ -70,57 +70,48 @@ export default function EditNoticiaPage({ params }: EditNoticiaPageProps) {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-slate-600">Cargando artículo...</p>
-          </div>
-        </div>
+      <div className="admin-form-container">
+        <div className="admin-loading">Cargando artículo...</div>
       </div>
     );
   }
 
   if (error && !articleData) {
     return (
-      <div className="max-w-5xl mx-auto">
-        <div className="card bg-red-50 border-red-200">
-          <h2 className="heading-3 text-red-900 mb-2">Error al cargar artículo</h2>
-          <p className="text-red-700">{error}</p>
-          <Link
-            href="/admin/noticias"
-            className="btn-secondary mt-4 inline-flex items-center gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Volver al listado
-          </Link>
+      <div className="admin-form-container">
+        <div className="admin-alert admin-alert--error">
+          <strong>Error:</strong> Error al cargar artículo - {error}
         </div>
+        <Link href="/admin/noticias" className="btn btn-secondary">
+          <ArrowLeft className="w-4 h-4" />
+          Volver al listado
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <Link
-          href="/admin/noticias"
-          className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Volver al listado
-        </Link>
+    <div className="admin-form-container">
+      {/* Back link */}
+      <Link href="/admin/noticias" className="admin-form-back-link">
+        <ArrowLeft className="w-4 h-4" />
+        Volver al listado
+      </Link>
 
-        <h1 className="heading-1 text-slate-900">Editar Noticia</h1>
-        <p className="mt-2 text-slate-600">
-          Modifica los campos del artículo según sea necesario
-        </p>
+      {/* Header */}
+      <div className="admin-form-header">
+        <div>
+          <h1 className="admin-form-title">Editar Noticia</h1>
+          <p className="admin-form-description">
+            Modifica el contenido del artículo usando los editores
+          </p>
+        </div>
       </div>
 
       {/* Error global */}
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-          {error}
+        <div className="admin-alert admin-alert--error">
+          <strong>Error:</strong> {error}
         </div>
       )}
 
