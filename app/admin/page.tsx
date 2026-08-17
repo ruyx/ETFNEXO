@@ -152,7 +152,7 @@ export default async function AdminDashboardPage() {
                   </Link>
                   <p className="admin-list__item-meta">
                     {article.author_name || 'Sin autor'} •{' '}
-                    {new Date(article.created_at).toLocaleDateString('es-ES')}
+                    {article.created_at ? new Date(article.created_at!).toLocaleDateString('es-ES') : 'Sin fecha'}
                   </p>
                 </div>
                 <span
