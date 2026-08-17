@@ -83,7 +83,7 @@ export async function PUT(
     const { data: agents, error } = await supabase
       .from('ai_agents')
       .update(updateData as any)
-      .eq('id' as any, id)
+      .eq('id' as any, id as any)
       .select();
 
     console.log('[PUT /api/admin/agentes/[id]] Update result:', { agents, error });
