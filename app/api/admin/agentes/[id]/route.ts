@@ -8,6 +8,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { NextRequest, NextResponse } from 'next/server';
+import { Database } from '@/types/database.types';
 
 export async function GET(
   request: NextRequest,
@@ -66,7 +67,7 @@ export async function PUT(
     console.log('[PUT /api/admin/agentes/[id]] Agent ID:', id);
     console.log('[PUT /api/admin/agentes/[id]] Update data:', body);
 
-    const updateData: any = {};
+    const updateData: Database['public']['Tables']['ai_agents']['Update'] = {};
 
     // Solo actualizar campos proporcionados
     if (body.name !== undefined) updateData.name = body.name;
