@@ -67,27 +67,23 @@ export async function PUT(
     console.log('[PUT /api/admin/agentes/[id]] Agent ID:', id);
     console.log('[PUT /api/admin/agentes/[id]] Update data:', body);
 
-    const updateData: Record<string, any> = {};
+    // Campos que no se pueden actualizar directamente
+    const {
+      id: agentId,
+      created_at,
+      articles_count,
+      total_views,
+      ...updateData
+    } = body;
 
-    // Solo actualizar campos proporcionados
-    if (body.name !== undefined) updateData.name = body.name;
-    if (body.slug !== undefined) updateData.slug = body.slug;
-    if (body.display_name !== undefined) updateData.display_name = body.display_name;
-    if (body.bio !== undefined) updateData.bio = body.bio;
-    if (body.expertise !== undefined) updateData.expertise = body.expertise;
-    if (body.avatar_url !== undefined) updateData.avatar_url = body.avatar_url;
-    if (body.role !== undefined) updateData.role = body.role;
-    if (body.email !== undefined) updateData.email = body.email;
-    if (body.social_links !== undefined) updateData.social_links = body.social_links;
-    if (body.signature !== undefined) updateData.signature = body.signature;
-    if (body.is_active !== undefined) updateData.is_active = body.is_active;
-    if (body.can_publish !== undefined) updateData.can_publish = body.can_publish;
+    // Actualizar updated_at
+    updateData.updated_at = new Date().toISOString();
 
     console.log('[PUT /api/admin/agentes/[id]] Fields to update:', updateData);
 
     const { data: agents, error } = await supabase
       .from('ai_agents')
-      .update(updateData as Database['public']['Tables']['ai_agents']['Update'])
+      .update(updateData)
       .eq('id', id)
       .select();
 
