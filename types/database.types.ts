@@ -1,3 +1,4 @@
+WARN: config section [inbucket] is deprecated. Please use [local_smtp] instead.
 export type Json =
   | string
   | number
@@ -320,6 +321,66 @@ export type Database = {
           },
         ]
       }
+      ai_agents: {
+        Row: {
+          articles_count: number | null
+          avatar_url: string | null
+          bio: string | null
+          can_publish: boolean | null
+          created_at: string | null
+          display_name: string
+          email: string | null
+          expertise: string[] | null
+          id: string
+          is_active: boolean | null
+          name: string
+          role: string | null
+          signature: string | null
+          slug: string
+          social_links: Json | null
+          total_views: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          articles_count?: number | null
+          avatar_url?: string | null
+          bio?: string | null
+          can_publish?: boolean | null
+          created_at?: string | null
+          display_name: string
+          email?: string | null
+          expertise?: string[] | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          role?: string | null
+          signature?: string | null
+          slug: string
+          social_links?: Json | null
+          total_views?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          articles_count?: number | null
+          avatar_url?: string | null
+          bio?: string | null
+          can_publish?: boolean | null
+          created_at?: string | null
+          display_name?: string
+          email?: string | null
+          expertise?: string[] | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          role?: string | null
+          signature?: string | null
+          slug?: string
+          social_links?: Json | null
+          total_views?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       cron_logs: {
         Row: {
           created_at: string
@@ -598,6 +659,13 @@ export type Database = {
             foreignKeyName: "news_article_tags_article_id_fkey"
             columns: ["article_id"]
             isOneToOne: false
+            referencedRelation: "news_articles_with_agent"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "news_article_tags_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
             referencedRelation: "news_articles_with_metadata"
             referencedColumns: ["id"]
           },
@@ -613,11 +681,13 @@ export type Database = {
       news_articles: {
         Row: {
           author_email: string | null
+          author_id: string | null
           author_name: string | null
           category_id: string | null
           content: string
           created_at: string | null
           excerpt: string | null
+          faq: Json | null
           featured_image_alt: string | null
           featured_image_url: string | null
           id: string
@@ -636,11 +706,13 @@ export type Database = {
         }
         Insert: {
           author_email?: string | null
+          author_id?: string | null
           author_name?: string | null
           category_id?: string | null
           content: string
           created_at?: string | null
           excerpt?: string | null
+          faq?: Json | null
           featured_image_alt?: string | null
           featured_image_url?: string | null
           id?: string
@@ -659,11 +731,13 @@ export type Database = {
         }
         Update: {
           author_email?: string | null
+          author_id?: string | null
           author_name?: string | null
           category_id?: string | null
           content?: string
           created_at?: string | null
           excerpt?: string | null
+          faq?: Json | null
           featured_image_alt?: string | null
           featured_image_url?: string | null
           id?: string
@@ -681,6 +755,13 @@ export type Database = {
           views_count?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "news_articles_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "news_articles_category_id_fkey"
             columns: ["category_id"]
@@ -751,6 +832,13 @@ export type Database = {
             foreignKeyName: "news_related_etfs_article_id_fkey"
             columns: ["article_id"]
             isOneToOne: false
+            referencedRelation: "news_articles_with_agent"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "news_related_etfs_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
             referencedRelation: "news_articles_with_metadata"
             referencedColumns: ["id"]
           },
@@ -811,8 +899,41 @@ export type Database = {
         }
         Relationships: []
       }
+      user_agent_assignments: {
+        Row: {
+          agent_id: string
+          assigned_at: string | null
+          assigned_by: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          agent_id: string
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_agent_assignments_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_profiles: {
         Row: {
+          agent_id: string | null
           avatar_url: string | null
           bio: string | null
           created_at: string | null
@@ -822,10 +943,12 @@ export type Database = {
           marketing_emails: boolean | null
           preferred_currency: string | null
           preferred_language: string | null
+          role: string | null
           updated_at: string | null
           username: string | null
         }
         Insert: {
+          agent_id?: string | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string | null
@@ -835,10 +958,12 @@ export type Database = {
           marketing_emails?: boolean | null
           preferred_currency?: string | null
           preferred_language?: string | null
+          role?: string | null
           updated_at?: string | null
           username?: string | null
         }
         Update: {
+          agent_id?: string | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string | null
@@ -848,10 +973,19 @@ export type Database = {
           marketing_emails?: boolean | null
           preferred_currency?: string | null
           preferred_language?: string | null
+          role?: string | null
           updated_at?: string | null
           username?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_profiles_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_ratings: {
         Row: {
@@ -1039,9 +1173,61 @@ export type Database = {
           },
         ]
       }
+      news_articles_with_agent: {
+        Row: {
+          agent_avatar_url: string | null
+          agent_display_name: string | null
+          agent_name: string | null
+          agent_signature: string | null
+          agent_slug: string | null
+          author_email: string | null
+          author_id: string | null
+          author_name: string | null
+          category_id: string | null
+          content: string | null
+          created_at: string | null
+          excerpt: string | null
+          featured_image_alt: string | null
+          featured_image_url: string | null
+          id: string | null
+          meta_description: string | null
+          meta_title: string | null
+          published_at: string | null
+          shares_count: number | null
+          slug: string | null
+          source_name: string | null
+          source_published_at: string | null
+          source_url: string | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+          views_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_articles_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "news_articles_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "news_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       news_articles_with_metadata: {
         Row: {
+          agent_avatar: string | null
+          agent_bio: string | null
+          agent_name: string | null
+          agent_slug: string | null
           author_email: string | null
+          author_id: string | null
           author_name: string | null
           category_color: string | null
           category_id: string | null
@@ -1050,6 +1236,7 @@ export type Database = {
           content: string | null
           created_at: string | null
           excerpt: string | null
+          faq: Json | null
           featured_image_alt: string | null
           featured_image_url: string | null
           id: string | null
@@ -1070,6 +1257,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "news_articles_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "news_articles_category_id_fkey"
             columns: ["category_id"]
             isOneToOne: false
@@ -1082,8 +1276,22 @@ export type Database = {
     Functions: {
       auto_publish_news_cron: { Args: never; Returns: undefined }
       calculate_community_score: { Args: { etf_uuid: string }; Returns: number }
+      can_edit_articles: { Args: never; Returns: boolean }
       cleanup_old_cron_logs: { Args: never; Returns: undefined }
       fetch_news_cron: { Args: never; Returns: undefined }
+      get_user_agents: {
+        Args: { p_user_id: string }
+        Returns: {
+          agent_display_name: string
+          agent_id: string
+          agent_name: string
+          agent_role: string
+          agent_slug: string
+          assigned_at: string
+        }[]
+      }
+      import_gsheets_cron: { Args: never; Returns: undefined }
+      is_admin: { Args: never; Returns: boolean }
       search_articles: {
         Args: { max_results?: number; search_query: string }
         Returns: {
