@@ -67,7 +67,7 @@ export async function PUT(
     console.log('[PUT /api/admin/agentes/[id]] Agent ID:', id);
     console.log('[PUT /api/admin/agentes/[id]] Update data:', body);
 
-    const updateData: Database['public']['Tables']['ai_agents']['Update'] = {};
+    const updateData: Record<string, any> = {};
 
     // Solo actualizar campos proporcionados
     if (body.name !== undefined) updateData.name = body.name;
@@ -87,7 +87,7 @@ export async function PUT(
 
     const { data: agents, error } = await supabase
       .from('ai_agents')
-      .update(updateData)
+      .update(updateData as Database['public']['Tables']['ai_agents']['Update'])
       .eq('id', id)
       .select();
 
