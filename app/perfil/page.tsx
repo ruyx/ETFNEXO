@@ -16,10 +16,10 @@ export default function PerfilPage() {
   const [watchlist, setWatchlist] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const router = useRouter()
-  const supabase = createClient()
 
   useEffect(() => {
     const loadUserData = async () => {
+      const supabase = createClient()
       try {
         console.log('[Perfil] Loading user data...')
 
@@ -93,6 +93,7 @@ export default function PerfilPage() {
   }, [router])
 
   const handleSignOut = async () => {
+    const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/login')
     router.refresh()
