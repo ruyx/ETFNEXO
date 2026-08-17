@@ -8,7 +8,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { NextRequest, NextResponse } from 'next/server';
-import { Database } from '@/types/database.types';
 
 export async function GET(
   request: NextRequest,
@@ -83,7 +82,7 @@ export async function PUT(
 
     const { data: agents, error } = await supabase
       .from('ai_agents')
-      .update(updateData)
+      .update(updateData as any)
       .eq('id', id)
       .select();
 
