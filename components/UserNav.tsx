@@ -212,6 +212,39 @@ export default function UserNav() {
                 Redactar artículos
               </Link>
             )}
+
+            {/* Gestión de Usuarios - Solo para admin */}
+            {profile?.role === 'admin' && (
+              <>
+                <Link
+                  href="/admin/usuarios"
+                  className="user-nav-dropdown-link"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M10.5 8C11.88 8 12.99 6.88 12.99 5.5C12.99 4.12 11.88 3 10.5 3C9.12 3 8 4.12 8 5.5C8 6.88 9.12 8 10.5 8ZM5.5 8C6.88 8 7.99 6.88 7.99 5.5C7.99 4.12 6.88 3 5.5 3C4.12 3 3 4.12 3 5.5C3 6.88 4.12 8 5.5 8ZM5.5 10C3.67 10 0 10.92 0 12.75V14C0 14.55 0.45 15 1 15H10C10.55 15 11 14.55 11 14V12.75C11 10.92 7.33 10 5.5 10ZM10.5 10C10.29 10 10.05 10.01 9.79 10.04C10.56 10.63 11 11.38 11 12.75V14C11 14.35 10.93 14.69 10.82 15H15C15.55 15 16 14.55 16 14V12.75C16 10.92 12.33 10 10.5 10Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Gestión de Usuarios
+                </Link>
+
+                <Link
+                  href="/admin/agentes"
+                  className="user-nav-dropdown-link"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M12 1H4C2.9 1 2 1.9 2 3V13C2 14.1 2.9 15 4 15H12C13.1 15 14 14.1 14 13V3C14 1.9 13.1 1 12 1ZM8 3.5C8.83 3.5 9.5 4.17 9.5 5C9.5 5.83 8.83 6.5 8 6.5C7.17 6.5 6.5 5.83 6.5 5C6.5 4.17 7.17 3.5 8 3.5ZM11 12H5V11.5C5 10.17 7.67 9.5 9 9.5H7C8.33 9.5 11 10.17 11 11.5V12ZM13 0H3C2.45 0 2 0.45 2 1H14C14 0.45 13.55 0 13 0ZM13 15C13.55 15 14 14.55 14 14H2C2 14.55 2.45 15 3 15H13Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Gestión de Agentes IA
+                </Link>
+              </>
+            )}
           </nav>
 
           <div className="user-nav-dropdown-divider"></div>

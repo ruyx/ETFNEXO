@@ -133,7 +133,8 @@ export async function POST(request: NextRequest) {
       excerpt: body.excerpt || null,
       category_id: body.category_id || null,
 
-      // Autor (usar el usuario autenticado o el proporcionado)
+      // Autor (agente de IA o usuario autenticado)
+      author_id: body.author_id || null, // ID del agente de IA
       author_name: body.author_name || authUser.profile.full_name || 'Redacción ETF Nexo',
       author_email: body.author_email || authUser.user.email || null,
 
@@ -149,6 +150,9 @@ export async function POST(request: NextRequest) {
       source_name: body.source_name || null,
       source_url: body.source_url || null,
       source_published_at: body.source_published_at || null,
+
+      // FAQ (preguntas frecuentes)
+      faq: body.faq || null,
 
       // Estado
       status: body.status || 'draft',

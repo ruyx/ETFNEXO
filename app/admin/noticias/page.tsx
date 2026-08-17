@@ -7,7 +7,6 @@
  */
 
 import { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { X, Plus } from 'lucide-react';
@@ -61,31 +60,31 @@ export default function AdminNoticiasPage() {
   const loadArticles = async () => {
     setLoading(true);
     try {
-      const supabase = createClient();
-
-      let query = supabase
-        .from('news_articles')
-        .select(`
-          *,
-          category:news_categories(name, slug)
-        `, { count: 'exact' })
-        .order('created_at', { ascending: false })
-        .range((currentPage - 1) * 20, currentPage * 20 - 1);
+      // Build query params
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: '20'
+      });
 
       if (filter !== 'all') {
-        query = query.eq('status', filter);
+        params.set('status', filter);
       }
 
       if (searchTerm) {
-        query = query.or(`title.ilike.%${searchTerm}%,content.ilike.%${searchTerm}%`);
+        params.set('search', searchTerm);
       }
 
-      const { data, error, count } = await query;
+      // Call API endpoint (uses admin client, bypasses RLS)
+      const response = await fetch(`/api/admin/noticias?${params}`);
 
-      if (error) throw error;
+      if (!response.ok) {
+        throw new Error('Error al cargar artículos');
+      }
 
-      setArticles(data || []);
-      setTotalPages(Math.ceil((count || 0) / 20));
+      const result = await response.json();
+
+      setArticles(result.data.articles || []);
+      setTotalPages(result.data.pagination.totalPages);
     } catch (error) {
       console.error('Error loading articles:', error);
     } finally {

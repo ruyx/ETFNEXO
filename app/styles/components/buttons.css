@@ -112,3 +112,10 @@
 @keyframes button-spin {
   to { transform: rotate(360deg); }
 }
+
+/* ==================== ICONOS EN BOTONES ==================== */
+.btn-icon {
+  width: 1rem; /* 16px */
+  height: 1rem;
+  flex-shrink: 0;
+}

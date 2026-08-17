@@ -7,7 +7,7 @@
 
 import { useState, useEffect, FormEvent, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Eye, Upload, Tag as TagIcon, Image as ImageIcon } from 'lucide-react';
+import { Save, X, Eye, Upload, Tag as TagIcon, Image as ImageIcon, Plus, Trash2, HelpCircle, Search, Loader2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 
@@ -43,6 +43,11 @@ interface CurrentUser {
   role: string;
 }
 
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
 interface ArticleFormProps {
   initialData?: {
     id?: string;
@@ -62,6 +67,7 @@ interface ArticleFormProps {
     status?: 'draft' | 'published' | 'archived';
     tags?: Tag[];
     relatedEtfs?: string[];
+    faq?: FAQ[];
   };
   onSubmit: (data: any) => Promise<void>;
   isEditing?: boolean;
@@ -99,6 +105,29 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   const [sourceName, setSourceName] = useState(initialData?.source_name || '');
   const [sourceUrl, setSourceUrl] = useState(initialData?.source_url || '');
   const [status, setStatus] = useState<'draft' | 'published' | 'archived'>(initialData?.status || 'draft');
+  const [faqs, setFaqs] = useState<FAQ[]>(initialData?.faq || []);
+
+  // Image upload and Pexels states
+  const [uploading, setUploading] = useState(false);
+  const [showPexelsModal, setShowPexelsModal] = useState(false);
+  const [pexelsQuery, setPexelsQuery] = useState('');
+  const [pexelsResults, setPexelsResults] = useState<any[]>([]);
+  const [pexelsLoading, setPexelsLoading] = useState(false);
+
+  // Control body overflow when modal is open
+  useEffect(() => {
+    if (showPexelsModal) {
+      document.body.style.overflow = 'hidden';
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
+    };
+  }, [showPexelsModal]);
 
   // Quill modules configuration
   const quillModules = useMemo(() => ({
@@ -159,12 +188,99 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
     loadData();
   }, []);
 
+  // Initialize author type when editing article with AI agent author
+  useEffect(() => {
+    if (initialData?.author_id) {
+      setAuthorType('ai_agent');
+      setSelectedAgentId(initialData.author_id);
+    }
+  }, [initialData]);
+
   const handleToggleTag = (tagId: string) => {
     setSelectedTags(prev =>
       prev.includes(tagId)
         ? prev.filter(id => id !== tagId)
         : [...prev, tagId]
     );
+  };
+
+  // FAQ handlers
+  const addFaq = () => {
+    setFaqs(prev => [...prev, { question: '', answer: '' }]);
+  };
+
+  const updateFaqQuestion = (index: number, question: string) => {
+    setFaqs(prev => prev.map((faq, i) => i === index ? { ...faq, question } : faq));
+  };
+
+  const updateFaqAnswer = (index: number, answer: string) => {
+    setFaqs(prev => prev.map((faq, i) => i === index ? { ...faq, answer } : faq));
+  };
+
+  const removeFaq = (index: number) => {
+    setFaqs(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Image upload handler
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload/image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to upload image');
+      }
+
+      const data = await response.json();
+      setFeaturedImageUrl(data.url);
+      setFeaturedImageAlt(file.name.replace(/\.[^/.]+$/, ''));
+    } catch (err: any) {
+      alert(err.message || 'Error al subir la imagen');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Search Pexels images
+  const searchPexels = async () => {
+    if (!pexelsQuery.trim()) return;
+
+    setPexelsLoading(true);
+    try {
+      const response = await fetch(
+        `/api/pexels/search?query=${encodeURIComponent(pexelsQuery)}&per_page=12`
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to search images');
+      }
+
+      const data = await response.json();
+      setPexelsResults(data.photos);
+    } catch (err: any) {
+      alert(err.message || 'Error al buscar imágenes');
+    } finally {
+      setPexelsLoading(false);
+    }
+  };
+
+  // Select Pexels image
+  const selectPexelsImage = (photo: any) => {
+    setFeaturedImageUrl(photo.url);
+    setFeaturedImageAlt(photo.alt);
+    setShowPexelsModal(false);
+    setPexelsQuery('');
+    setPexelsResults([]);
   };
 
   const handleSubmit = async (e: FormEvent, publishNow: boolean = false) => {
@@ -186,7 +302,8 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
         source_name: sourceName || undefined,
         source_url: sourceUrl || undefined,
         status: publishNow ? 'published' : status,
-        tags: selectedTags
+        tags: selectedTags,
+        faq: faqs.filter(faq => faq.question.trim() && faq.answer.trim())
       };
 
       // Determinar autor según tipo seleccionado
@@ -208,7 +325,8 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   };
 
   return (
-    <form onSubmit={(e) => handleSubmit(e, false)} className="admin-form admin-form--grid">
+    <>
+      <form onSubmit={(e) => handleSubmit(e, false)} className="admin-form admin-form--grid">
       {/* SIDEBAR - Imagen destacada + Metadata + Opciones */}
       <div className="admin-form-sidebar">
         {/* Featured Image Card */}
@@ -238,6 +356,31 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               <p>Sin imagen</p>
             </div>
           )}
+
+          {/* Image Upload and Search Buttons */}
+          <div style={{ display: 'flex', gap: 'var(--spacing-2)', marginTop: 'var(--spacing-4)' }}>
+            <label className="btn btn-secondary" style={{ flex: 1, cursor: 'pointer' }}>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onChange={handleImageUpload}
+                disabled={uploading}
+                style={{ display: 'none' }}
+              />
+              <Upload className="w-4 h-4" />
+              {uploading ? 'Subiendo...' : 'Subir'}
+            </label>
+            <button
+              type="button"
+              onClick={() => setShowPexelsModal(true)}
+              className="btn btn-secondary"
+              style={{ flex: 1 }}
+              disabled={uploading}
+            >
+              <Search className="w-4 h-4" />
+              Pexels
+            </button>
+          </div>
 
           <div className="admin-form-group" style={{ marginTop: 'var(--spacing-4)' }}>
             <label htmlFor="featured_image_url" className="admin-form-label">
@@ -587,6 +730,94 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
             </div>
           </div>
         </div>
+
+        {/* FAQ Section - Resumen Exprés */}
+        <div className="admin-form-section--compact">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-4)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)' }}>
+              <HelpCircle className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+              <h2 className="admin-form-section__title" style={{ marginBottom: 0 }}>
+                Resumen Exprés (FAQ)
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={addFaq}
+              className="btn btn-secondary btn-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Agregar Pregunta
+            </button>
+          </div>
+
+          <p className="admin-form-help" style={{ marginBottom: 'var(--spacing-4)' }}>
+            Preguntas y respuestas para el resumen rápido. Optimizado para SEO y motores de IA.
+          </p>
+
+          {faqs.length === 0 ? (
+            <div className="article-form-faq-empty">
+              <HelpCircle className="w-12 h-12" />
+              <p>Sin preguntas frecuentes</p>
+              <p className="admin-form-help">
+                Agrega preguntas y respuestas para el resumen exprés del artículo
+              </p>
+            </div>
+          ) : (
+            <div className="article-form-faq-list">
+              {faqs.map((faq, index) => (
+                <div key={index} className="article-form-faq-item">
+                  <div className="article-form-faq-item__header">
+                    <span className="article-form-faq-item__number">
+                      Pregunta {index + 1}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => removeFaq(index)}
+                      className="article-form-faq-item__remove"
+                      title="Eliminar pregunta"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label className="admin-form-label admin-form-label--required">
+                      Pregunta
+                    </label>
+                    <input
+                      type="text"
+                      value={faq.question}
+                      onChange={(e) => updateFaqQuestion(index, e.target.value)}
+                      className="admin-form-input"
+                      placeholder="¿Cuál es...?"
+                      required={faqs.length > 0}
+                    />
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label className="admin-form-label admin-form-label--required">
+                      Respuesta
+                    </label>
+                    <div className="article-form-editor">
+                      <ReactQuill
+                        theme="snow"
+                        value={faq.answer}
+                        onChange={(value) => updateFaqAnswer(index, value)}
+                        modules={quillModules}
+                        formats={quillFormats}
+                        placeholder="Escribe la respuesta..."
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <p className="admin-form-help" style={{ marginTop: 'var(--spacing-3)' }}>
+            {faqs.length} pregunta(s) agregada(s)
+          </p>
+        </div>
       </div>
 
       {/* Form Actions - Full width */}
@@ -627,5 +858,97 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
         </div>
       </div>
     </form>
+
+    {/* Pexels Modal - Outside form for proper z-index stacking */}
+    {showPexelsModal && (
+      <div className="admin-modal">
+        <div className="admin-modal__backdrop" onClick={() => setShowPexelsModal(false)} />
+        <div className="admin-modal__content" style={{ maxWidth: '1000px' }}>
+          <div className="admin-modal__header">
+            <h3 className="admin-modal__title">Buscar Imágenes en Pexels</h3>
+            <button
+              onClick={() => setShowPexelsModal(false)}
+              className="admin-modal__close"
+              type="button"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="admin-modal__body">
+            {/* Search Bar */}
+            <div className="pexels-search">
+              <input
+                type="text"
+                value={pexelsQuery}
+                onChange={(e) => setPexelsQuery(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && searchPexels()}
+                placeholder="Buscar imágenes... (ej: finanzas, negocios, tecnología)"
+                className="admin-form-input"
+              />
+              <button
+                type="button"
+                onClick={searchPexels}
+                disabled={pexelsLoading || !pexelsQuery.trim()}
+                className="btn btn-primary"
+              >
+                {pexelsLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Buscando...
+                  </>
+                ) : (
+                  <>
+                    <Search className="w-4 h-4" />
+                    Buscar
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Results Grid */}
+            {pexelsLoading ? (
+              <div className="pexels-loading">
+                <Loader2 className="w-8 h-8 animate-spin" style={{ color: 'var(--color-primary)' }} />
+                <p>Buscando imágenes...</p>
+              </div>
+            ) : pexelsResults.length > 0 ? (
+              <div className="pexels-grid">
+                {pexelsResults.map((photo) => (
+                  <div
+                    key={photo.id}
+                    onClick={() => selectPexelsImage(photo)}
+                    className="pexels-card"
+                  >
+                    <img
+                      src={photo.thumbnail}
+                      alt={photo.alt}
+                    />
+                    <div className="pexels-card__info">
+                      <span className="pexels-card__photographer">
+                        Por {photo.photographer}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : !pexelsLoading && pexelsQuery ? (
+              <div className="pexels-empty">
+                <ImageIcon className="w-16 h-16" style={{ color: 'var(--color-slate-300)' }} />
+                <p>No se encontraron imágenes</p>
+                <span>Intenta con otra búsqueda</span>
+              </div>
+            ) : !pexelsQuery ? (
+              <div className="pexels-empty">
+                <ImageIcon className="w-16 h-16" style={{ color: 'var(--color-slate-300)' }} />
+                <p>Busca imágenes de stock gratis</p>
+                <span>Ingresa un término de búsqueda arriba</span>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }

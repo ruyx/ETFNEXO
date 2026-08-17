@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import AdSlot from '@/components/AdSlot';
+import ArticleFAQ from '@/components/ArticleFAQ';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { formatArticleContent } from '@/lib/format-article-content';
 
@@ -96,9 +97,36 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
       })
     : 'Fecha no disponible';
 
-  // Priorizar fuente original sobre author_name
-  const displayAuthorName = article.source_name || article.author_name || 'ETF Nexo';
-  const authorLink = article.source_url || (article.author_name && isUrl(article.author_name) ? article.author_name : null);
+  // Debug: ver qué datos tenemos del autor
+  console.log('Author data:', {
+    agent_name: article.agent_name,
+    agent_slug: article.agent_slug,
+    agent_avatar: article.agent_avatar,
+    author_name: article.author_name,
+    author_id: article.author_id,
+    source_name: article.source_name
+  });
+
+  // Determinar autor real (agente AI o usuario)
+  const displayAuthorName = article.agent_name || article.author_name || article.source_name || 'ETF Nexo';
+  const authorSlug = article.agent_slug || null;
+  const authorAvatar = article.agent_avatar || null;
+  const authorBio = article.agent_bio || null;
+
+  // Link a perfil del autor o fuente externa
+  const authorLink = authorSlug
+    ? `/autores/${authorSlug}`
+    : article.source_url || (article.author_name && isUrl(article.author_name) ? article.author_name : null);
+
+  // Función para obtener iniciales del nombre
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+  };
 
   return (
     <>
@@ -146,21 +174,38 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
 
               {/* Meta Info */}
               <div className="article-detail__meta">
-                <div className="article-detail__meta-item">
-                  <svg className="article-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
+                <div className="article-detail__meta-item article-detail__author">
                   {authorLink ? (
-                    <a
+                    <Link
                       href={authorLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       className="article-detail__author-link"
+                      target={authorSlug ? undefined : "_blank"}
+                      rel={authorSlug ? undefined : "noopener noreferrer"}
                     >
-                      {displayAuthorName}
-                    </a>
+                      <div className="article-detail__author-avatar">
+                        {authorAvatar ? (
+                          <img
+                            src={authorAvatar}
+                            alt={displayAuthorName}
+                            className="article-detail__author-avatar-img"
+                          />
+                        ) : (
+                          <span className="article-detail__author-avatar-initials">
+                            {getInitials(displayAuthorName)}
+                          </span>
+                        )}
+                      </div>
+                      <span className="article-detail__author-name">{displayAuthorName}</span>
+                    </Link>
                   ) : (
-                    <span>{displayAuthorName}</span>
+                    <div className="article-detail__author-link">
+                      <div className="article-detail__author-avatar">
+                        <span className="article-detail__author-avatar-initials">
+                          {getInitials(displayAuthorName)}
+                        </span>
+                      </div>
+                      <span className="article-detail__author-name">{displayAuthorName}</span>
+                    </div>
                   )}
                 </div>
                 <div className="article-detail__meta-item">
@@ -196,7 +241,9 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
               {/* Excerpt */}
               {article.excerpt && (
                 <div className="article-detail__excerpt">
-                  <p>{article.excerpt}</p>
+                  <p dangerouslySetInnerHTML={{
+                    __html: article.excerpt.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ')
+                  }} />
                 </div>
               )}
 
@@ -232,6 +279,14 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
                     </svg>
                   </a>
                 </div>
+              )}
+
+              {/* FAQ Resumen Exprés */}
+              {article.faq && article.faq.length > 0 && (
+                <ArticleFAQ
+                  faqs={article.faq}
+                  articleTitle={article.title}
+                />
               )}
 
               {/* Tags */}
