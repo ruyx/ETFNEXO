@@ -5,16 +5,6 @@ import { Database } from '@/types/database.types';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-});
-
 // Score calculation functions (same as rankings endpoint)
 function normalizeScore(value: number, min: number, max: number): number {
   if (max === min) return 50;
@@ -71,6 +61,16 @@ export async function GET(
 ) {
   try {
     const { isin } = params;
+
+    // Initialize Supabase client
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    });
 
     // Fetch ETF details
     const { data: etf, error: etfError } = await supabase
