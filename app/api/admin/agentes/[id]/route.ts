@@ -12,11 +12,11 @@ import { Database } from '@/types/database.types';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     const supabase = await createClient();
-    const { id } = await params;
+    const { id } = params;
 
     const { data: agent, error } = await supabase
       .from('ai_agents')
@@ -57,12 +57,12 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     const supabase = createAdminClient();  // Use admin client to bypass RLS
     const body = await request.json();
-    const { id } = await params;
+    const { id } = params;
 
     console.log('[PUT /api/admin/agentes/[id]] Agent ID:', id);
     console.log('[PUT /api/admin/agentes/[id]] Update data:', body);
@@ -122,11 +122,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     const supabase = createAdminClient();  // Use admin client to bypass RLS
-    const { id } = await params;
+    const { id } = params;
 
     const { error } = await supabase
       .from('ai_agents')
