@@ -7,6 +7,8 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import './perfil.css'
 
+export const dynamic = 'force-dynamic'
+
 export default function PerfilPage() {
   const [user, setUser] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
