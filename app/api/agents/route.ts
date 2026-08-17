@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const { data: agents, error } = await supabase
       .from('ai_agents')
       .select('id, name, display_name, role, slug')
-      .eq('is_active', true)
+      .eq('is_active' as any, true as any)
       .order('display_name');
 
     if (error) {

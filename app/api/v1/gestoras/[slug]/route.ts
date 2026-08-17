@@ -23,7 +23,7 @@ export async function GET(
     const { data: manager, error: managerError } = await supabase
       .from('fund_managers')
       .select('*')
-      .eq('slug', slug)
+      .eq('slug' as any, slug as any)
       .single();
 
     if (managerError) {
@@ -52,8 +52,8 @@ export async function GET(
     const { data: etfs, error: etfsError } = await supabase
       .from('etfs')
       .select('*')
-      .eq('manager_id', manager.id)
-      .eq('is_active', true)
+      .eq('manager_id' as any, manager.id as any)
+      .eq('is_active' as any, true as any)
       .order('aum_millions', { ascending: false });
 
     if (etfsError) {

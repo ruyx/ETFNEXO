@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const { data: existing, error: checkError } = await supabase
       .from('newsletter_subscribers')
       .select('email')
-      .eq('email', email.toLowerCase())
+      .eq('email' as any, email.toLowerCase() as any)
       .maybeSingle();
 
     if (checkError && checkError.code !== 'PGRST116') {
@@ -106,7 +106,7 @@ export async function DELETE(request: NextRequest) {
     const { error } = await supabase
       .from('newsletter_subscribers')
       .update({ is_active: false })
-      .eq('email', email.toLowerCase());
+      .eq('email' as any, email.toLowerCase() as any);
 
     if (error) {
       console.error('Error unsubscribing:', error);

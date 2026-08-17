@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
     let query = supabase.from('etfs').select('*');
 
     if (category) {
-      query = query.eq('category', category);
+      query = query.eq('category' as any, category as any);
     }
 
     const { data: etfs, error: etfsError } = await query;

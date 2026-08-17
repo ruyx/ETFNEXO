@@ -23,7 +23,7 @@ export async function GET(
     const { data: profile, error } = await supabase
       .from('user_profiles')
       .select('*')
-      .eq('id', params.id)
+      .eq('id' as any, params.id as any)
       .single();
 
     if (error || !profile) {
@@ -35,11 +35,11 @@ export async function GET(
 
     return successResponse({
       user: {
-        ...profile,
+        ...(profile as any),
         email: authUser?.user?.email || null,
         email_confirmed_at: authUser?.user?.email_confirmed_at || null,
         last_sign_in_at: authUser?.user?.last_sign_in_at || null,
-        created_at: authUser?.user?.created_at || profile.created_at
+        created_at: authUser?.user?.created_at || (profile as any).created_at
       }
     });
 
@@ -85,8 +85,8 @@ export async function PATCH(
 
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
-      .update(updateData)
-      .eq('id', params.id)
+      .update(updateData as any)
+      .eq('id' as any, params.id as any)
       .select()
       .single();
 

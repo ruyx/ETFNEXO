@@ -6,13 +6,13 @@ export interface AgentProfile {
   name: string;
   slug: string;
   display_name: string;
-  bio: string;
-  expertise: string[];
+  bio: string | null;
+  expertise: string[] | null;
   avatar_url: string | null;
-  role: string;
-  email: string;
-  is_active: boolean;
-  can_publish: boolean;
+  role: string | null;
+  email: string | null;
+  is_active: boolean | null;
+  can_publish: boolean | null;
   articles_count: number;
   total_views: number;
 }
@@ -22,7 +22,8 @@ interface AgentCardProps {
 }
 
 export default function AgentCard({ agent }: AgentCardProps) {
-  const getRoleLabel = (role: string): string => {
+  const getRoleLabel = (role: string | null): string => {
+    if (!role) return 'Sin rol';
     const roles: Record<string, string> = {
       analyst: 'Analista',
       editor: 'Editor',

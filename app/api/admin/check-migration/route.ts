@@ -27,11 +27,11 @@ export async function GET(request: NextRequest) {
 
     let canUpdateAsAdmin = false;
     if (profiles && profiles.length > 0) {
-      const testId = profiles[0].id;
+      const testId = (profiles[0] as any).id;
       const { error: updateError } = await supabase
         .from('user_profiles')
-        .update({ updated_at: new Date().toISOString() })
-        .eq('id', testId);
+        .update({ updated_at: new Date().toISOString() } as any)
+        .eq('id' as any, testId as any);
 
       canUpdateAsAdmin = !updateError;
     }

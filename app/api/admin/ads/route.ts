@@ -31,13 +31,13 @@ export async function GET(request: NextRequest) {
 
     // Aplicar filtros
     if (status) {
-      query = query.eq('status', status);
+      query = query.eq('status' as any, status as any);
     }
     if (advertiser_id) {
-      query = query.eq('advertiser_id', advertiser_id);
+      query = query.eq('advertiser_id' as any, advertiser_id as any);
     }
     if (placement) {
-      query = query.eq('placement', placement);
+      query = query.eq('placement' as any, placement as any);
     }
 
     const { data: ads, error } = await query;

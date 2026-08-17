@@ -73,7 +73,7 @@ export async function GET(
     const { data: etf, error: etfError } = await supabase
       .from('etfs')
       .select('*')
-      .eq('isin', isin)
+      .eq('isin' as any, isin as any)
       .single();
 
     if (etfError) {
@@ -97,7 +97,7 @@ export async function GET(
       const { data: manager, error: managerError } = await supabase
         .from('fund_managers')
         .select('*')
-        .eq('id', etf.manager_id)
+        .eq('id' as any, etf.manager_id as any)
         .single();
 
       if (!managerError) {
@@ -109,7 +109,7 @@ export async function GET(
     const { data: ratings, error: ratingsError } = await supabase
       .from('user_ratings')
       .select('rating')
-      .eq('etf_id', etf.id);
+      .eq('etf_id' as any, etf.id as any);
 
     let averageRating = null;
     let ratingCount = 0;
@@ -127,7 +127,7 @@ export async function GET(
     const { data: priceHistory, error: priceError } = await supabase
       .from('etf_price_history')
       .select('date, nav_price')
-      .eq('etf_id', etf.id)
+      .eq('etf_id' as any, etf.id as any)
       .gte('date', thirtyDaysAgo.toISOString())
       .order('date', { ascending: true });
 

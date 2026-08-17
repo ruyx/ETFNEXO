@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
     const offset = (page - 1) * limit;
 
     // Obtener noticias publicadas
-    const { data: articles, error } = await supabase
+    const { data: articles, error }: any = await (supabase as any)
       .from('news_articles')
       .select(`
         id,
@@ -60,7 +60,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Obtener total para calcular si hay más páginas
-    const { count } = await supabase
+    const { count } = await (supabase as any)
       .from('news_articles')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'published');

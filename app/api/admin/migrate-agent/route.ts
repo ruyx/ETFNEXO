@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     // Column doesn't exist, need to run migration via Supabase Dashboard
     return errorResponse(
       'Migration must be applied manually via Supabase Dashboard SQL Editor',
-      'MANUAL_MIGRATION_REQUIRED',
+      'INTERNAL_ERROR',
       400,
       `Please run this SQL in Supabase Dashboard → SQL Editor:
 

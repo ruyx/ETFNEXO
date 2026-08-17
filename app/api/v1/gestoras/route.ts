@@ -43,8 +43,8 @@ export async function GET() {
         const { data: etfs, error: etfsError } = await supabase
           .from('etfs')
           .select('aum_millions')
-          .eq('manager_id', manager.id)
-          .eq('is_active', true);
+          .eq('manager_id' as any, manager.id as any)
+          .eq('is_active' as any, true as any);
 
         if (etfsError) {
           console.error(`Error fetching ETFs for manager ${manager.id}:`, etfsError);

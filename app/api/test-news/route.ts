@@ -9,7 +9,7 @@ export async function GET() {
     const { data, error, count } = await supabase
       .from('news_articles_with_metadata')
       .select('*', { count: 'exact' })
-      .eq('status', 'published')
+      .eq('status' as any, 'published' as any)
       .order('published_at', { ascending: false })
       .limit(5);
 

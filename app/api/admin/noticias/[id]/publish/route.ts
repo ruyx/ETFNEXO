@@ -26,7 +26,7 @@ export async function POST(
     const { data: article } = await supabase
       .from('news_articles')
       .select('id, title, status')
-      .eq('id', params.id)
+      .eq('id' as any, params.id as any)
       .single();
 
     if (!article) {
@@ -50,8 +50,8 @@ export async function POST(
 
     const { data: updated, error } = await supabase
       .from('news_articles')
-      .update(updateData)
-      .eq('id', params.id)
+      .update(updateData as any)
+      .eq('id' as any, params.id as any)
       .select()
       .single();
 

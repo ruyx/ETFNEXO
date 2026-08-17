@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     // Aplicar filtros
     if (role) {
-      query = query.eq('role', role);
+      query = query.eq('role' as any, role as any);
     }
     if (search) {
       query = query.or(`full_name.ilike.%${search}%,username.ilike.%${search}%`);
@@ -63,9 +63,9 @@ export async function GET(request: NextRequest) {
     // Obtener emails de auth.users para cada perfil
     const usersWithEmail = await Promise.all(
       (profiles || []).map(async (profile) => {
-        const { data: authUser } = await supabase.auth.admin.getUserById(profile.id);
+        const { data: authUser } = await supabase.auth.admin.getUserById((profile as any).id);
         return {
-          ...profile,
+          ...(profile as any),
           email: authUser?.user?.email || null,
           email_confirmed_at: authUser?.user?.email_confirmed_at || null,
           last_sign_in_at: authUser?.user?.last_sign_in_at || null
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
 
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
-      .insert([profileData])
+      .insert([profileData] as any)
       .select()
       .single();
 
@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
     return successResponse(
       {
         user: {
-          ...profile,
+          ...(profile as any),
           email: authData.user.email
         }
       },

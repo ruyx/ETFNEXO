@@ -23,8 +23,8 @@ async function getArticle(slug: string) {
     const { data: article, error } = await supabase
       .from('news_articles_with_metadata')
       .select('*')
-      .eq('slug', slug)
-      .eq('status', 'published')
+      .eq('slug' as any, slug as any)
+      .eq('status' as any, 'published' as any)
       .single();
 
     if (error || !article) {

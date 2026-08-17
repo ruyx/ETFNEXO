@@ -57,10 +57,10 @@ export async function GET(request: NextRequest) {
 
     // Aplicar filtros
     if (status) {
-      query = query.eq('status', status);
+      query = query.eq('status' as any, status as any);
     }
     if (category_id) {
-      query = query.eq('category_id', category_id);
+      query = query.eq('category_id' as any, category_id as any);
     }
     if (search) {
       query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`);
@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
     const { data: existing } = await supabase
       .from('news_articles')
       .select('id')
-      .eq('slug', slug)
+      .eq('slug' as any, slug as any)
       .single();
 
     if (existing) {
@@ -163,7 +163,7 @@ export async function POST(request: NextRequest) {
 
     const { data: article, error } = await supabase
       .from('news_articles')
-      .insert([articleData])
+      .insert([articleData] as any)
       .select()
       .single();
 

@@ -153,14 +153,14 @@ export async function POST(request: NextRequest) {
       const yahooData = await fetchYahooFinanceData(etf.yahoo_ticker);
 
       if (yahooData.return_1y !== null || yahooData.sharpe_ratio !== null) {
-        const { error: updateError } = await supabase
+        const { error: updateError }: any = await (supabase as any)
           .from('etfs')
           .update({
             return_1y: yahooData.return_1y,
             sharpe_ratio: yahooData.sharpe_ratio,
             updated_at: new Date().toISOString()
           })
-          .eq('id', etf.id);
+          .eq('id' as any, etf.id as any);
 
         if (updateError) {
           console.error(`[Update ETF Data] Error updating ${etf.yahoo_ticker}:`, updateError);

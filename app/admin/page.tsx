@@ -24,8 +24,8 @@ async function getStats() {
     { count: totalTags }
   ] = await Promise.all([
     supabase.from('news_articles').select('*', { count: 'exact', head: true }),
-    supabase.from('news_articles').select('*', { count: 'exact', head: true }).eq('status', 'published'),
-    supabase.from('news_articles').select('*', { count: 'exact', head: true }).eq('status', 'draft'),
+    supabase.from('news_articles').select('*', { count: 'exact', head: true }).eq('status' as any, 'published' as any),
+    supabase.from('news_articles').select('*', { count: 'exact', head: true }).eq('status' as any, 'draft' as any),
     supabase.from('news_categories').select('*', { count: 'exact', head: true }),
     supabase.from('news_tags').select('*', { count: 'exact', head: true })
   ]);

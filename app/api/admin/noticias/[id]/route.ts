@@ -38,7 +38,7 @@ export async function GET(
         *,
         category:news_categories(id, name, slug, color_hex)
       `)
-      .eq('id', params.id)
+      .eq('id' as any, params.id as any)
       .single();
 
     if (error || !article) {
@@ -51,21 +51,21 @@ export async function GET(
       .select(`
         tag:news_tags(id, name, slug)
       `)
-      .eq('article_id', params.id);
+      .eq('article_id' as any, params.id as any);
 
-    const tags = articleTags?.map(at => at.tag) || [];
+    const tags = articleTags?.map(at => (at as any).tag) || [];
 
     // Obtener ETFs relacionados
     const { data: articleEtfs } = await supabase
       .from('news_articles_related_etfs')
       .select('etf_isin')
-      .eq('article_id', params.id);
+      .eq('article_id' as any, params.id as any);
 
-    const relatedEtfs = articleEtfs?.map(ae => ae.etf_isin) || [];
+    const relatedEtfs = articleEtfs?.map(ae => (ae as any).etf_isin) || [];
 
     return successResponse({
       article: {
-        ...article,
+        ...(article as any),
         tags,
         relatedEtfs
       }
@@ -108,8 +108,8 @@ export async function PATCH(
       const { data: existing } = await supabase
         .from('news_articles')
         .select('id')
-        .eq('slug', slug)
-        .neq('id', params.id)
+        .eq('slug' as any, slug as any)
+        .neq('id' as any, params.id as any)
         .single();
 
       if (existing) {
@@ -134,8 +134,8 @@ export async function PATCH(
 
     const { data: article, error } = await supabase
       .from('news_articles')
-      .update(updateData)
-      .eq('id', params.id)
+      .update(updateData as any)
+      .eq('id' as any, params.id as any)
       .select()
       .single();
 
@@ -155,7 +155,7 @@ export async function PATCH(
       await supabase
         .from('news_articles_tags')
         .delete()
-        .eq('article_id', params.id);
+        .eq('article_id' as any, params.id as any);
 
       // Agregar nuevos tags
       if (tags.length > 0) {
@@ -166,7 +166,7 @@ export async function PATCH(
 
         await supabase
           .from('news_articles_tags')
-          .insert(tagInserts);
+          .insert(tagInserts as any);
       }
     }
 
@@ -176,7 +176,7 @@ export async function PATCH(
       await supabase
         .from('news_articles_related_etfs')
         .delete()
-        .eq('article_id', params.id);
+        .eq('article_id' as any, params.id as any);
 
       // Agregar nuevos ETFs
       if (relatedEtfs.length > 0) {
@@ -187,7 +187,7 @@ export async function PATCH(
 
         await supabase
           .from('news_articles_related_etfs')
-          .insert(etfInserts);
+          .insert(etfInserts as any);
       }
     }
 
@@ -217,7 +217,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('news_articles')
       .delete()
-      .eq('id', params.id);
+      .eq('id' as any, params.id as any);
 
     if (error) {
       console.error('Error deleting article:', error);

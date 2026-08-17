@@ -38,7 +38,7 @@ export default function PerfilPage() {
         const { data: profileData } = await supabase
           .from('user_profiles')
           .select('*')
-          .eq('id', user.id)
+          .eq('id' as any, user.id as any)
           .single()
 
         console.log('[Perfil] Profile loaded:', profileData ? 'Found' : 'Not found')
@@ -55,7 +55,7 @@ export default function PerfilPage() {
               manager_id
             )
           `)
-          .eq('user_id', user.id)
+          .eq('user_id' as any, user.id as any)
           .order('created_at', { ascending: false })
 
         console.log('[Perfil] Ratings loaded:', ratingsData?.length || 0)
@@ -74,7 +74,7 @@ export default function PerfilPage() {
               average_rating
             )
           `)
-          .eq('user_id', user.id)
+          .eq('user_id' as any, user.id as any)
           .order('added_at', { ascending: false })
 
         console.log('[Perfil] Watchlist loaded:', watchlistData?.length || 0)

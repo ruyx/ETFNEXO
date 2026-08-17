@@ -61,10 +61,10 @@ export async function GET(request: NextRequest) {
           const { count } = await supabase
             .from('news_articles')
             .select('id', { count: 'exact', head: true })
-            .eq('category_id', category.id);
+            .eq('category_id' as any, (category as any).id as any);
 
           return {
-            ...category,
+            ...(category as any),
             articles_count: count || 0
           };
         })
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
     const { data: existing } = await supabase
       .from('news_categories')
       .select('id')
-      .eq('slug', slug)
+      .eq('slug' as any, slug as any)
       .single();
 
     if (existing) {
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
 
     const { data: category, error } = await supabase
       .from('news_categories')
-      .insert([categoryData])
+      .insert([categoryData] as any)
       .select()
       .single();
 

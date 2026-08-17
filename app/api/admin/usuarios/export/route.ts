@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false });
 
     if (role) {
-      query = query.eq('role', role);
+      query = query.eq('role' as any, role as any);
     }
     if (search) {
       query = query.or(`full_name.ilike.%${search}%,username.ilike.%${search}%`);
@@ -47,9 +47,9 @@ export async function GET(request: NextRequest) {
     // Obtener emails de auth.users para cada perfil
     const usersWithEmail = await Promise.all(
       (profiles || []).map(async (profile) => {
-        const { data: authUser } = await supabase.auth.admin.getUserById(profile.id);
+        const { data: authUser } = await supabase.auth.admin.getUserById((profile as any).id);
         return {
-          ...profile,
+          ...(profile as any),
           email: authUser?.user?.email || '',
           email_confirmed_at: authUser?.user?.email_confirmed_at || '',
           last_sign_in_at: authUser?.user?.last_sign_in_at || ''

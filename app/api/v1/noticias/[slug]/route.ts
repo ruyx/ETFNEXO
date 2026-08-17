@@ -12,8 +12,8 @@ export async function GET(
     const { data: article, error } = await supabase
       .from('news_articles_with_metadata')
       .select('*')
-      .eq('slug', params.slug)
-      .eq('status', 'published')
+      .eq('slug' as any, params.slug as any)
+      .eq('status' as any, 'published' as any)
       .single();
 
     if (error || !article) {

@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (category) {
-      query = query.eq('category', category);
+      query = query.eq('category' as any, category as any);
     }
 
     if (minReturn) {

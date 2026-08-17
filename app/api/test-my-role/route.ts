@@ -91,7 +91,7 @@ export async function GET() {
     const { data: profile } = await supabase
       .from('user_profiles')
       .select('*')
-      .eq('id', user.id)  // ✅ CORRECCIÓN: usar 'id' en lugar de 'user_id'
+      .eq('id' as any, user.id as any)  // ✅ CORRECCIÓN: usar 'id' en lugar de 'user_id'
       .single();
 
     // Intentar obtener usuario autenticado con nuestro middleware

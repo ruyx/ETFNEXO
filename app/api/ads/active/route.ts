@@ -30,8 +30,8 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from('ads')
       .select('*')
-      .eq('placement', placement)
-      .eq('status', 'active')
+      .eq('placement' as any, placement as any)
+      .eq('status' as any, 'active' as any)
       .or(`start_date.is.null,start_date.lte.${now}`)
       .or(`end_date.is.null,end_date.gte.${now}`)
       .order('priority', { ascending: false })

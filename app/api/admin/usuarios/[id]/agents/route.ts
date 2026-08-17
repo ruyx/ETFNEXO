@@ -40,7 +40,7 @@ export async function GET(
           slug
         )
       `)
-      .eq('user_id', params.id)
+      .eq('user_id' as any, params.id as any)
       .order('assigned_at', { ascending: false });
 
     if (error) {
@@ -93,8 +93,8 @@ export async function POST(
     const { data: agent, error: agentError } = await supabase
       .from('ai_agents')
       .select('id, name, display_name')
-      .eq('id', body.agent_id)
-      .eq('is_active', true)
+      .eq('id' as any, body.agent_id as any)
+      .eq('is_active' as any, true as any)
       .single();
 
     if (agentError || !agent) {
@@ -111,7 +111,7 @@ export async function POST(
       .insert([{
         user_id: params.id,
         agent_id: body.agent_id
-      }])
+      }] as any)
       .select(`
         id,
         agent_id,
@@ -131,7 +131,7 @@ export async function POST(
       if (assignmentError.code === '23505') {
         return errorResponse(
           'Este agente ya está asignado al usuario',
-          'DUPLICATE',
+          'BAD_REQUEST',
           409
         );
       }
@@ -148,13 +148,13 @@ export async function POST(
     return successResponse(
       {
         assignment: {
-          id: assignment.id,
-          agent_id: assignment.agent_id,
-          name: assignment.ai_agents?.name,
-          display_name: assignment.ai_agents?.display_name,
-          role: assignment.ai_agents?.role,
-          slug: assignment.ai_agents?.slug,
-          assigned_at: assignment.assigned_at
+          id: (assignment as any).id,
+          agent_id: (assignment as any).agent_id,
+          name: (assignment as any).ai_agents?.name,
+          display_name: (assignment as any).ai_agents?.display_name,
+          role: (assignment as any).ai_agents?.role,
+          slug: (assignment as any).ai_agents?.slug,
+          assigned_at: (assignment as any).assigned_at
         }
       },
       'Agente asignado correctamente',
@@ -188,8 +188,8 @@ export async function DELETE(
     const { error } = await supabase
       .from('user_agent_assignments')
       .delete()
-      .eq('user_id', params.id)
-      .eq('agent_id', agentId);
+      .eq('user_id' as any, params.id as any)
+      .eq('agent_id' as any, agentId as any);
 
     if (error) {
       console.error('Error deleting agent assignment:', error);

@@ -20,13 +20,13 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from('news_articles_with_metadata')
       .select('*', { count: 'exact' })
-      .eq('status', 'published')
+      .eq('status' as any, 'published' as any)
       .order('published_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
     // Filtros opcionales
     if (categorySlug) {
-      query = query.eq('category_slug', categorySlug);
+      query = query.eq('category_slug' as any, categorySlug as any);
     }
 
     if (search) {

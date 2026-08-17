@@ -25,7 +25,7 @@ export async function GET(
         advertiser:advertisers(id, name, email, website, status)
       `)
       // @ts-expect-error - Supabase generated types issue with select join
-      .eq('id', params.id)
+      .eq('id' as any, params.id as any)
       .single();
 
     if (error || !ad) {
@@ -83,8 +83,8 @@ export async function PATCH(
 
     const { data: ad, error } = await supabase
       .from('ads')
-      .update(updateData)
-      .eq('id', params.id)
+      .update(updateData as any)
+      .eq('id' as any, params.id as any)
       .select()
       .single();
 
@@ -120,7 +120,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('ads')
       .delete()
-      .eq('id', params.id);
+      .eq('id' as any, params.id as any);
 
     if (error) {
       console.error('Error deleting ad:', error);

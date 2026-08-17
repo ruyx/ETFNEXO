@@ -19,7 +19,7 @@ export async function POST() {
     const { data: existingProfile, error: fetchError } = await supabase
       .from('user_profiles')
       .select('*')
-      .eq('id', USER_ID)  // ✅ Cambio: usar 'id' en lugar de 'user_id'
+      .eq('id' as any, USER_ID as any)  // ✅ Cambio: usar 'id' en lugar de 'user_id'
       .single();
 
     if (fetchError && fetchError.code !== 'PGRST116') {
@@ -30,10 +30,10 @@ export async function POST() {
       );
     }
 
-    if (existingProfile) {
+    if (existingProfile && !fetchError) {
       console.log('✅ Perfil existente encontrado:', existingProfile);
 
-      if (existingProfile.role === 'admin') {
+      if ((existingProfile as any).role === 'admin') {
         return NextResponse.json({
           success: true,
           message: 'El usuario YA tiene rol admin',
@@ -41,12 +41,12 @@ export async function POST() {
         });
       }
 
-      console.log(`Actualizando de "${existingProfile.role || 'null'}" a "admin"...`);
+      console.log(`Actualizando de "${(existingProfile as any).role || 'null'}" a "admin"...`);
 
       const { data: updated, error: updateError } = await supabase
         .from('user_profiles')
-        .update({ role: 'admin' })
-        .eq('id', USER_ID)  // ✅ Cambio: usar 'id' en lugar de 'user_id'
+        .update({ role: 'admin' } as any)
+        .eq('id' as any, USER_ID as any)  // ✅ Cambio: usar 'id' en lugar de 'user_id'
         .select()
         .single();
 
@@ -76,7 +76,7 @@ export async function POST() {
           role: 'admin',
           full_name: 'Ruy De Jesus'
         }
-      ])
+      ] as any)
       .select()
       .single();
 

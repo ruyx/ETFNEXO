@@ -270,11 +270,12 @@ export async function POST(req: NextRequest) {
         const url = row.url.trim();
 
         // Check if exists
-        const { data: existing } = await supabase
+        const result: any = await (supabase as any)
           .from('news_articles')
           .select('id')
-          .eq('source_url', url)
+          .eq('source_url' as any, url as any)
           .single();
+        const existing = result.data;
 
         if (existing) {
           console.log(`⏭️  Skip: ${url}`);

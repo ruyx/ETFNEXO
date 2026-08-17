@@ -56,6 +56,7 @@ interface ArticleFormProps {
     excerpt?: string;
     content: string;
     category_id?: string;
+    author_id?: string;
     author_name?: string;
     author_email?: string;
     meta_title?: string;

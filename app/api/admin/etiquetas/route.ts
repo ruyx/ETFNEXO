@@ -61,10 +61,10 @@ export async function GET(request: NextRequest) {
           const { count } = await supabase
             .from('news_articles_tags')
             .select('article_id', { count: 'exact', head: true })
-            .eq('tag_id', tag.id);
+            .eq('tag_id' as any, (tag as any).id as any);
 
           return {
-            ...tag,
+            ...(tag as any),
             articles_count: count || 0
           };
         })
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
     const { data: existing } = await supabase
       .from('news_tags')
       .select('id')
-      .eq('slug', slug)
+      .eq('slug' as any, slug as any)
       .single();
 
     if (existing) {
@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
 
     const { data: tag, error } = await supabase
       .from('news_tags')
-      .insert([tagData])
+      .insert([tagData] as any)
       .select()
       .single();
 

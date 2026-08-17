@@ -34,7 +34,7 @@ export async function GET(
     const { data: tag, error } = await supabase
       .from('news_tags')
       .select('*')
-      .eq('id', params.id)
+      .eq('id' as any, params.id as any)
       .single();
 
     if (error || !tag) {
@@ -45,11 +45,11 @@ export async function GET(
     const { count } = await supabase
       .from('news_articles_tags')
       .select('article_id', { count: 'exact', head: true })
-      .eq('tag_id', params.id);
+      .eq('tag_id' as any, params.id as any);
 
     return successResponse({
       tag: {
-        ...tag,
+        ...(tag as any),
         articles_count: count || 0
       }
     });
@@ -82,8 +82,8 @@ export async function PATCH(
       const { data: existing } = await supabase
         .from('news_tags')
         .select('id')
-        .eq('slug', slug)
-        .neq('id', params.id)
+        .eq('slug' as any, slug as any)
+        .neq('id' as any, params.id as any)
         .single();
 
       if (existing) {
@@ -95,8 +95,8 @@ export async function PATCH(
 
     const { data: tag, error } = await supabase
       .from('news_tags')
-      .update(updateData)
-      .eq('id', params.id)
+      .update(updateData as any)
+      .eq('id' as any, params.id as any)
       .select()
       .single();
 
@@ -135,12 +135,12 @@ export async function DELETE(
     const { count } = await supabase
       .from('news_articles_tags')
       .select('article_id', { count: 'exact', head: true })
-      .eq('tag_id', params.id);
+      .eq('tag_id' as any, params.id as any);
 
     if (count && count > 0) {
       return errorResponse(
         `No se puede eliminar la etiqueta porque tiene ${count} artículo(s) asociado(s)`,
-        'CONFLICT',
+        'BAD_REQUEST',
         409
       );
     }
@@ -148,7 +148,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('news_tags')
       .delete()
-      .eq('id', params.id);
+      .eq('id' as any, params.id as any);
 
     if (error) {
       console.error('Error deleting tag:', error);

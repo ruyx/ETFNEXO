@@ -17,7 +17,7 @@ async function getAuthor(slug: string) {
     const { data: agent, error } = await supabase
       .from('ai_agents')
       .select('*')
-      .eq('slug', slug)
+      .eq('slug' as any, slug as any)
       .single();
 
     if (error || !agent) {
@@ -28,13 +28,13 @@ async function getAuthor(slug: string) {
     const { data: articles } = await supabase
       .from('news_articles')
       .select('id, title, slug, excerpt, featured_image_url, published_at, views_count')
-      .eq('author_id', agent.id)
-      .eq('status', 'published')
+      .eq('author_id' as any, (agent as any).id as any)
+      .eq('status' as any, 'published' as any)
       .order('published_at', { ascending: false })
       .limit(12);
 
     return {
-      ...agent,
+      ...(agent as any),
       articles: articles || []
     };
   } catch (error) {

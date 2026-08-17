@@ -20,7 +20,7 @@ export async function GET(
     const { data: agent, error } = await supabase
       .from('ai_agents')
       .select('*')
-      .eq('id', id)
+      .eq('id' as any, id as any as any)
       .single();
 
     if (error) throw error;
@@ -83,7 +83,7 @@ export async function PUT(
     const { data: agents, error } = await supabase
       .from('ai_agents')
       .update(updateData as any)
-      .eq('id' as any, id as any)
+      .eq('id' as any, id as any as any)
       .select();
 
     console.log('[PUT /api/admin/agentes/[id]] Update result:', { agents, error });
@@ -130,7 +130,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('ai_agents')
       .delete()
-      .eq('id', id);
+      .eq('id' as any, id as any as any);
 
     if (error) throw error;
 

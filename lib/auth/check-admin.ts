@@ -82,7 +82,11 @@ export async function requireRole(
   return {
     user,
     role: profile.role as UserRole,
-    profile
+    profile: {
+      id: profile.id,
+      full_name: profile.full_name,
+      role: profile.role as UserRole
+    }
   };
 }
 
@@ -126,7 +130,11 @@ export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> 
     return {
       user,
       role: profile.role as UserRole,
-      profile
+      profile: {
+        id: profile.id,
+        full_name: profile.full_name,
+        role: profile.role as UserRole
+      }
     };
   } catch {
     return null;

@@ -27,7 +27,7 @@ export async function GET() {
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
       .select('*')
-      .eq('id', user.id)
+      .eq('id' as any, user.id as any)
       .single();
 
     if (profileError) {
@@ -40,9 +40,9 @@ export async function GET() {
         user: {
           id: user.id,
           email: user.email,
-          name: profile?.name || user.email?.split('@')[0] || 'Usuario',
-          role: profile?.role || 'viewer',
-          avatar_url: profile?.avatar_url || null
+          name: (profile as any)?.name || user.email?.split('@')[0] || 'Usuario',
+          role: (profile as any)?.role || 'viewer',
+          avatar_url: (profile as any)?.avatar_url || null
         }
       }
     });
