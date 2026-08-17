@@ -37,7 +37,7 @@ export default async function AgentesPage() {
     can_publish: agent.can_publish,
     articles_count: agent.articles_count || 0,
     total_views: agent.total_views || 0
-  })) || [];
+  } as AgentProfile)) || [];
 
   return (
     <div className="admin-container">
