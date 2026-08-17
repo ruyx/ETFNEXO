@@ -130,10 +130,8 @@ export default function EditarUsuarioPage() {
 
     try {
       // No enviar password si está vacío
-      const updateData = { ...formData };
-      if (!updateData.password) {
-        delete updateData.password;
-      }
+      const { password, ...restData } = formData;
+      const updateData = password ? formData : restData;
 
       const response = await fetch(`/api/admin/usuarios/${userId}`, {
         method: 'PATCH',
