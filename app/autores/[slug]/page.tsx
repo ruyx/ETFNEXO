@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import Header from '@/components/Header';
+import NewsCard from '@/components/NewsCard';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 export const revalidate = 3600;
@@ -27,7 +27,7 @@ async function getAuthor(slug: string) {
     // Obtener artículos del agente
     const { data: articles } = await supabase
       .from('news_articles')
-      .select('id, title, slug, excerpt, featured_image_url, published_at, views_count')
+      .select('id, title, slug, content, featured_image_url, published_at, views_count, source_name, source_url, author_name')
       .eq('author_id' as any, (agent as any).id as any)
       .eq('status' as any, 'published' as any)
       .order('published_at', { ascending: false })
@@ -78,139 +78,61 @@ export default async function AuthorPage({ params }: PageProps) {
     <>
       <Header />
       <main className="author-page">
-        <div className="container" style={{ maxWidth: '900px', margin: '0 auto', padding: 'var(--spacing-8) var(--spacing-4)' }}>
+        <div className="container max-w-7xl mx-auto px-6 py-16">
           {/* Author Header */}
-          <div className="author-header" style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textAlign: 'center',
-            gap: 'var(--spacing-4)',
-            marginBottom: 'var(--spacing-8)',
-            paddingBottom: 'var(--spacing-6)',
-            borderBottom: '1px solid var(--color-slate-200)'
-          }}>
-            <div style={{
-              width: '120px',
-              height: '120px',
-              borderRadius: '50%',
-              overflow: 'hidden',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'linear-gradient(135deg, var(--color-primary), var(--color-success))',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)'
-            }}>
+          <div className="author-header flex flex-col items-center text-center gap-6 mb-12 pb-8 border-b border-slate-200">
+            <div className="w-32 h-32 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-br from-orange-500 to-green-500 shadow-xl">
               {author.avatar_url ? (
                 <img
                   src={author.avatar_url}
                   alt={author.display_name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  className="w-full h-full object-cover"
                 />
               ) : (
-                <span style={{
-                  fontSize: '2.5rem',
-                  fontWeight: 700,
-                  color: 'var(--color-white)'
-                }}>
+                <span className="text-5xl font-bold text-white">
                   {getInitials(author.display_name)}
                 </span>
               )}
             </div>
 
             <div>
-              <h1 style={{
-                fontSize: '2rem',
-                fontWeight: 700,
-                color: 'var(--color-slate-900)',
-                marginBottom: 'var(--spacing-2)'
-              }}>
+              <h1 className="text-4xl font-bold text-slate-900 mb-3">
                 {author.display_name}
               </h1>
               {author.bio && (
-                <p style={{
-                  fontSize: '1.125rem',
-                  color: 'var(--color-slate-600)',
-                  maxWidth: '600px',
-                  margin: '0 auto'
-                }}>
+                <p className="text-lg text-slate-600 max-w-2xl mx-auto">
                   {author.bio}
                 </p>
               )}
             </div>
 
-            <div style={{ display: 'flex', gap: 'var(--spacing-6)', fontSize: '0.875rem', color: 'var(--color-slate-600)' }}>
+            <div className="flex gap-8 text-sm text-slate-600">
               <div>
-                <strong style={{ color: 'var(--color-slate-900)' }}>{author.articles_count || 0}</strong> artículos publicados
+                <strong className="text-slate-900">{author.articles_count || 0}</strong> artículos publicados
               </div>
               <div>
-                <strong style={{ color: 'var(--color-slate-900)' }}>{author.total_views || 0}</strong> vistas totales
+                <strong className="text-slate-900">{author.total_views || 0}</strong> vistas totales
               </div>
             </div>
           </div>
 
           {/* Articles List */}
-          <h2 style={{
-            fontSize: '1.5rem',
-            fontWeight: 700,
-            marginBottom: 'var(--spacing-6)',
-            color: 'var(--color-slate-900)'
-          }}>
-            Artículos Recientes
+          <h2 className="text-2xl font-bold mb-8 text-slate-900">
+            Noticias relacionadas
           </h2>
 
           {author.articles.length === 0 ? (
-            <p style={{ color: 'var(--color-slate-600)', textAlign: 'center', padding: 'var(--spacing-8)' }}>
+            <p className="text-slate-600 text-center py-16">
               Este autor aún no tiene artículos publicados.
             </p>
           ) : (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: 'var(--spacing-6)'
-            }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {author.articles.map((article: any) => (
-                <Link
+                <NewsCard
                   key={article.id}
-                  href={`/noticias/${article.slug}`}
-                  style={{
-                    display: 'block',
-                    textDecoration: 'none',
-                    color: 'inherit',
-                    borderRadius: 'var(--radius-md)',
-                    overflow: 'hidden',
-                    border: '1px solid var(--color-slate-200)',
-                    transition: 'all var(--transition-base)',
-                    background: 'var(--color-white)'
-                  }}
-                  className="noticias-card"
-                >
-                  {article.featured_image_url && (
-                    <div className="noticias-card__image">
-                      <img
-                        src={article.featured_image_url}
-                        alt={article.title}
-                      />
-                    </div>
-                  )}
-                  <div className="noticias-card__content">
-                    <h3 className="noticias-card__title">
-                      {article.title}
-                    </h3>
-                    {article.excerpt && (
-                      <p className="noticias-card__excerpt">
-                        {article.excerpt.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ')}
-                      </p>
-                    )}
-                    <div className="noticias-card__date">
-                      {new Date(article.published_at).toLocaleDateString('es-ES', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </div>
-                  </div>
-                </Link>
+                  article={article}
+                  variant="card"
+                />
               ))}
             </div>
           )}
