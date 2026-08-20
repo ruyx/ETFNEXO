@@ -39,6 +39,230 @@ export type Database = {
   }
   public: {
     Tables: {
+      academy_article_tags: {
+        Row: {
+          article_id: string
+          created_at: string | null
+          tag_id: string
+        }
+        Insert: {
+          article_id: string
+          created_at?: string | null
+          tag_id: string
+        }
+        Update: {
+          article_id?: string
+          created_at?: string | null
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_article_tags_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "academy_articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academy_article_tags_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "academy_articles_with_metadata"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academy_article_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "academy_tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academy_articles: {
+        Row: {
+          author_id: string | null
+          category_id: string | null
+          content: string
+          created_at: string | null
+          difficulty_level: string | null
+          estimated_reading_time: number | null
+          excerpt: string | null
+          faq: Json | null
+          featured_image_alt: string | null
+          featured_image_url: string | null
+          id: string
+          meta_description: string | null
+          meta_title: string | null
+          prerequisites: string[] | null
+          published_at: string | null
+          shares_count: number | null
+          slug: string
+          status: string | null
+          title: string
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          category_id?: string | null
+          content: string
+          created_at?: string | null
+          difficulty_level?: string | null
+          estimated_reading_time?: number | null
+          excerpt?: string | null
+          faq?: Json | null
+          featured_image_alt?: string | null
+          featured_image_url?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          prerequisites?: string[] | null
+          published_at?: string | null
+          shares_count?: number | null
+          slug: string
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          category_id?: string | null
+          content?: string
+          created_at?: string | null
+          difficulty_level?: string | null
+          estimated_reading_time?: number | null
+          excerpt?: string | null
+          faq?: Json | null
+          featured_image_alt?: string | null
+          featured_image_url?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          prerequisites?: string[] | null
+          published_at?: string | null
+          shares_count?: number | null
+          slug?: string
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_articles_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academy_articles_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "academy_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academy_categories: {
+        Row: {
+          color_hex: string | null
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          icon_name: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          color_hex?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          icon_name?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          color_hex?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          icon_name?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      academy_related_etfs: {
+        Row: {
+          article_id: string
+          created_at: string | null
+          etf_id: string
+        }
+        Insert: {
+          article_id: string
+          created_at?: string | null
+          etf_id: string
+        }
+        Update: {
+          article_id?: string
+          created_at?: string | null
+          etf_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_related_etfs_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "academy_articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academy_related_etfs_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "academy_articles_with_metadata"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academy_related_etfs_etf_id_fkey"
+            columns: ["etf_id"]
+            isOneToOne: false
+            referencedRelation: "etfs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academy_tags: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          slug: string
+          usage_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          slug: string
+          usage_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          usage_count?: number | null
+        }
+        Relationships: []
+      }
       ad_clicks: {
         Row: {
           ad_id: string | null
@@ -1108,6 +1332,57 @@ export type Database = {
       }
     }
     Views: {
+      academy_articles_with_metadata: {
+        Row: {
+          agent_avatar_url: string | null
+          agent_display_name: string | null
+          agent_name: string | null
+          agent_signature: string | null
+          agent_slug: string | null
+          author_id: string | null
+          category_color: string | null
+          category_id: string | null
+          category_name: string | null
+          category_slug: string | null
+          content: string | null
+          created_at: string | null
+          difficulty_level: string | null
+          estimated_reading_time: number | null
+          excerpt: string | null
+          faq: Json | null
+          featured_image_alt: string | null
+          featured_image_url: string | null
+          id: string | null
+          meta_description: string | null
+          meta_title: string | null
+          prerequisites: string[] | null
+          published_at: string | null
+          related_etfs: Json | null
+          shares_count: number | null
+          slug: string | null
+          status: string | null
+          tags: Json | null
+          title: string | null
+          updated_at: string | null
+          views_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_articles_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academy_articles_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "academy_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ad_stats: {
         Row: {
           advertiser_id: string | null
@@ -1291,6 +1566,19 @@ export type Database = {
       }
       import_gsheets_cron: { Args: never; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
+      search_academy_articles: {
+        Args: { max_results?: number; search_query: string }
+        Returns: {
+          category_name: string
+          difficulty_level: string
+          excerpt: string
+          id: string
+          published_at: string
+          relevance: number
+          slug: string
+          title: string
+        }[]
+      }
       search_articles: {
         Args: { max_results?: number; search_query: string }
         Returns: {
@@ -1326,6 +1614,7 @@ export type Database = {
           public: boolean | null
           type: Database["storage"]["Enums"]["buckettype"]
           updated_at: string | null
+          versioning_status: string
         }
         Insert: {
           allowed_mime_types?: string[] | null
@@ -1339,6 +1628,7 @@ export type Database = {
           public?: boolean | null
           type?: Database["storage"]["Enums"]["buckettype"]
           updated_at?: string | null
+          versioning_status?: string
         }
         Update: {
           allowed_mime_types?: string[] | null
@@ -1352,6 +1642,7 @@ export type Database = {
           public?: boolean | null
           type?: Database["storage"]["Enums"]["buckettype"]
           updated_at?: string | null
+          versioning_status?: string
         }
         Relationships: []
       }
@@ -1429,9 +1720,12 @@ export type Database = {
       }
       objects: {
         Row: {
+          archived_at: string | null
           bucket_id: string | null
           created_at: string | null
           id: string
+          is_delete_marker: boolean
+          is_versioned: boolean
           last_accessed_at: string | null
           metadata: Json | null
           name: string | null
@@ -1443,9 +1737,12 @@ export type Database = {
           version: string | null
         }
         Insert: {
+          archived_at?: string | null
           bucket_id?: string | null
           created_at?: string | null
           id?: string
+          is_delete_marker?: boolean
+          is_versioned?: boolean
           last_accessed_at?: string | null
           metadata?: Json | null
           name?: string | null
@@ -1457,9 +1754,12 @@ export type Database = {
           version?: string | null
         }
         Update: {
+          archived_at?: string | null
           bucket_id?: string | null
           created_at?: string | null
           id?: string
+          is_delete_marker?: boolean
+          is_versioned?: boolean
           last_accessed_at?: string | null
           metadata?: Json | null
           name?: string | null
