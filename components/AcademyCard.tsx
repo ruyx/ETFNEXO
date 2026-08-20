@@ -62,8 +62,7 @@ export default function AcademyCard({
                 <img
                   src={article.featured_image_url}
                   alt={article.title}
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  style={{ width: '100%', height: '100%' }}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
             )}
@@ -98,7 +97,7 @@ export default function AcademyCard({
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-purple-600 transition-colors">
+                <h3 className="text-xl font-bold mb-3 line-clamp-2 academy-title">
                   {article.title}
                 </h3>
 
@@ -114,7 +113,7 @@ export default function AcademyCard({
                   <User className="w-3 h-3" />
                   <span>Por: <span className="font-medium text-slate-700">{authorName}</span></span>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-purple-600 font-medium group-hover:text-purple-700">
+                <div className="flex items-center gap-1.5 text-xs academy-card-link">
                   Leer artículo completo
                 </div>
               </div>
@@ -136,8 +135,7 @@ export default function AcademyCard({
               <img
                 src={article.featured_image_url}
                 alt={article.title}
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                style={{ width: '100%', height: '100%' }}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
           )}
@@ -167,7 +165,7 @@ export default function AcademyCard({
             </div>
 
             {/* Title */}
-            <h3 className="text-base font-bold text-slate-900 mb-2 line-clamp-3 group-hover:text-purple-600 transition-colors">
+            <h3 className="text-base font-bold mb-2 line-clamp-3 academy-title">
               {article.title}
             </h3>
 
@@ -182,7 +180,7 @@ export default function AcademyCard({
                 <User className="w-3 h-3" />
                 <span>Por: <span className="font-medium text-slate-700">{authorName}</span></span>
               </div>
-              <div className="text-xs text-purple-600 font-medium group-hover:text-purple-700">
+              <div className="text-xs academy-card-link">
                 Leer artículo completo →
               </div>
             </div>
@@ -203,8 +201,7 @@ export default function AcademyCard({
               <img
                 src={article.featured_image_url}
                 alt={article.title}
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                style={{ width: '100%', height: '100%' }}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
           )}
@@ -213,7 +210,7 @@ export default function AcademyCard({
           <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
             <div>
               {/* Title */}
-              <h3 className="text-sm font-semibold text-slate-900 mb-1.5 line-clamp-2 group-hover:text-purple-600 transition-colors">
+              <h3 className="text-sm font-semibold mb-1.5 line-clamp-2 academy-title">
                 {article.title}
               </h3>
 

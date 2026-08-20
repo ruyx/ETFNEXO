@@ -8,16 +8,11 @@ interface ReadingTimeBadgeProps {
 export default function ReadingTimeBadge({ minutes, size = 'sm' }: ReadingTimeBadgeProps) {
   if (!minutes) return null
 
-  const sizeClasses = size === 'sm'
-    ? 'text-[10px] px-2 py-0.5 gap-1'
-    : 'text-xs px-2.5 py-1 gap-1.5'
-
+  const sizeClass = size === 'sm' ? 'reading-time-badge--sm' : 'reading-time-badge--md'
   const iconSize = size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'
 
   return (
-    <span
-      className={`inline-flex items-center font-medium rounded-full border bg-slate-50 text-slate-600 border-slate-200 ${sizeClasses}`}
-    >
+    <span className={`reading-time-badge ${sizeClass}`}>
       <Clock className={iconSize} />
       {minutes} min
     </span>

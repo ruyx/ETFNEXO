@@ -1,0 +1,89 @@
+/* ============================================
+   ACADEMIA - Componentes de artículos educativos
+   ============================================ */
+
+/* ==================== DIFFICULTY BADGES ==================== */
+.difficulty-badge {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  border: 1px solid;
+}
+
+.difficulty-badge--sm {
+  font-size: 0.625rem;  /* 10px */
+  padding: 0.125rem 0.5rem;  /* py-0.5 px-2 */
+  gap: 0.25rem;  /* gap-1 */
+}
+
+.difficulty-badge--md {
+  font-size: var(--font-size-xs);  /* 12px */
+  padding: 0.25rem 0.625rem;  /* py-1 px-2.5 */
+  gap: 0.375rem;  /* gap-1.5 */
+}
+
+/* Beginner - Success green */
+.difficulty-badge--beginner {
+  background-color: var(--color-emerald-100);
+  color: var(--color-emerald-800);
+  border-color: var(--color-success);
+}
+
+/* Intermediate - Warning amber */
+.difficulty-badge--intermediate {
+  background-color: var(--color-amber-100);
+  color: var(--color-amber-700);
+  border-color: var(--color-warning);
+}
+
+/* Advanced - Error red */
+.difficulty-badge--advanced {
+  background-color: #FEE2E2;  /* red-100 */
+  color: #991B1B;  /* red-800 */
+  border-color: var(--color-error);
+}
+
+/* ==================== READING TIME BADGE ==================== */
+.reading-time-badge {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-slate-200);
+  background-color: var(--color-slate-50);
+  color: var(--color-slate-600);
+}
+
+.reading-time-badge--sm {
+  font-size: 0.625rem;  /* 10px */
+  padding: 0.125rem 0.5rem;  /* py-0.5 px-2 */
+  gap: 0.25rem;  /* gap-1 */
+}
+
+.reading-time-badge--md {
+  font-size: var(--font-size-xs);  /* 12px */
+  padding: 0.25rem 0.625rem;  /* py-1 px-2.5 */
+  gap: 0.375rem;  /* gap-1.5 */
+}
+
+/* ==================== ACADEMY CARD LINK ==================== */
+.academy-card-link {
+  color: var(--color-primary);
+  font-weight: 500;
+  transition: color var(--transition-fast) ease;
+}
+
+.academy-card-link:hover {
+  color: var(--color-primary-dark);
+}
+
+/* ==================== ACADEMY TITLE HOVER ==================== */
+.academy-title {
+  color: var(--color-slate-900);
+  transition: color var(--transition-fast) ease;
+}
+
+.academy-title:hover {
+  color: var(--color-primary);
+}
