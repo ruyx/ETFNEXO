@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import NewsCard from '@/components/NewsCard';
+import AcademyCard from '@/components/AcademyCard';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 export const revalidate = 3600;
@@ -24,7 +25,7 @@ async function getAuthor(slug: string) {
       return null;
     }
 
-    // Obtener artículos del agente
+    // Obtener artículos de noticias del agente
     const { data: articles } = await supabase
       .from('news_articles')
       .select('id, title, slug, content, featured_image_url, published_at, views_count, source_name, source_url, author_name')
@@ -33,9 +34,19 @@ async function getAuthor(slug: string) {
       .order('published_at', { ascending: false })
       .limit(12);
 
+    // Obtener artículos de Academia del agente
+    const { data: academyArticles } = await supabase
+      .from('academy_articles')
+      .select('id, title, slug, content, excerpt, featured_image_url, published_at, views_count, difficulty_level, estimated_reading_time')
+      .eq('author_id' as any, (agent as any).id as any)
+      .eq('status' as any, 'published' as any)
+      .order('published_at', { ascending: false })
+      .limit(12);
+
     return {
       ...(agent as any),
-      articles: articles || []
+      articles: articles || [],
+      academyArticles: academyArticles || []
     };
   } catch (error) {
     console.error('Error fetching author:', error);
@@ -116,25 +127,47 @@ export default async function AuthorPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Articles List */}
-          <h2 className="text-2xl font-bold mb-8 text-slate-900">
-            Noticias relacionadas
-          </h2>
+          {/* News Articles List */}
+          {author.articles.length > 0 && (
+            <div className="mb-16">
+              <h2 className="text-2xl font-bold mb-8 text-slate-900">
+                Noticias relacionadas
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {author.articles.map((article: any) => (
+                  <NewsCard
+                    key={article.id}
+                    article={article}
+                    variant="card"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
-          {author.articles.length === 0 ? (
+          {/* Academy Articles List */}
+          {author.academyArticles.length > 0 && (
+            <div className="mb-16">
+              <h2 className="text-2xl font-bold mb-8 text-slate-900">
+                Artículos de Academia
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {author.academyArticles.map((article: any) => (
+                  <AcademyCard
+                    key={article.id}
+                    article={article}
+                    variant="card"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Empty state - no content at all */}
+          {author.articles.length === 0 && author.academyArticles.length === 0 && (
             <p className="text-slate-600 text-center py-16">
               Este autor aún no tiene artículos publicados.
             </p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {author.articles.map((article: any) => (
-                <NewsCard
-                  key={article.id}
-                  article={article}
-                  variant="card"
-                />
-              ))}
-            </div>
           )}
         </div>
       </main>
