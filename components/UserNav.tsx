@@ -198,19 +198,35 @@ export default function UserNav() {
 
             {/* Redactar artículos - Solo para admin y redactor */}
             {(profile?.role === 'admin' || profile?.role === 'redactor') && (
-              <Link
-                href="/admin/noticias"
-                className="user-nav-dropdown-link"
-                onClick={() => setIsOpen(false)}
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M14 2H8.5L7.5 0H2C0.9 0 0 0.9 0 2V14C0 15.1 0.9 16 2 16H14C15.1 16 16 15.1 16 14V4C16 2.9 15.1 2 14 2ZM4 12V10H12V12H4ZM12 8H4V6H12V8Z"
-                    fill="currentColor"
-                  />
-                </svg>
-                Redactar artículos
-              </Link>
+              <>
+                <Link
+                  href="/admin/noticias"
+                  className="user-nav-dropdown-link"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M14 2H8.5L7.5 0H2C0.9 0 0 0.9 0 2V14C0 15.1 0.9 16 2 16H14C15.1 16 16 15.1 16 14V4C16 2.9 15.1 2 14 2ZM4 12V10H12V12H4ZM12 8H4V6H12V8Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Redactar Noticias
+                </Link>
+
+                <Link
+                  href="/admin/academia"
+                  className="user-nav-dropdown-link"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M8 0L0 3V6C0 10.55 3.84 14.74 9 16C14.16 14.74 18 10.55 18 6V3L8 0ZM8 8H16C16 11.53 13.61 14.83 10 15.92V9H8V2.18L14 4.3V6H8V8Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Redactar Academia
+                </Link>
+              </>
             )}
 
             {/* Gestión de Usuarios - Solo para admin */}
