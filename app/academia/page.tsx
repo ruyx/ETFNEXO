@@ -78,17 +78,17 @@ export default function AcademiaPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900 text-white py-16 px-6">
+        <section className="bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-900 text-white py-16 px-6">
           <div className="container max-w-4xl text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-600/20 border border-purple-400/30 rounded-full text-xs font-semibold text-purple-300 mb-6">
-              <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600/20 border border-emerald-400/30 rounded-full text-xs font-semibold text-emerald-300 mb-6">
+              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
               <span>Contenido educativo de calidad</span>
             </div>
 
             <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
               Academia ETF Nexo
             </h1>
-            <p className="text-xl text-purple-100 leading-relaxed">
+            <p className="text-xl text-emerald-100 leading-relaxed">
               Aprende sobre ETFs con artículos educativos creados por expertos.
               Desde conceptos básicos hasta estrategias avanzadas de inversión.
             </p>
@@ -130,7 +130,7 @@ export default function AcademiaPage() {
                 </p>
                 <Link
                   href="/rankings"
-                  className="inline-flex items-center px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all"
+                  className="inline-flex items-center px-6 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-all"
                 >
                   Ver Rankings de ETFs
                 </Link>
@@ -153,7 +153,7 @@ export default function AcademiaPage() {
                   <div ref={observerTarget} className="py-8">
                     {loading && (
                       <div className="flex items-center justify-center gap-3">
-                        <div className="w-6 h-6 border-3 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-6 h-6 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
                         <p className="text-slate-600 font-medium">Cargando más artículos...</p>
                       </div>
                     )}
@@ -184,7 +184,7 @@ export default function AcademiaPage() {
             </p>
             <Link
               href="/rankings"
-              className="inline-flex items-center px-8 py-4 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all shadow-lg"
+              className="inline-flex items-center px-8 py-4 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-all shadow-lg"
             >
               Ver Rankings de ETFs
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

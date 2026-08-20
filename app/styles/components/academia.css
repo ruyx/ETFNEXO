@@ -87,3 +87,63 @@
 .academy-title:hover {
   color: var(--color-primary);
 }
+
+/* ==================== ACADEMIA PREREQUISITES - Educational Path ==================== */
+.academia-prerequisites {
+  background: linear-gradient(135deg, var(--color-emerald-100) 0%, var(--color-slate-50) 100%);
+  border: 2px solid var(--color-success);
+  border-radius: var(--spacing-md);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
+}
+
+.academia-prerequisites__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.academia-prerequisites__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: var(--color-success);
+  color: white;
+  border-radius: var(--radius-full);
+}
+
+.academia-prerequisites__description {
+  color: var(--color-slate-700);
+  font-size: var(--font-size-base);
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+}
+
+.academia-prerequisites__card {
+  position: relative;
+  background: white !important;
+  border: 2px solid var(--color-emerald-100) !important;
+  transition: all var(--transition-base) ease;
+}
+
+.academia-prerequisites__card:hover {
+  border-color: var(--color-success) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.15);
+}
+
+.academia-prerequisites__badge {
+  position: absolute;
+  top: -0.75rem;
+  right: var(--spacing-md);
+  background-color: var(--color-success);
+  color: white;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}

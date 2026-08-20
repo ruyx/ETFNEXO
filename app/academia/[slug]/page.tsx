@@ -127,7 +127,7 @@ export default async function AcademiaDetailPage({ params }: PageProps) {
                 {article.category_name && (
                   <span
                     className="article-detail__category-badge"
-                    style={{ backgroundColor: article.category_color || '#8B5CF6' }}
+                    style={{ backgroundColor: article.category_color || 'var(--color-success)' }}
                   >
                     {article.category_name}
                   </span>
@@ -296,19 +296,32 @@ export default async function AcademiaDetailPage({ params }: PageProps) {
                 </div>
               )}
 
-              {/* Prerequisites */}
+              {/* Prerequisites - Educational Path */}
               {article.prerequisites && Array.isArray(article.prerequisites) && article.prerequisites.length > 0 && (
-                <div className="article-detail__related">
-                  <h3 className="article-detail__related-title">
-                    Artículos recomendados antes de leer este:
-                  </h3>
+                <div className="article-detail__related academia-prerequisites">
+                  <div className="academia-prerequisites__header">
+                    <div className="academia-prerequisites__icon">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                    <h3 className="article-detail__related-title">
+                      📚 Requisitos previos - Ruta de aprendizaje
+                    </h3>
+                  </div>
+                  <p className="academia-prerequisites__description">
+                    Para aprovechar al máximo este artículo, te recomendamos leer primero:
+                  </p>
                   <div className="article-detail__related-grid">
-                    {article.prerequisites.map((slug: string) => (
+                    {article.prerequisites.map((slug: string, index: number) => (
                       <Link
                         key={slug}
                         href={`/academia/${slug}`}
-                        className="article-detail__related-card"
+                        className="article-detail__related-card academia-prerequisites__card"
                       >
+                        <div className="academia-prerequisites__badge">
+                          Paso {index + 1}
+                        </div>
                         <div>
                           <p className="article-detail__related-name">{slug}</p>
                         </div>
