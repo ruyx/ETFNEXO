@@ -172,7 +172,10 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
 
         if (agentsRes.ok) {
           const agentsData = await agentsRes.json();
-          setAvailableAgents(agentsData.data.agents || []);
+          // Filtrar solo agentes redactores (para noticias)
+          const allAgents = agentsData.data.agents || [];
+          const redactorAgents = allAgents.filter((agent: any) => agent.agent_type === 'redactor');
+          setAvailableAgents(redactorAgents);
         }
 
         if (userRes.ok) {

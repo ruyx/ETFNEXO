@@ -546,6 +546,7 @@ export type Database = {
       }
       ai_agents: {
         Row: {
+          agent_type: string
           articles_count: number | null
           avatar_url: string | null
           bio: string | null
@@ -565,6 +566,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          agent_type?: string
           articles_count?: number | null
           avatar_url?: string | null
           bio?: string | null
@@ -584,6 +586,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          agent_type?: string
           articles_count?: number | null
           avatar_url?: string | null
           bio?: string | null

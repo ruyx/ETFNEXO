@@ -152,7 +152,10 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
 
         if (agentsRes.ok) {
           const agentsData = await agentsRes.json();
-          setAvailableAgents(agentsData.data.agents || []);
+          // Filtrar solo agentes educadores (para academia)
+          const allAgents = agentsData.data.agents || [];
+          const educadorAgents = allAgents.filter((agent: any) => agent.agent_type === 'educador');
+          setAvailableAgents(educadorAgents);
         }
       } catch (err) {
         console.error('Error loading data:', err);

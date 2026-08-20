@@ -25,6 +25,7 @@ export default function CrearAgentePage() {
     expertise: [] as string[],
     expertiseInput: '',
     role: 'analyst' as 'analyst' | 'editor' | 'researcher',
+    agent_type: 'redactor' as 'redactor' | 'educador',
     email: '',
     signature: '',
     avatar_url: '',
@@ -94,6 +95,7 @@ export default function CrearAgentePage() {
         bio: formData.bio.trim() || null,
         expertise: formData.expertise,
         role: formData.role,
+        agent_type: formData.agent_type,
         email: formData.email.trim(),
         signature: formData.signature.trim() || null,
         avatar_url: formData.avatar_url.trim() || null,
@@ -240,6 +242,26 @@ export default function CrearAgentePage() {
               <option value="editor">Editor</option>
               <option value="researcher">Investigador</option>
             </select>
+          </div>
+
+          {/* Agent Type */}
+          <div className="admin-form-group">
+            <label htmlFor="agent_type" className="admin-form-label admin-form-label--required">
+              Tipo de Agente
+            </label>
+            <select
+              id="agent_type"
+              value={formData.agent_type}
+              onChange={(e) => setFormData(prev => ({ ...prev, agent_type: e.target.value as any }))}
+              className="admin-form-select"
+              required
+            >
+              <option value="redactor">Redactor (Noticias)</option>
+              <option value="educador">Educador (Academia)</option>
+            </select>
+            <p className="admin-form-help">
+              Los redactores publican noticias, los educadores publican contenido de Academia
+            </p>
           </div>
         </div>
 
