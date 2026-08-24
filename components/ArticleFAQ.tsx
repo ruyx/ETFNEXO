@@ -3,10 +3,11 @@
 /**
  * ArticleFAQ - Resumen Exprés con FAQPage schema.org
  * Renderizado en servidor + popup flotante para UX
+ * Con soporte para ancla URL (#resumen) para compartir en redes sociales
  */
 
-import { useState } from 'react';
-import { HelpCircle, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { HelpCircle, X, ExternalLink } from 'lucide-react';
 
 interface FAQ {
   question: string;
@@ -20,6 +21,49 @@ interface ArticleFAQProps {
 
 export default function ArticleFAQ({ faqs, articleTitle }: ArticleFAQProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Detectar hash #resumen en la URL y abrir modal automáticamente
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#resumen') {
+        setIsOpen(true);
+      }
+    };
+
+    // Verificar al cargar la página
+    handleHashChange();
+
+    // Escuchar cambios en el hash
+    window.addEventListener('hashchange', handleHashChange);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
+
+  // Función para abrir modal y actualizar hash
+  const openModal = () => {
+    setIsOpen(true);
+    // Actualizar URL con hash sin hacer scroll
+    window.history.pushState(null, '', '#resumen');
+  };
+
+  // Función para cerrar modal y limpiar hash
+  const closeModal = () => {
+    setIsOpen(false);
+    // Limpiar hash de la URL
+    window.history.pushState(null, '', window.location.pathname);
+  };
+
+  // Función para ver artículo completo (cerrar modal y scroll al contenido)
+  const viewFullArticle = () => {
+    closeModal();
+    // Hacer scroll al contenido del artículo
+    const articleContent = document.querySelector('.article-content');
+    if (articleContent) {
+      articleContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   if (!faqs || faqs.length === 0) {
     return null;
@@ -83,7 +127,7 @@ export default function ArticleFAQ({ faqs, articleTitle }: ArticleFAQProps) {
 
       {/* Floating pill button */}
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={openModal}
         className="article-faq-pill"
         aria-label="Abrir resumen exprés"
       >
@@ -94,7 +138,7 @@ export default function ArticleFAQ({ faqs, articleTitle }: ArticleFAQProps) {
       {/* Modal popup */}
       {isOpen && (
         <div className="article-faq-modal">
-          <div className="article-faq-modal__backdrop" onClick={() => setIsOpen(false)} />
+          <div className="article-faq-modal__backdrop" onClick={closeModal} />
           <div className="article-faq-modal__content">
             <div className="article-faq-modal__header">
               <div className="article-faq-modal__title">
@@ -102,7 +146,7 @@ export default function ArticleFAQ({ faqs, articleTitle }: ArticleFAQProps) {
                 <h2>Resumen Exprés</h2>
               </div>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={closeModal}
                 className="article-faq-modal__close"
                 aria-label="Cerrar"
               >
@@ -126,6 +170,18 @@ export default function ArticleFAQ({ faqs, articleTitle }: ArticleFAQProps) {
                   />
                 </div>
               ))}
+
+              {/* Botón Ver Artículo Completo */}
+              <div className="article-faq-modal__footer">
+                <button
+                  onClick={viewFullArticle}
+                  className="article-faq-modal__full-article-btn"
+                  aria-label="Ver artículo completo"
+                >
+                  <ExternalLink className="w-5 h-5" />
+                  <span>Ver artículo completo</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
