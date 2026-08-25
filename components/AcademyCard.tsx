@@ -37,14 +37,15 @@ export default function AcademyCard({
   }
 
   const getExcerpt = (maxLength: number = 150): string => {
-    // Si hay excerpt definido, usarlo
+    // Si hay excerpt definido, usarlo (limpiando HTML primero)
     if (article.excerpt) {
-      if (article.excerpt.length <= maxLength) return article.excerpt
-      return article.excerpt.substring(0, maxLength).trim() + '...'
+      const cleanExcerpt = article.excerpt.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim()
+      if (cleanExcerpt.length <= maxLength) return cleanExcerpt
+      return cleanExcerpt.substring(0, maxLength).trim() + '...'
     }
 
     // Si no, extraer del contenido
-    const text = article.content.replace(/<[^>]*>/g, '').trim()
+    const text = article.content.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim()
     if (text.length <= maxLength) return text
     return text.substring(0, maxLength).trim() + '...'
   }
