@@ -763,10 +763,7 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
               </label>
               <div>
                 <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-slate-900)', lineHeight: '1.2' }}>
-                  Fijar al inicio
-                </div>
-                <div style={{ fontSize: '11px', color: 'var(--color-slate-500)', lineHeight: '1.2' }}>
-                  Destacado en listados
+                  {pinned ? 'Fijado' : 'Fijar al inicio'}
                 </div>
               </div>
             </div>
