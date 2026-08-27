@@ -23,13 +23,6 @@ export default function ArticleDetailWithFAQ({ initialArticle, basePath, childre
   const initialArticleRef = useRef<HTMLDivElement | null>(null);
 
   const handleArticleChange = (article: Article) => {
-    console.log('🔄 ArticleDetailWithFAQ - handleArticleChange called:', {
-      newArticleId: article.id,
-      newArticleTitle: article.title,
-      currentArticleId: currentArticle.id,
-      currentArticleTitle: currentArticle.title,
-      hasFAQ: article.faq && article.faq.length > 0
-    });
     setCurrentArticle(article);
   };
 

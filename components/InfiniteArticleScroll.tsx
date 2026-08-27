@@ -60,12 +60,6 @@ export default function InfiniteArticleScroll({ initialArticle, initialArticleEl
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
 
-    console.log('🔧 Setting up observers for articles:', {
-      totalArticles: articles.length,
-      initialArticleId: initialArticle.id,
-      scrollArticleIds: articles.slice(1).map(a => a.id)
-    });
-
     // Observar artículo inicial
     if (initialArticleElement.current) {
       const observer = new IntersectionObserver(
@@ -73,20 +67,10 @@ export default function InfiniteArticleScroll({ initialArticle, initialArticleEl
           entries.forEach((entry) => {
             const ratio = entry.intersectionRatio;
 
-            if (entry.isIntersecting && ratio > 0.5) {
+            if (entry.isIntersecting && ratio > 0.3) {
               // Actualizar si es un artículo diferente O si tiene mayor ratio que el actual
               const isDifferentArticle = !currentVisibleArticle.current || currentVisibleArticle.current.article.id !== initialArticle.id;
               const hasHigherRatio = currentVisibleArticle.current && ratio > currentVisibleArticle.current.ratio;
-
-              console.log('📊 Observer [INITIAL] - Article intersection:', {
-                articleId: initialArticle.id,
-                articleTitle: initialArticle.title,
-                ratio,
-                isDifferentArticle,
-                hasHigherRatio,
-                currentArticleId: currentVisibleArticle.current?.article.id,
-                willUpdate: isDifferentArticle || hasHigherRatio
-              });
 
               if (isDifferentArticle || hasHigherRatio) {
                 currentVisibleArticle.current = { article: initialArticle, ratio };
@@ -116,40 +100,17 @@ export default function InfiniteArticleScroll({ initialArticle, initialArticleEl
 
     infiniteScrollArticles.forEach((article) => {
       const element = articleRefs.current.get(article.id);
-      if (!element) {
-        console.warn('⚠️ No element found for article:', article.id, article.title);
-        return;
-      }
-
-      console.log('✅ Setting up observer for scroll article:', article.id, article.title);
+      if (!element) return;
 
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             const ratio = entry.intersectionRatio;
 
-            console.log('👁️ Observer [SCROLL] event:', {
-              articleId: article.id,
-              articleTitle: article.title.substring(0, 50),
-              isIntersecting: entry.isIntersecting,
-              ratio: ratio.toFixed(3),
-              meetsThreshold: ratio > 0.5
-            });
-
-            if (entry.isIntersecting && ratio > 0.5) {
+            if (entry.isIntersecting && ratio > 0.3) {
               // Actualizar si es un artículo diferente O si tiene mayor ratio que el actual
               const isDifferentArticle = !currentVisibleArticle.current || currentVisibleArticle.current.article.id !== article.id;
               const hasHigherRatio = currentVisibleArticle.current && ratio > currentVisibleArticle.current.ratio;
-
-              console.log('📊 Observer [SCROLL] - Article intersection:', {
-                articleId: article.id,
-                articleTitle: article.title,
-                ratio,
-                isDifferentArticle,
-                hasHigherRatio,
-                currentArticleId: currentVisibleArticle.current?.article.id,
-                willUpdate: isDifferentArticle || hasHigherRatio
-              });
 
               if (isDifferentArticle || hasHigherRatio) {
                 currentVisibleArticle.current = { article, ratio };
