@@ -67,7 +67,7 @@ export default function InfiniteArticleScroll({ initialArticle, initialArticleEl
           entries.forEach((entry) => {
             const ratio = entry.intersectionRatio;
 
-            if (entry.isIntersecting && ratio > 0.3) {
+            if (entry.isIntersecting && ratio > 0.25) {
               // Actualizar si es un artículo diferente O si tiene mayor ratio que el actual
               const isDifferentArticle = !currentVisibleArticle.current || currentVisibleArticle.current.article.id !== initialArticle.id;
               const hasHigherRatio = currentVisibleArticle.current && ratio > currentVisibleArticle.current.ratio;
@@ -100,37 +100,17 @@ export default function InfiniteArticleScroll({ initialArticle, initialArticleEl
 
     infiniteScrollArticles.forEach((article) => {
       const element = articleRefs.current.get(article.id);
-      if (!element) {
-        console.warn('⚠️ No element ref for article:', article.id.substring(0, 8), article.title.substring(0, 30));
-        return;
-      }
-
-      console.log('🔧 Setting up observer for:', article.id.substring(0, 8), article.title.substring(0, 30));
+      if (!element) return;
 
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             const ratio = entry.intersectionRatio;
 
-            // LOG TEMPORAL - ver TODOS los eventos
-            console.log('👁️ [SCROLL] Observer event:', {
-              id: article.id.substring(0, 8),
-              title: article.title.substring(0, 30),
-              intersecting: entry.isIntersecting,
-              ratio: ratio.toFixed(3),
-              passes: ratio > 0.3
-            });
-
-            if (entry.isIntersecting && ratio > 0.3) {
+            if (entry.isIntersecting && ratio > 0.25) {
               // Actualizar si es un artículo diferente O si tiene mayor ratio que el actual
               const isDifferentArticle = !currentVisibleArticle.current || currentVisibleArticle.current.article.id !== article.id;
               const hasHigherRatio = currentVisibleArticle.current && ratio > currentVisibleArticle.current.ratio;
-
-              console.log('✅ [SCROLL] Updating article:', {
-                isDifferent: isDifferentArticle,
-                hasHigher: hasHigherRatio,
-                willUpdate: isDifferentArticle || hasHigherRatio
-              });
 
               if (isDifferentArticle || hasHigherRatio) {
                 currentVisibleArticle.current = { article, ratio };
