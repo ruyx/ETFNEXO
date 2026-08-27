@@ -16,6 +16,7 @@ export interface AcademyArticle {
   category_name?: string | null
   difficulty_level?: DifficultyLevel | null
   estimated_reading_time?: number | null
+  pinned?: boolean
 }
 
 interface AcademyCardProps {
@@ -73,6 +74,12 @@ export default function AcademyCard({
               <div>
                 {/* Meta & Badges */}
                 <div className="flex items-center gap-2 mb-3 flex-wrap">
+                  {article.pinned && (
+                    <>
+                      <span className="text-xs font-semibold">Fijado</span>
+                      <span className="text-slate-300">•</span>
+                    </>
+                  )}
                   <div className="flex items-center gap-1.5 text-xs text-slate-500">
                     <Calendar className="w-3.5 h-3.5" />
                     <time dateTime={article.published_at}>
@@ -145,6 +152,12 @@ export default function AcademyCard({
           <div className="p-5 flex flex-col flex-1">
             {/* Meta & Badges */}
             <div className="flex items-center gap-2 mb-3 flex-wrap">
+              {article.pinned && (
+                <>
+                  <span className="text-xs font-semibold">Fijado</span>
+                  <span className="text-slate-300">•</span>
+                </>
+              )}
               <div className="flex items-center gap-1.5 text-xs text-slate-500">
                 <Calendar className="w-3.5 h-3.5" />
                 <time dateTime={article.published_at}>
@@ -223,6 +236,12 @@ export default function AcademyCard({
 
             {/* Meta & Badges */}
             <div className="flex items-center gap-2 text-[10px] text-slate-500 flex-wrap">
+              {article.pinned && (
+                <>
+                  <span className="text-[10px] font-semibold">Fijado</span>
+                  <span>•</span>
+                </>
+              )}
               <div className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
                 <time dateTime={article.published_at}>
