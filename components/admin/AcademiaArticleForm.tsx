@@ -751,8 +751,8 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
             Cancelar
           </button>
 
-          <div className="admin-form-actions__center">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div className="admin-form-actions__right">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginRight: 'var(--spacing-4)', padding: '8px 16px', border: '1px solid var(--color-slate-200)', borderRadius: '8px', backgroundColor: 'var(--color-slate-50)' }}>
               <label className="admin-form-switch">
                 <input
                   type="checkbox"
@@ -762,17 +762,14 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
                 <span className="admin-form-switch-slider"></span>
               </label>
               <div>
-                <div style={{ fontSize: '14px', fontWeight: '500', color: 'var(--color-slate-900)' }}>
+                <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-slate-900)', lineHeight: '1.2' }}>
                   Fijar al inicio
                 </div>
-                <div style={{ fontSize: '12px', color: 'var(--color-slate-500)' }}>
+                <div style={{ fontSize: '11px', color: 'var(--color-slate-500)', lineHeight: '1.2' }}>
                   Destacado en listados
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="admin-form-actions__right">
             {!isEditing && status === 'draft' && (
               <button
                 type="button"
