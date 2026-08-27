@@ -60,6 +60,12 @@ export default function InfiniteArticleScroll({ initialArticle, initialArticleEl
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
 
+    console.log('🔧 Setting up observers for articles:', {
+      totalArticles: articles.length,
+      initialArticleId: initialArticle.id,
+      scrollArticleIds: articles.slice(1).map(a => a.id)
+    });
+
     // Observar artículo inicial
     if (initialArticleElement.current) {
       const observer = new IntersectionObserver(
@@ -110,7 +116,12 @@ export default function InfiniteArticleScroll({ initialArticle, initialArticleEl
 
     infiniteScrollArticles.forEach((article) => {
       const element = articleRefs.current.get(article.id);
-      if (!element) return;
+      if (!element) {
+        console.warn('⚠️ No element found for article:', article.id, article.title);
+        return;
+      }
+
+      console.log('✅ Setting up observer for scroll article:', article.id, article.title);
 
       const observer = new IntersectionObserver(
         (entries) => {
