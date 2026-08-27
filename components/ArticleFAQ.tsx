@@ -24,6 +24,10 @@ export default function ArticleFAQ({ faqs, articleTitle }: ArticleFAQProps) {
 
   // Reset modal state when article changes (articleTitle or faqs change)
   useEffect(() => {
+    console.log('✨ ArticleFAQ - useEffect triggered (article changed):', {
+      articleTitle,
+      faqCount: faqs.length
+    });
     setIsOpen(false);
   }, [articleTitle, faqs]);
 
