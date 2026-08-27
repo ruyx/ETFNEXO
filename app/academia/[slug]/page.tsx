@@ -146,7 +146,7 @@ export default async function AcademiaDetailPage({ params }: PageProps) {
             <div className="container">
               <div className="article-detail__wrapper">
                 {/* Category Badge & Difficulty */}
-                <div className="article-detail__category">
+                <div className="article-detail__category" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                   {article.category_name && (
                     <span
                       className="article-detail__category-badge"
@@ -156,14 +156,10 @@ export default async function AcademiaDetailPage({ params }: PageProps) {
                     </span>
                   )}
                   {article.difficulty_level && (
-                    <div className="ml-2">
-                      <DifficultyBadge level={article.difficulty_level} size="md" />
-                    </div>
+                    <DifficultyBadge level={article.difficulty_level} size="md" />
                   )}
                   {article.estimated_reading_time && (
-                    <div className="ml-2">
-                      <ReadingTimeBadge minutes={article.estimated_reading_time} size="md" />
-                    </div>
+                    <ReadingTimeBadge minutes={article.estimated_reading_time} size="md" />
                   )}
                 </div>
 
