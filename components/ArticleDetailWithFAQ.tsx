@@ -51,7 +51,7 @@ export default function ArticleDetailWithFAQ({ initialArticle, basePath, childre
       {/* FAQ flotante que cambia según el artículo visible */}
       {currentArticle.faq && currentArticle.faq.length > 0 && (
         <ArticleFAQ
-          key={currentArticle.id}
+          key={`${currentArticle.id}-${currentArticle.title}`}
           faqs={currentArticle.faq}
           articleTitle={currentArticle.title}
         />

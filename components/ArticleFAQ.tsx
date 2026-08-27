@@ -52,6 +52,11 @@ export default function ArticleFAQ({ faqs, articleTitle }: ArticleFAQProps) {
 
   // Función para abrir modal y actualizar hash
   const openModal = () => {
+    console.log('🎯 ArticleFAQ - Opening modal for:', {
+      articleTitle,
+      faqCount: faqs.length,
+      firstQuestion: faqs[0]?.question
+    });
     setIsOpen(true);
     // Actualizar URL con hash sin hacer scroll
     window.history.pushState(null, '', '#resumen');
