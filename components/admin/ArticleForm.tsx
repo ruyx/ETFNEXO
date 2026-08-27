@@ -437,25 +437,6 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
             </select>
           </div>
 
-          <div className="admin-form-group" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div>
-              <label className="admin-form-label" style={{ marginBottom: '4px' }}>
-                Fijar al inicio
-              </label>
-              <p className="admin-form-help" style={{ margin: 0 }}>
-                Aparece destacado en listados (máx. 3)
-              </p>
-            </div>
-            <label className="admin-form-switch">
-              <input
-                type="checkbox"
-                checked={pinned}
-                onChange={(e) => setPinned(e.target.checked)}
-              />
-              <span className="admin-form-switch-slider"></span>
-            </label>
-          </div>
-
           <div className="admin-form-group">
             <label htmlFor="category" className="admin-form-label">
               Categoría
@@ -857,6 +838,27 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
             <X className="w-4 h-4" />
             Cancelar
           </button>
+
+          <div className="admin-form-actions__center">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <label className="admin-form-switch">
+                <input
+                  type="checkbox"
+                  checked={pinned}
+                  onChange={(e) => setPinned(e.target.checked)}
+                />
+                <span className="admin-form-switch-slider"></span>
+              </label>
+              <div>
+                <div style={{ fontSize: '14px', fontWeight: '500', color: 'var(--color-slate-900)' }}>
+                  Fijar al inicio
+                </div>
+                <div style={{ fontSize: '12px', color: 'var(--color-slate-500)' }}>
+                  Destacado en listados
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div className="admin-form-actions__right">
             {!isEditing && status === 'draft' && (

@@ -750,6 +750,13 @@
   }
 }
 
+.admin-form-actions__center {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
 .admin-form-actions__right {
   display: flex;
   gap: var(--spacing-3);
