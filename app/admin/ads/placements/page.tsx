@@ -92,7 +92,7 @@ export default async function PlacementsPage() {
         </Link>
       </div>
 
-        {/* Summary */}
+      {/* Summary */}
       <div className="placements-summary">
         <div className="placements-summary__stat">
           <MapPin className="w-5 h-5" />
@@ -142,18 +142,17 @@ export default async function PlacementsPage() {
         </div>
       </div>
 
-        {/* Visual Preview Link */}
-        <div className="placements-preview-cta">
-          <Info className="w-5 h-5" />
-          <div>
-            <h3>Vista Previa Visual</h3>
-            <p>Para ver cómo se muestran los anuncios en cada ubicación, visita la página de vista previa.</p>
-          </div>
-          <Link href="/admin/ads/placements/preview" className="btn btn-secondary">
-            <ExternalLink className="w-4 h-4" />
-            Ver Preview
-          </Link>
+      {/* Visual Preview Link */}
+      <div className="placements-preview-cta">
+        <Info className="w-5 h-5" />
+        <div>
+          <h3>Vista Previa Visual</h3>
+          <p>Para ver cómo se muestran los anuncios en cada ubicación, visita la página de vista previa.</p>
         </div>
+        <Link href="/admin/ads/placements/preview" className="btn btn-secondary">
+          <ExternalLink className="w-4 h-4" />
+          Ver Preview
+        </Link>
       </div>
     </div>
   );
