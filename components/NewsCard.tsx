@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Calendar, ExternalLink, Pin } from 'lucide-react'
+import { Calendar, ExternalLink } from 'lucide-react'
 
 export interface NewsArticle {
   id: string
@@ -63,10 +63,7 @@ export default function NewsCard({
                 <div className="flex items-center gap-3 mb-3">
                   {article.pinned && (
                     <>
-                      <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded">
-                        <Pin className="w-3.5 h-3.5" />
-                        <span>Fijado</span>
-                      </div>
+                      <span className="text-xs font-semibold">Fijado</span>
                       <span className="text-slate-300">•</span>
                     </>
                   )}
@@ -133,10 +130,7 @@ export default function NewsCard({
             <div className="flex items-center gap-2 mb-3">
               {article.pinned && (
                 <>
-                  <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded">
-                    <Pin className="w-3.5 h-3.5" />
-                    <span>Fijado</span>
-                  </div>
+                  <span className="text-xs font-semibold">Fijado</span>
                   <span className="text-slate-300">•</span>
                 </>
               )}
@@ -213,10 +207,7 @@ export default function NewsCard({
             <div className="flex items-center gap-2 text-[10px] text-slate-500">
               {article.pinned && (
                 <>
-                  <div className="flex items-center gap-1 px-1.5 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-semibold rounded">
-                    <Pin className="w-2.5 h-2.5" />
-                    <span>Fijado</span>
-                  </div>
+                  <span className="text-[10px] font-semibold">Fijado</span>
                   <span>•</span>
                 </>
               )}

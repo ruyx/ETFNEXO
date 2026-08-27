@@ -399,7 +399,7 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
                 className="admin-form-checkbox"
               />
               <span className="admin-form-checkbox-label">
-                📌 Fijar artículo al inicio del listado
+                Fijar artículo al inicio del listado
               </span>
             </label>
             <p className="admin-form-help">

@@ -446,7 +446,7 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
                 className="admin-form-checkbox"
               />
               <span className="admin-form-checkbox-label">
-                📌 Fijar noticia al inicio del listado
+                Fijar noticia al inicio del listado
               </span>
             </label>
             <p className="admin-form-help">
