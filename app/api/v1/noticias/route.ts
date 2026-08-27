@@ -21,6 +21,8 @@ export async function GET(request: NextRequest) {
       .from('news_articles_with_metadata')
       .select('*', { count: 'exact' })
       .eq('status' as any, 'published' as any)
+      .order('pinned' as any, { ascending: false, nullsFirst: false })
+      .order('pinned_at' as any, { ascending: false, nullsFirst: false })
       .order('published_at', { ascending: false })
       .range(offset, offset + limit - 1);
 

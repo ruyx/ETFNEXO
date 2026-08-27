@@ -106,6 +106,7 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   const [sourceName, setSourceName] = useState(initialData?.source_name || '');
   const [sourceUrl, setSourceUrl] = useState(initialData?.source_url || '');
   const [status, setStatus] = useState<'draft' | 'published' | 'archived'>(initialData?.status || 'draft');
+  const [pinned, setPinned] = useState<boolean>((initialData as any)?.pinned || false);
   const [faqs, setFaqs] = useState<FAQ[]>(initialData?.faq || []);
 
   // Image upload and Pexels states
@@ -306,6 +307,7 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
         source_name: sourceName || undefined,
         source_url: sourceUrl || undefined,
         status: publishNow ? 'published' : status,
+        pinned,
         tags: selectedTags,
         faq: faqs.filter(faq => faq.question.trim() && faq.answer.trim())
       };
@@ -433,6 +435,23 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               <option value="published">Publicado</option>
               <option value="archived">Archivado</option>
             </select>
+          </div>
+
+          <div className="admin-form-group">
+            <label className="admin-form-checkbox-wrapper">
+              <input
+                type="checkbox"
+                checked={pinned}
+                onChange={(e) => setPinned(e.target.checked)}
+                className="admin-form-checkbox"
+              />
+              <span className="admin-form-checkbox-label">
+                📌 Fijar noticia al inicio del listado
+              </span>
+            </label>
+            <p className="admin-form-help">
+              Las noticias fijadas aparecen siempre al principio de la lista. Máximo 3 noticias fijadas.
+            </p>
           </div>
 
           <div className="admin-form-group">

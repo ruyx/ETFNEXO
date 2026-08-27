@@ -82,6 +82,7 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
   const [featuredImageUrl, setFeaturedImageUrl] = useState(initialData?.featured_image_url || '');
   const [featuredImageAlt, setFeaturedImageAlt] = useState(initialData?.featured_image_alt || '');
   const [status, setStatus] = useState<'draft' | 'published' | 'archived'>(initialData?.status || 'draft');
+  const [pinned, setPinned] = useState<boolean>((initialData as any)?.pinned || false);
   const [faqs, setFaqs] = useState<FAQ[]>(initialData?.faq || []);
 
   // Academia-specific fields
@@ -264,6 +265,7 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
         featured_image_url: featuredImageUrl || undefined,
         featured_image_alt: featuredImageAlt || undefined,
         status: publishNow ? 'published' : status,
+        pinned,
         faq: faqs.filter(faq => faq.question.trim() && faq.answer.trim()),
 
         // Academia-specific fields
@@ -386,6 +388,23 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
               <option value="published">Publicado</option>
               <option value="archived">Archivado</option>
             </select>
+          </div>
+
+          <div className="admin-form-group">
+            <label className="admin-form-checkbox-wrapper">
+              <input
+                type="checkbox"
+                checked={pinned}
+                onChange={(e) => setPinned(e.target.checked)}
+                className="admin-form-checkbox"
+              />
+              <span className="admin-form-checkbox-label">
+                📌 Fijar artículo al inicio del listado
+              </span>
+            </label>
+            <p className="admin-form-help">
+              Los artículos fijados aparecen siempre al principio de la lista. Máximo 3 artículos fijados.
+            </p>
           </div>
 
           <div className="admin-form-group">

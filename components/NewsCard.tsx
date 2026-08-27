@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Calendar, ExternalLink } from 'lucide-react'
+import { Calendar, ExternalLink, Pin } from 'lucide-react'
 
 export interface NewsArticle {
   id: string
@@ -11,6 +11,8 @@ export interface NewsArticle {
   author_name: string | null
   source_name: string
   source_url: string
+  pinned?: boolean
+  pinned_at?: string | null
 }
 
 interface NewsCardProps {
@@ -59,6 +61,15 @@ export default function NewsCard({
               <div>
                 {/* Meta */}
                 <div className="flex items-center gap-3 mb-3">
+                  {article.pinned && (
+                    <>
+                      <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded">
+                        <Pin className="w-3.5 h-3.5" />
+                        <span>Fijado</span>
+                      </div>
+                      <span className="text-slate-300">•</span>
+                    </>
+                  )}
                   <div className="flex items-center gap-1.5 text-xs text-slate-500">
                     <Calendar className="w-3.5 h-3.5" />
                     <time dateTime={article.published_at}>
@@ -120,6 +131,15 @@ export default function NewsCard({
           <div className="p-5 flex flex-col flex-1">
             {/* Meta */}
             <div className="flex items-center gap-2 mb-3">
+              {article.pinned && (
+                <>
+                  <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded">
+                    <Pin className="w-3.5 h-3.5" />
+                    <span>Fijado</span>
+                  </div>
+                  <span className="text-slate-300">•</span>
+                </>
+              )}
               <div className="flex items-center gap-1.5 text-xs text-slate-500">
                 <Calendar className="w-3.5 h-3.5" />
                 <time dateTime={article.published_at}>
@@ -191,6 +211,15 @@ export default function NewsCard({
 
             {/* Meta */}
             <div className="flex items-center gap-2 text-[10px] text-slate-500">
+              {article.pinned && (
+                <>
+                  <div className="flex items-center gap-1 px-1.5 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-semibold rounded">
+                    <Pin className="w-2.5 h-2.5" />
+                    <span>Fijado</span>
+                  </div>
+                  <span>•</span>
+                </>
+              )}
               <div className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
                 <time dateTime={article.published_at}>
