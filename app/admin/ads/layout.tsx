@@ -9,6 +9,10 @@ import Link from 'next/link';
 import { LayoutDashboard, Users, Megaphone, MapPin, BarChart3 } from 'lucide-react';
 import './styles.css';
 import './common.css';
+import './dashboard.css';
+import './campaigns/campaigns.css';
+import './analytics/analytics.css';
+import './placements/placements.css';
 
 export const metadata = {
   title: 'Gestión de Publicidad - ETF Nexo',
