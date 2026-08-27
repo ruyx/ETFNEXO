@@ -22,6 +22,7 @@ interface Article {
   published_at: string | null;
   views_count: number;
   featured_image_url?: string | null;
+  pinned?: boolean;
   category: {
     name: string;
     slug: string;

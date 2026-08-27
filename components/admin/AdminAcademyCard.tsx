@@ -17,6 +17,7 @@ interface AdminAcademyCardProps {
     published_at: string | null;
     views_count: number;
     featured_image_url?: string | null;
+    pinned?: boolean;
     difficulty_level?: 'beginner' | 'intermediate' | 'advanced' | null;
     estimated_reading_time?: number | null;
     category: {
@@ -83,6 +84,12 @@ export default function AdminAcademyCard({ article, onPublishToggle, onDelete }:
         {/* Meta */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
+            {article.pinned && (
+              <>
+                <span className="text-xs font-semibold text-blue-600">Fijado</span>
+                <span className="text-slate-300">•</span>
+              </>
+            )}
             <div className="flex items-center gap-1.5 text-xs text-slate-500">
               <Calendar className="w-3.5 h-3.5" />
               <time dateTime={article.created_at}>

@@ -17,6 +17,7 @@ interface AdminNewsCardProps {
     published_at: string | null;
     views_count: number;
     featured_image_url?: string | null;
+    pinned?: boolean;
     category: {
       name: string;
       slug: string;
@@ -75,6 +76,12 @@ export default function AdminNewsCard({ article, onPublishToggle, onDelete }: Ad
         {/* Meta */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
+            {article.pinned && (
+              <>
+                <span className="text-xs font-semibold text-blue-600">Fijado</span>
+                <span className="text-slate-300">•</span>
+              </>
+            )}
             <div className="flex items-center gap-1.5 text-xs text-slate-500">
               <Calendar className="w-3.5 h-3.5" />
               <time dateTime={article.created_at}>

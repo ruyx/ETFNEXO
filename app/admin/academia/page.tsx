@@ -21,6 +21,7 @@ interface Article {
   published_at: string | null;
   views_count: number;
   featured_image_url?: string | null;
+  pinned?: boolean;
   difficulty_level?: 'beginner' | 'intermediate' | 'advanced' | null;
   estimated_reading_time?: number | null;
   category: {
