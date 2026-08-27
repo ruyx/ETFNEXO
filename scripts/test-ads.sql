@@ -1,6 +1,23 @@
 -- Script para crear banners de publicidad de prueba
 -- Copiar y pegar en Supabase SQL Editor
 
+-- Paso 1: Actualizar constraint para permitir nuevos placements
+ALTER TABLE public.ads
+DROP CONSTRAINT IF EXISTS ads_placement_check;
+
+ALTER TABLE public.ads
+ADD CONSTRAINT ads_placement_check
+CHECK (placement IN (
+  'sidebar_top', 'sidebar_bottom',
+  'article_top', 'article_mid', 'article_bottom',
+  'feed_inline',
+  'header', 'footer',
+  'home_top',
+  'home_news_sidebar'
+));
+
+-- Paso 2: Crear banners de prueba
+
 -- Banner 1: Home Top - Leaderboard 728x90
 INSERT INTO public.ads (
   name,
