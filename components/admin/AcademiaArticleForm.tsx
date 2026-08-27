@@ -390,21 +390,23 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
             </select>
           </div>
 
-          <div className="admin-form-group">
-            <label className="admin-form-checkbox-wrapper">
+          <div className="admin-form-group" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <label className="admin-form-label" style={{ marginBottom: '4px' }}>
+                Fijar al inicio
+              </label>
+              <p className="admin-form-help" style={{ margin: 0 }}>
+                Aparece destacado en listados (máx. 3)
+              </p>
+            </div>
+            <label className="admin-form-switch">
               <input
                 type="checkbox"
                 checked={pinned}
                 onChange={(e) => setPinned(e.target.checked)}
-                className="admin-form-checkbox"
               />
-              <span className="admin-form-checkbox-label">
-                Fijar artículo al inicio del listado
-              </span>
+              <span className="admin-form-switch-slider"></span>
             </label>
-            <p className="admin-form-help">
-              Los artículos fijados aparecen siempre al principio de la lista. Máximo 3 artículos fijados.
-            </p>
           </div>
 
           <div className="admin-form-group">
