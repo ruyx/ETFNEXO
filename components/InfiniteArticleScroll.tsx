@@ -68,8 +68,11 @@ export default function InfiniteArticleScroll({ initialArticle, initialArticleEl
             const ratio = entry.intersectionRatio;
 
             if (entry.isIntersecting && ratio > 0.5) {
-              // Solo actualizar si este artículo tiene mayor ratio que el actual
-              if (!currentVisibleArticle.current || ratio > currentVisibleArticle.current.ratio) {
+              // Actualizar si es un artículo diferente O si tiene mayor ratio que el actual
+              const isDifferentArticle = !currentVisibleArticle.current || currentVisibleArticle.current.article.id !== initialArticle.id;
+              const hasHigherRatio = currentVisibleArticle.current && ratio > currentVisibleArticle.current.ratio;
+
+              if (isDifferentArticle || hasHigherRatio) {
                 currentVisibleArticle.current = { article: initialArticle, ratio };
 
                 if (onArticleChange) onArticleChange(initialArticle);
@@ -105,8 +108,11 @@ export default function InfiniteArticleScroll({ initialArticle, initialArticleEl
             const ratio = entry.intersectionRatio;
 
             if (entry.isIntersecting && ratio > 0.5) {
-              // Solo actualizar si este artículo tiene mayor ratio que el actual
-              if (!currentVisibleArticle.current || ratio > currentVisibleArticle.current.ratio) {
+              // Actualizar si es un artículo diferente O si tiene mayor ratio que el actual
+              const isDifferentArticle = !currentVisibleArticle.current || currentVisibleArticle.current.article.id !== article.id;
+              const hasHigherRatio = currentVisibleArticle.current && ratio > currentVisibleArticle.current.ratio;
+
+              if (isDifferentArticle || hasHigherRatio) {
                 currentVisibleArticle.current = { article, ratio };
 
                 if (onArticleChange) onArticleChange(article);
