@@ -103,36 +103,40 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
   };
 
   return (
-    <div className="admin-ads-page">
+    <div className="admin-form-container">
+      {/* Back link */}
+      <Link href="/admin/ads/campaigns" className="admin-form-back-link">
+        <ArrowLeft className="w-4 h-4" />
+        Volver a Campañas
+      </Link>
+
       {/* Header */}
-      <div className="admin-ads-page__header">
+      <div className="admin-form-header">
         <div>
-          <h1 className="admin-ads-page__title">
+          <h1 className="admin-form-title">
             {mode === 'create' ? 'Nueva Campaña' : 'Editar Campaña'}
           </h1>
-          <p className="admin-ads-page__subtitle">
+          <p className="admin-form-description">
             {mode === 'create' ? 'Crea un nuevo anuncio publicitario' : 'Modifica la configuración del anuncio'}
           </p>
         </div>
-        <Link href="/admin/ads/campaigns" className="admin-ads-btn admin-ads-btn--secondary">
-          <ArrowLeft className="w-4 h-4" />
-          Volver
-        </Link>
       </div>
 
-      <form onSubmit={handleSubmit} className="campaign-form">
-        {error && (
-          <div className="admin-ads-alert admin-ads-alert--error">
-            {error}
-          </div>
-        )}
+      {/* Error message */}
+      {error && (
+        <div className="admin-alert admin-alert--error">
+          <strong>Error:</strong> {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="campaign-form">{}
 
         <div className="campaign-form__layout">
           {/* Main Form */}
           <div className="campaign-form__main">
             {/* Tipo de Anuncio */}
-            <div className="admin-ads-card">
-              <h3 className="admin-ads-form__section-title">Tipo de Anuncio</h3>
+            <div className="admin-form-section">
+              <h2 className="admin-form-section__title">Tipo de Anuncio</h2>
 
               <div className="campaign-type-selector">
                 <div className="campaign-type-option">
@@ -198,36 +202,34 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
             </div>
 
             {/* Información Básica */}
-            <div className="admin-ads-card">
-              <h3 className="admin-ads-form__section-title">Información Básica</h3>
+            <div className="admin-form-section">
+              <h2 className="admin-form-section__title">Información Básica</h2>
 
-              <div className="admin-ads-form__row">
-                <div className="admin-ads-form__field admin-ads-form__field--full">
-                  <label htmlFor="name" className="admin-ads-form__label">
-                    Nombre de la Campaña <span className="admin-ads-form__required">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="admin-ads-form__input"
-                    placeholder="Ej: Banner Sidebar Principal"
-                  />
-                </div>
+              <div className="admin-form-group">
+                <label htmlFor="name" className="admin-form-label admin-form-label--required">
+                  Nombre de la Campaña
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="admin-form-input"
+                  placeholder="Ej: Banner Sidebar Principal"
+                />
               </div>
 
-              <div className="admin-ads-form__row">
-                <div className="admin-ads-form__field">
-                  <label htmlFor="advertiser_id" className="admin-ads-form__label">
+              <div className="admin-form-row">
+                <div className="admin-form-group">
+                  <label htmlFor="advertiser_id" className="admin-form-label">
                     Anunciante
                   </label>
                   <select
                     id="advertiser_id"
                     value={formData.advertiser_id}
                     onChange={(e) => setFormData({ ...formData, advertiser_id: e.target.value })}
-                    className="admin-ads-form__select"
+                    className="admin-form-select"
                   >
                     <option value="">Sin anunciante</option>
                     {advertisers.map((adv) => (
@@ -238,16 +240,16 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                   </select>
                 </div>
 
-                <div className="admin-ads-form__field">
-                  <label htmlFor="placement" className="admin-ads-form__label">
-                    Ubicación <span className="admin-ads-form__required">*</span>
+                <div className="admin-form-group">
+                  <label htmlFor="placement" className="admin-form-label admin-form-label--required">
+                    Ubicación
                   </label>
                   <select
                     id="placement"
                     required
                     value={formData.placement}
                     onChange={(e) => setFormData({ ...formData, placement: e.target.value })}
-                    className="admin-ads-form__select"
+                    className="admin-form-select"
                   >
                     <option value="">Selecciona ubicación</option>
                     <option value="sidebar_top">Sidebar Superior</option>
@@ -265,71 +267,65 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
 
             {/* Contenido según tipo */}
             {formData.type === 'image_banner' && (
-              <div className="admin-ads-card">
-                <h3 className="admin-ads-form__section-title">Contenido del Banner</h3>
+              <div className="admin-form-section">
+                <h2 className="admin-form-section__title">Contenido del Banner</h2>
 
-                <div className="admin-ads-form__row">
-                  <div className="admin-ads-form__field admin-ads-form__field--full">
-                    <label htmlFor="image_url" className="admin-ads-form__label">
-                      URL de la Imagen <span className="admin-ads-form__required">*</span>
-                    </label>
-                    <input
-                      type="url"
-                      id="image_url"
-                      required={formData.type === 'image_banner'}
-                      value={formData.image_url}
-                      onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                      className="admin-ads-form__input"
-                      placeholder="https://ejemplo.com/imagen.jpg"
-                    />
-                    <p style={{ fontSize: '0.813rem', color: 'var(--color-neutral-600)', marginTop: 'var(--spacing-1)' }}>
-                      Sube la imagen a un servicio de hosting o usa una URL existente
-                    </p>
-                  </div>
+                <div className="admin-form-group">
+                  <label htmlFor="image_url" className="admin-form-label admin-form-label--required">
+                    URL de la Imagen
+                  </label>
+                  <input
+                    type="url"
+                    id="image_url"
+                    required={formData.type === 'image_banner'}
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    className="admin-form-input"
+                    placeholder="https://ejemplo.com/imagen.jpg"
+                  />
+                  <p className="admin-form-help">
+                    Sube la imagen a un servicio de hosting o usa una URL existente
+                  </p>
                 </div>
 
-                <div className="admin-ads-form__row">
-                  <div className="admin-ads-form__field admin-ads-form__field--full">
-                    <label htmlFor="image_alt" className="admin-ads-form__label">
-                      Texto Alternativo
-                    </label>
-                    <input
-                      type="text"
-                      id="image_alt"
-                      value={formData.image_alt}
-                      onChange={(e) => setFormData({ ...formData, image_alt: e.target.value })}
-                      className="admin-ads-form__input"
-                      placeholder="Descripción de la imagen para accesibilidad"
-                    />
-                  </div>
+                <div className="admin-form-group">
+                  <label htmlFor="image_alt" className="admin-form-label">
+                    Texto Alternativo
+                  </label>
+                  <input
+                    type="text"
+                    id="image_alt"
+                    value={formData.image_alt}
+                    onChange={(e) => setFormData({ ...formData, image_alt: e.target.value })}
+                    className="admin-form-input"
+                    placeholder="Descripción de la imagen para accesibilidad"
+                  />
                 </div>
 
-                <div className="admin-ads-form__row">
-                  <div className="admin-ads-form__field admin-ads-form__field--full">
-                    <label htmlFor="link_url" className="admin-ads-form__label">
-                      URL de Destino
-                    </label>
-                    <input
-                      type="url"
-                      id="link_url"
-                      value={formData.link_url}
-                      onChange={(e) => setFormData({ ...formData, link_url: e.target.value })}
-                      className="admin-ads-form__input"
-                      placeholder="https://ejemplo.com/destino"
-                    />
-                  </div>
+                <div className="admin-form-group">
+                  <label htmlFor="link_url" className="admin-form-label">
+                    URL de Destino
+                  </label>
+                  <input
+                    type="url"
+                    id="link_url"
+                    value={formData.link_url}
+                    onChange={(e) => setFormData({ ...formData, link_url: e.target.value })}
+                    className="admin-form-input"
+                    placeholder="https://ejemplo.com/destino"
+                  />
                 </div>
               </div>
             )}
 
             {formData.type === 'text_banner' && (
-              <div className="admin-ads-card">
-                <h3 className="admin-ads-form__section-title">Contenido del Banner</h3>
+              <div className="admin-form-section">
+                <h3 className="admin-form-section__title">Contenido del Banner</h3>
 
-                <div className="admin-ads-form__row">
-                  <div className="admin-ads-form__field admin-ads-form__field--full">
-                    <label htmlFor="title" className="admin-ads-form__label">
-                      Título <span className="admin-ads-form__required">*</span>
+                <div className="admin-form-row">
+                  <div className="admin-form-group admin-form-group--full">
+                    <label htmlFor="title" className="admin-form-label">
+                      Título <span className="admin-form-label--required">*</span>
                     </label>
                     <input
                       type="text"
@@ -337,31 +333,31 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                       required={formData.type === 'text_banner'}
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      className="admin-ads-form__input"
+                      className="admin-form-input"
                       placeholder="Título del anuncio"
                     />
                   </div>
                 </div>
 
-                <div className="admin-ads-form__row">
-                  <div className="admin-ads-form__field admin-ads-form__field--full">
-                    <label htmlFor="description" className="admin-ads-form__label">
+                <div className="admin-form-row">
+                  <div className="admin-form-group admin-form-group--full">
+                    <label htmlFor="description" className="admin-form-label">
                       Descripción
                     </label>
                     <textarea
                       id="description"
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      className="admin-ads-form__textarea"
+                      className="admin-form-input admin-form-input--textarea"
                       rows={3}
                       placeholder="Descripción del anuncio"
                     />
                   </div>
                 </div>
 
-                <div className="admin-ads-form__row">
-                  <div className="admin-ads-form__field">
-                    <label htmlFor="cta_text" className="admin-ads-form__label">
+                <div className="admin-form-row">
+                  <div className="admin-form-group">
+                    <label htmlFor="cta_text" className="admin-form-label">
                       Texto del CTA
                     </label>
                     <input
@@ -369,13 +365,13 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                       id="cta_text"
                       value={formData.cta_text}
                       onChange={(e) => setFormData({ ...formData, cta_text: e.target.value })}
-                      className="admin-ads-form__input"
+                      className="admin-form-input"
                       placeholder="Ej: Saber más"
                     />
                   </div>
 
-                  <div className="admin-ads-form__field">
-                    <label htmlFor="link_url_text" className="admin-ads-form__label">
+                  <div className="admin-form-group">
+                    <label htmlFor="link_url_text" className="admin-form-label">
                       URL de Destino
                     </label>
                     <input
@@ -383,7 +379,7 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                       id="link_url_text"
                       value={formData.link_url}
                       onChange={(e) => setFormData({ ...formData, link_url: e.target.value })}
-                      className="admin-ads-form__input"
+                      className="admin-form-input"
                       placeholder="https://ejemplo.com"
                     />
                   </div>
@@ -392,8 +388,8 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
             )}
 
             {formData.type === 'script' && (
-              <div className="admin-ads-card">
-                <h3 className="admin-ads-form__section-title">Código del Script</h3>
+              <div className="admin-form-section">
+                <h3 className="admin-form-section__title">Código del Script</h3>
 
                 <div className="campaign-code-hint">
                   <Info className="w-4 h-4" />
@@ -404,8 +400,8 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                 </div>
 
                 <div className="campaign-code-editor">
-                  <label htmlFor="script_code" className="admin-ads-form__label">
-                    Código HTML/JavaScript <span className="admin-ads-form__required">*</span>
+                  <label htmlFor="script_code" className="admin-form-label">
+                    Código HTML/JavaScript <span className="admin-form-label--required">*</span>
                   </label>
                   <textarea
                     id="script_code"
@@ -419,12 +415,12 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
             )}
 
             {/* Configuración Avanzada */}
-            <div className="admin-ads-card">
-              <h3 className="admin-ads-form__section-title">Configuración Avanzada</h3>
+            <div className="admin-form-section">
+              <h3 className="admin-form-section__title">Configuración Avanzada</h3>
 
-              <div className="admin-ads-form__row">
-                <div className="admin-ads-form__field">
-                  <label htmlFor="size" className="admin-ads-form__label">
+              <div className="admin-form-row">
+                <div className="admin-form-group">
+                  <label htmlFor="size" className="admin-form-label">
                     Tamaño
                   </label>
                   <input
@@ -432,13 +428,13 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                     id="size"
                     value={formData.size}
                     onChange={(e) => setFormData({ ...formData, size: e.target.value })}
-                    className="admin-ads-form__input"
+                    className="admin-form-input"
                     placeholder="Ej: 300x250"
                   />
                 </div>
 
-                <div className="admin-ads-form__field">
-                  <label htmlFor="priority" className="admin-ads-form__label">
+                <div className="admin-form-group">
+                  <label htmlFor="priority" className="admin-form-label">
                     Prioridad
                   </label>
                   <input
@@ -446,18 +442,18 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                     id="priority"
                     value={formData.priority}
                     onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) || 0 })}
-                    className="admin-ads-form__input"
+                    className="admin-form-input"
                     placeholder="0"
                   />
-                  <p style={{ fontSize: '0.75rem', color: 'var(--color-neutral-600)', marginTop: 'var(--spacing-1)' }}>
+                  <p className="admin-form-help">
                     Mayor número = mayor prioridad
                   </p>
                 </div>
               </div>
 
-              <div className="admin-ads-form__row">
-                <div className="admin-ads-form__field">
-                  <label htmlFor="start_date" className="admin-ads-form__label">
+              <div className="admin-form-row">
+                <div className="admin-form-group">
+                  <label htmlFor="start_date" className="admin-form-label">
                     Fecha de Inicio
                   </label>
                   <input
@@ -465,12 +461,12 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                     id="start_date"
                     value={formData.start_date}
                     onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                    className="admin-ads-form__input"
+                    className="admin-form-input"
                   />
                 </div>
 
-                <div className="admin-ads-form__field">
-                  <label htmlFor="end_date" className="admin-ads-form__label">
+                <div className="admin-form-group">
+                  <label htmlFor="end_date" className="admin-form-label">
                     Fecha de Fin
                   </label>
                   <input
@@ -478,14 +474,14 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                     id="end_date"
                     value={formData.end_date}
                     onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                    className="admin-ads-form__input"
+                    className="admin-form-input"
                   />
                 </div>
               </div>
 
-              <div className="admin-ads-form__row">
-                <div className="admin-ads-form__field">
-                  <label htmlFor="max_impressions" className="admin-ads-form__label">
+              <div className="admin-form-row">
+                <div className="admin-form-group">
+                  <label htmlFor="max_impressions" className="admin-form-label">
                     Máximo de Impresiones
                   </label>
                   <input
@@ -493,13 +489,13 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                     id="max_impressions"
                     value={formData.max_impressions || ''}
                     onChange={(e) => setFormData({ ...formData, max_impressions: e.target.value ? parseInt(e.target.value) : undefined })}
-                    className="admin-ads-form__input"
+                    className="admin-form-input"
                     placeholder="Ilimitado"
                   />
                 </div>
 
-                <div className="admin-ads-form__field">
-                  <label htmlFor="max_clicks" className="admin-ads-form__label">
+                <div className="admin-form-group">
+                  <label htmlFor="max_clicks" className="admin-form-label">
                     Máximo de Clicks
                   </label>
                   <input
@@ -507,22 +503,22 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                     id="max_clicks"
                     value={formData.max_clicks || ''}
                     onChange={(e) => setFormData({ ...formData, max_clicks: e.target.value ? parseInt(e.target.value) : undefined })}
-                    className="admin-ads-form__input"
+                    className="admin-form-input"
                     placeholder="Ilimitado"
                   />
                 </div>
               </div>
 
-              <div className="admin-ads-form__row">
-                <div className="admin-ads-form__field">
-                  <label htmlFor="target" className="admin-ads-form__label">
+              <div className="admin-form-row">
+                <div className="admin-form-group">
+                  <label htmlFor="target" className="admin-form-label">
                     Target del Link
                   </label>
                   <select
                     id="target"
                     value={formData.target}
                     onChange={(e) => setFormData({ ...formData, target: e.target.value })}
-                    className="admin-ads-form__select"
+                    className="admin-form-select"
                   >
                     <option value="_blank">Nueva ventana (_blank)</option>
                     <option value="_self">Misma ventana (_self)</option>
@@ -531,15 +527,15 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                   </select>
                 </div>
 
-                <div className="admin-ads-form__field">
-                  <label htmlFor="status" className="admin-ads-form__label">
+                <div className="admin-form-group">
+                  <label htmlFor="status" className="admin-form-label">
                     Estado
                   </label>
                   <select
                     id="status"
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="admin-ads-form__select"
+                    className="admin-form-select"
                   >
                     <option value="draft">Borrador</option>
                     <option value="active">Activo</option>
@@ -551,14 +547,14 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
             </div>
 
             {/* Actions */}
-            <div className="admin-ads-form__actions">
-              <Link href="/admin/ads/campaigns" className="admin-ads-btn admin-ads-btn--secondary">
+            <div className="admin-form-actions">
+              <Link href="/admin/ads/campaigns" className="btn btn-secondary">
                 Cancelar
               </Link>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="admin-ads-btn admin-ads-btn--primary"
+                className="btn btn-primary"
               >
                 <Save className="w-4 h-4" />
                 {isSubmitting ? 'Guardando...' : mode === 'create' ? 'Crear Campaña' : 'Guardar Cambios'}
@@ -597,7 +593,7 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
 
                 <div className="campaign-preview__item">
                   <span className="campaign-preview__label">Estado</span>
-                  <span className={`admin-ads-badge admin-ads-badge--${
+                  <span className={`badge badge--${
                     formData.status === 'active' ? 'success' :
                     formData.status === 'paused' ? 'warning' :
                     'neutral'
