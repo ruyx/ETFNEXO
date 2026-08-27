@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import AdSlot from '@/components/AdSlot';
-import ArticleFAQ from '@/components/ArticleFAQ';
+import FixedTopBanner from '@/components/FixedTopBanner';
+import ArticleDetailWithFAQ from '@/components/ArticleDetailWithFAQ';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { formatArticleContent } from '@/lib/format-article-content';
 
@@ -38,6 +39,7 @@ async function getArticle(slug: string) {
     return null;
   }
 }
+
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const article = await getArticle(params.slug);
@@ -131,6 +133,10 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
   return (
     <>
       <Header />
+
+      {/* Banner Fixed Encima del Breadcrumb */}
+      <FixedTopBanner placement="article_top" />
+
       <main>
         {/* Breadcrumb */}
         <section className="article-breadcrumb">
@@ -151,202 +157,6 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* Article Header */}
-        <article className="article-detail">
-          <div className="container">
-            <div className="article-detail__wrapper">
-              {/* Category Badge */}
-              {article.category_name && (
-                <div className="article-detail__category">
-                  <span
-                    className="article-detail__category-badge"
-                    style={{ backgroundColor: article.category_color || '#3B82F6' }}
-                  >
-                    {article.category_name}
-                  </span>
-                </div>
-              )}
-
-              {/* Title */}
-              <h1 className="article-detail__title">
-                {article.title}
-              </h1>
-
-              {/* Meta Info */}
-              <div className="article-detail__meta">
-                <div className="article-detail__meta-item article-detail__author">
-                  {authorLink ? (
-                    <Link
-                      href={authorLink}
-                      className="article-detail__author-link"
-                      target={authorSlug ? undefined : "_blank"}
-                      rel={authorSlug ? undefined : "noopener noreferrer"}
-                    >
-                      <div className="article-detail__author-avatar">
-                        {authorAvatar ? (
-                          <img
-                            src={authorAvatar}
-                            alt={displayAuthorName}
-                            className="article-detail__author-avatar-img"
-                          />
-                        ) : (
-                          <span className="article-detail__author-avatar-initials">
-                            {getInitials(displayAuthorName)}
-                          </span>
-                        )}
-                      </div>
-                      <span className="article-detail__author-name">{displayAuthorName}</span>
-                    </Link>
-                  ) : (
-                    <div className="article-detail__author-link">
-                      <div className="article-detail__author-avatar">
-                        <span className="article-detail__author-avatar-initials">
-                          {getInitials(displayAuthorName)}
-                        </span>
-                      </div>
-                      <span className="article-detail__author-name">{displayAuthorName}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="article-detail__meta-item">
-                  <svg className="article-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <time dateTime={dateToFormat || undefined}>
-                    {publishedDate}
-                  </time>
-                </div>
-                {article.views_count !== null && article.views_count > 0 && (
-                  <div className="article-detail__meta-item">
-                    <svg className="article-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    <span>{article.views_count} vistas</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Featured Image */}
-              {article.featured_image_url && (
-                <div className="article-image article-image--featured">
-                  <img
-                    src={article.featured_image_url}
-                    alt={article.title || 'Imagen destacada'}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                </div>
-              )}
-
-              {/* Excerpt */}
-              {article.excerpt && (
-                <div className="article-detail__excerpt">
-                  <p dangerouslySetInnerHTML={{
-                    __html: article.excerpt.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ')
-                  }} />
-                </div>
-              )}
-
-              {/* Ad Slot - Article Top */}
-              <AdSlot placement="article_top" />
-
-              {/* Content - Always show */}
-              {article.content && (
-                <div
-                  className="article-content"
-                  dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content) }}
-                />
-              )}
-
-              {/* Ad Slot - Article Bottom */}
-              <AdSlot placement="article_bottom" />
-
-              {/* Source Link - At the bottom */}
-              {article.source_url && article.source_name && (
-                <div className="article-detail__source">
-                  <p className="article-detail__source-label">
-                    Fuente original:
-                  </p>
-                  <a
-                    href={article.source_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="article-detail__source-link"
-                  >
-                    <span>{article.source_name}</span>
-                    <svg className="article-detail__source-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
-                </div>
-              )}
-
-              {/* FAQ Resumen Exprés */}
-              {article.faq && article.faq.length > 0 && (
-                <ArticleFAQ
-                  faqs={article.faq}
-                  articleTitle={article.title}
-                />
-              )}
-
-              {/* Tags */}
-              {article.tags && Array.isArray(article.tags) && article.tags.length > 0 && (
-                <div className="article-detail__tags">
-                  <h3 className="article-detail__tags-title">
-                    Etiquetas:
-                  </h3>
-                  <div className="article-detail__tags-list">
-                    {article.tags.map((tag: any) => (
-                      <span
-                        key={tag.id}
-                        className="article-detail__tag"
-                      >
-                        {tag.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Related ETFs */}
-              {article.related_etfs && Array.isArray(article.related_etfs) && article.related_etfs.length > 0 && (
-                <div className="article-detail__related">
-                  <h3 className="article-detail__related-title">
-                    ETFs relacionados:
-                  </h3>
-                  <div className="article-detail__related-grid">
-                    {article.related_etfs.map((etf: any) => (
-                      <Link
-                        key={etf.isin}
-                        href={`/etfs/${etf.isin}`}
-                        className="article-detail__related-card"
-                      >
-                        <div>
-                          <p className="article-detail__related-ticker">{etf.ticker}</p>
-                          <p className="article-detail__related-name">{etf.name}</p>
-                        </div>
-                        <svg className="article-detail__related-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Back to News */}
-              <div className="article-detail__back">
-                <Link href="/noticias" className="article-detail__back-link">
-                  <svg className="article-detail__back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                  <span>Volver a Noticias</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </article>
-
         {/* CTA Section */}
         <section className="noticias-cta">
           <div className="container noticias-cta__container">
@@ -361,6 +171,191 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
             </Link>
           </div>
         </section>
+
+        {/* Infinite Scroll with FAQ */}
+        <ArticleDetailWithFAQ initialArticle={article} basePath="noticias">
+          {/* Article Header */}
+          <article className="article-detail">
+            <div className="container">
+              <div className="article-detail__wrapper">
+                {/* Category Badge */}
+                {article.category_name && (
+                  <div className="article-detail__category">
+                    <span
+                      className="article-detail__category-badge"
+                      style={{ backgroundColor: article.category_color || '#3B82F6' }}
+                    >
+                      {article.category_name}
+                    </span>
+                  </div>
+                )}
+
+                {/* Title */}
+                <h1 className="article-detail__title">
+                  {article.title}
+                </h1>
+
+                {/* Meta Info */}
+                <div className="article-detail__meta">
+                  <div className="article-detail__meta-item article-detail__author">
+                    {authorLink ? (
+                      <Link
+                        href={authorLink}
+                        className="article-detail__author-link"
+                        target={authorSlug ? undefined : "_blank"}
+                        rel={authorSlug ? undefined : "noopener noreferrer"}
+                      >
+                        <div className="article-detail__author-avatar">
+                          {authorAvatar ? (
+                            <img
+                              src={authorAvatar}
+                              alt={displayAuthorName}
+                              className="article-detail__author-avatar-img"
+                            />
+                          ) : (
+                            <span className="article-detail__author-avatar-initials">
+                              {getInitials(displayAuthorName)}
+                            </span>
+                          )}
+                        </div>
+                        <span className="article-detail__author-name">{displayAuthorName}</span>
+                      </Link>
+                    ) : (
+                      <div className="article-detail__author-link">
+                        <div className="article-detail__author-avatar">
+                          <span className="article-detail__author-avatar-initials">
+                            {getInitials(displayAuthorName)}
+                          </span>
+                        </div>
+                        <span className="article-detail__author-name">{displayAuthorName}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="article-detail__meta-item">
+                    <svg className="article-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <time dateTime={dateToFormat || undefined}>
+                      {publishedDate}
+                    </time>
+                  </div>
+                  {article.views_count !== null && article.views_count > 0 && (
+                    <div className="article-detail__meta-item">
+                      <svg className="article-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      <span>{article.views_count} vistas</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Featured Image */}
+                {article.featured_image_url && (
+                  <div className="article-image article-image--featured">
+                    <img
+                      src={article.featured_image_url}
+                      alt={article.title || 'Imagen destacada'}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </div>
+                )}
+
+                {/* Excerpt */}
+                {article.excerpt && (
+                  <div className="article-detail__excerpt">
+                    <p dangerouslySetInnerHTML={{
+                      __html: article.excerpt.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ')
+                    }} />
+                  </div>
+                )}
+
+                {/* Content - Always show */}
+                {article.content && (
+                  <div
+                    className="article-content"
+                    dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content) }}
+                  />
+                )}
+
+                {/* Source Link - At the bottom */}
+                {article.source_url && article.source_name && (
+                  <div className="article-detail__source">
+                    <p className="article-detail__source-label">
+                      Fuente original:
+                    </p>
+                    <a
+                      href={article.source_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="article-detail__source-link"
+                    >
+                      <span>{article.source_name}</span>
+                      <svg className="article-detail__source-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
+                )}
+
+                {/* Tags */}
+                {article.tags && Array.isArray(article.tags) && article.tags.length > 0 && (
+                  <div className="article-detail__tags">
+                    <h3 className="article-detail__tags-title">
+                      Etiquetas:
+                    </h3>
+                    <div className="article-detail__tags-list">
+                      {article.tags.map((tag: any) => (
+                        <span
+                          key={tag.id}
+                          className="article-detail__tag"
+                        >
+                          {tag.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Related ETFs */}
+                {article.related_etfs && Array.isArray(article.related_etfs) && article.related_etfs.length > 0 && (
+                  <div className="article-detail__related">
+                    <h3 className="article-detail__related-title">
+                      ETFs relacionados:
+                    </h3>
+                    <div className="article-detail__related-grid">
+                      {article.related_etfs.map((etf: any) => (
+                        <Link
+                          key={etf.isin}
+                          href={`/etfs/${etf.isin}`}
+                          className="article-detail__related-card"
+                        >
+                          <div>
+                            <p className="article-detail__related-ticker">{etf.ticker}</p>
+                            <p className="article-detail__related-name">{etf.name}</p>
+                          </div>
+                          <svg className="article-detail__related-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Back to News */}
+                <div className="article-detail__back">
+                  <Link href="/noticias" className="article-detail__back-link">
+                    <svg className="article-detail__back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>Volver a Noticias</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </article>
+        </ArticleDetailWithFAQ>
       </main>
     </>
   );

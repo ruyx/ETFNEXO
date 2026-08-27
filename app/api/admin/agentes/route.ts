@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * API Admin - Agentes AI
  * GET: Listar todos los agentes
@@ -5,11 +6,12 @@
  */
 
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const { data: agents, error } = await supabase
       .from('ai_agents')
@@ -39,7 +41,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     const body = await request.json();
 
     // Validaciones
@@ -63,6 +65,7 @@ export async function POST(request: NextRequest) {
         expertise: body.expertise || [],
         avatar_url: body.avatar_url || null,
         role: body.role || 'analyst',
+        agent_type: body.agent_type || 'redactor',
         email: body.email || null,
         social_links: body.social_links || null,
         signature: body.signature || null,

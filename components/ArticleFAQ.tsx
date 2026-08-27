@@ -22,6 +22,11 @@ interface ArticleFAQProps {
 export default function ArticleFAQ({ faqs, articleTitle }: ArticleFAQProps) {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Reset modal state when article changes (articleTitle or faqs change)
+  useEffect(() => {
+    setIsOpen(false);
+  }, [articleTitle, faqs]);
+
   // Detectar hash #resumen en la URL y abrir modal automáticamente
   useEffect(() => {
     const handleHashChange = () => {

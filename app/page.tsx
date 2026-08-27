@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import RankingSlider from '@/components/RankingSlider';
 import MarketTicker from '@/components/MarketTicker';
 import AdSlot from '@/components/AdSlot';
+import StickyNewsBanner from '@/components/StickyNewsBanner';
 import NewsCard, { NewsArticle } from '@/components/NewsCard';
 
 export default function HomePage() {
@@ -29,6 +30,19 @@ export default function HomePage() {
     <div className="bg-white">
       <Header />
       <MarketTicker />
+
+      {/* Banner Superior - Debajo del ticker - Dark background */}
+      <section className="py-4 px-6 bg-gradient-to-b from-slate-900 to-slate-800 border-b border-slate-700">
+        <div className="container max-w-7xl">
+          <div className="flex justify-center items-center" style={{
+            minHeight: '110px',
+            maxHeight: '250px',
+            overflow: 'hidden'
+          }}>
+            <AdSlot placement="home_top" />
+          </div>
+        </div>
+      </section>
 
       {/* Hero Editorial Section */}
       <section className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
@@ -75,70 +89,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Quick Access Nav */}
-      <section className="border-b border-slate-200 bg-white sticky top-[105px] z-40 shadow-sm">
-        <div className="container">
-          <nav className="flex items-center gap-1 overflow-x-auto py-1">
-            {['ETFs', 'Gestoras', 'Mercados', 'Regulación', 'Educación'].map((cat) => (
-              <Link
-                key={cat}
-                href={`/noticias?categoria=${cat.toLowerCase()}`}
-                className="px-4 py-3 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors whitespace-nowrap"
-              >
-                {cat}
-              </Link>
-            ))}
-            <div className="ml-auto flex items-center gap-4">
-              <Link
-                href="/rankings"
-                className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
-              >
-                Ver Rankings
-              </Link>
-            </div>
-          </nav>
-        </div>
-      </section>
-
       <main>
-        {/* Rankings Section - PRINCIPAL */}
-        <section className="relative py-20 bg-white border-b border-slate-200">
-          <div className="mb-16 text-center px-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full border border-blue-200 mb-6">
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
-              <span>Actualizado Semanalmente</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
-              Top ETFs del Mercado
-            </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-              Análisis objetivo basado en nuestro algoritmo ETFNexo Score:
-              rendimiento, costes, liquidez y calidad de cartera
-            </p>
-          </div>
-
-          <RankingSlider />
-
-          <div className="text-center mt-12 px-6">
-            <Link
-              href="/rankings"
-              className="inline-flex items-center justify-center px-8 py-4 bg-slate-900 text-white text-lg font-semibold rounded-lg hover:bg-slate-800 transition-all shadow-lg"
-            >
-              Ver Ranking Completo de 170+ ETFs
-              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </Link>
-          </div>
-        </section>
-
-        {/* Ad Slot - Feed Inline (después de rankings) */}
-        <section className="py-8 px-6 bg-white">
-          <div className="container max-w-4xl">
-            <AdSlot key="feed-inline-after-rankings" placement="feed_inline" />
-          </div>
-        </section>
-
         {/* Latest News Grid */}
         <section className="py-16 px-6 bg-slate-50">
           <div className="container max-w-7xl">
@@ -198,16 +149,8 @@ export default function HomePage() {
                 <div className="lg:col-span-2">
                   <h3 className="text-2xl font-bold text-slate-900 mb-6">Noticias Destacadas</h3>
                   <div className="grid md:grid-cols-2 gap-6">
-                    {recentArticles.slice(0, 6).map((article, index) => (
-                      <div key={article.id}>
-                        <NewsCard article={article} variant="card" />
-                        {/* Ad after 3rd article */}
-                        {index === 2 && (
-                          <div className="mt-6 md:col-span-2">
-                            <AdSlot key="feed-inline-after-articles" placement="feed_inline" />
-                          </div>
-                        )}
-                      </div>
+                    {recentArticles.slice(0, 6).map((article) => (
+                      <NewsCard key={article.id} article={article} variant="card" />
                     ))}
                   </div>
                 </div>
@@ -215,6 +158,10 @@ export default function HomePage() {
                 {/* Siguientes 6 noticias en TERCERA COLUMNA (lista) */}
                 <div className="lg:col-span-1">
                   <h3 className="text-2xl font-bold text-slate-900 mb-6">Más Noticias</h3>
+
+                  {/* Banner Sticky Destacado */}
+                  <StickyNewsBanner placement="home_news_sidebar" />
+
                   <div className="space-y-4">
                     {recentArticles.slice(6, 12).map(article => (
                       <NewsCard key={article.id} article={article} variant="default" />
@@ -233,6 +180,50 @@ export default function HomePage() {
                 </Link>
               </div>
             )}
+          </div>
+        </section>
+
+        {/* Rankings Section - PRINCIPAL */}
+        <section className="relative py-20 bg-white border-b border-slate-200">
+          <div className="mb-16 text-center px-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full border border-blue-200 mb-6">
+              <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
+              <span>Actualizado Semanalmente</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+              Top ETFs del Mercado
+            </h2>
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+              Análisis objetivo basado en nuestro algoritmo ETFNexo Score:
+              rendimiento, costes, liquidez y calidad de cartera
+            </p>
+          </div>
+
+          <RankingSlider />
+
+          <div className="text-center mt-12 px-6">
+            <Link
+              href="/rankings"
+              className="inline-flex items-center justify-center px-8 py-4 bg-slate-900 text-white text-lg font-semibold rounded-lg hover:bg-slate-800 transition-all shadow-lg"
+            >
+              Ver Ranking Completo de 170+ ETFs
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </div>
+        </section>
+
+        {/* Banner after ranking - Dark background */}
+        <section className="py-4 px-6 bg-gradient-to-b from-slate-900 to-slate-800">
+          <div className="container max-w-7xl">
+            <div className="flex justify-center items-center" style={{
+              minHeight: '110px',
+              maxHeight: '250px',
+              overflow: 'hidden'
+            }}>
+              <AdSlot placement="home_after_ranking" />
+            </div>
           </div>
         </section>
 

@@ -47,10 +47,11 @@ export default function CrearAgentePage() {
 
   // Handle expertise tags
   const addExpertise = () => {
-    if (formData.expertiseInput.trim() && !formData.expertise.includes(formData.expertiseInput.trim())) {
+    const trimmedInput = formData.expertiseInput.trim();
+    if (trimmedInput && !formData.expertise.includes(trimmedInput)) {
       setFormData(prev => ({
         ...prev,
-        expertise: [...prev.expertise, prev.expertiseInput.trim()],
+        expertise: [...prev.expertise, trimmedInput],
         expertiseInput: ''
       }));
     }
@@ -83,8 +84,17 @@ export default function CrearAgentePage() {
       if (!formData.email.trim()) {
         throw new Error('El email es obligatorio');
       }
-      if (formData.expertise.length === 0) {
-        throw new Error('Debes añadir al menos una área de experticia');
+
+      // Build final expertise array (include pending input if exists)
+      let finalExpertise = [...formData.expertise];
+      const trimmedInput = formData.expertiseInput.trim();
+      if (trimmedInput && !finalExpertise.includes(trimmedInput)) {
+        finalExpertise.push(trimmedInput);
+      }
+
+      // Validate expertise
+      if (finalExpertise.length === 0) {
+        throw new Error('Debes añadir al menos una área de experticia. Escribe una habilidad y presiona Enter o haz clic en Añadir.');
       }
 
       // Prepare data
@@ -93,7 +103,7 @@ export default function CrearAgentePage() {
         slug: formData.slug.trim(),
         display_name: formData.display_name.trim(),
         bio: formData.bio.trim() || null,
-        expertise: formData.expertise,
+        expertise: finalExpertise,
         role: formData.role,
         agent_type: formData.agent_type,
         email: formData.email.trim(),

@@ -259,6 +259,20 @@ export default function UserNav() {
                   </svg>
                   Gestión de Agentes IA
                 </Link>
+
+                <Link
+                  href="/admin/ads"
+                  className="user-nav-dropdown-link"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M13 1H3L1 5V13C1 14.1 1.9 15 3 15H13C14.1 15 15 14.1 15 13V5L13 1ZM8 13L4 9H7V6H9V9H12L8 13ZM3.17 3L3.92 1.5H12.08L12.83 3H3.17Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Gestión de Publicidad
+                </Link>
               </>
             )}
           </nav>

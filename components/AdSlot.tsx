@@ -18,7 +18,7 @@ interface Ad {
 }
 
 interface AdSlotProps {
-  placement: 'sidebar_top' | 'sidebar_bottom' | 'article_top' | 'article_mid' | 'article_bottom' | 'feed_inline' | 'header' | 'footer';
+  placement: 'sidebar_top' | 'sidebar_bottom' | 'article_top' | 'article_mid' | 'article_bottom' | 'feed_inline' | 'header' | 'footer' | 'home_top' | 'home_after_ranking' | 'home_news_sidebar';
   className?: string;
 }
 
@@ -129,7 +129,8 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
           borderRadius: '12px',
           overflow: 'hidden',
           margin: '24px 0',
-          position: 'relative'
+          position: 'relative',
+          maxHeight: '250px' // Limitar altura máxima del contenedor
         }}
       >
         <div
@@ -157,7 +158,12 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
           tabIndex={0}
           onKeyPress={(e) => e.key === 'Enter' && handleAdClick()}
           style={{
-            cursor: 'pointer'
+            cursor: 'pointer',
+            maxHeight: '250px', // Limitar altura del contenedor de imagen
+            overflow: 'hidden',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
           }}
         >
           <img
@@ -167,7 +173,9 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
             style={{
               width: '100%',
               height: 'auto',
-              display: 'block'
+              maxHeight: '250px', // Limitar altura de la imagen
+              display: 'block',
+              objectFit: 'contain' // Mantener proporciones sin deformar
             }}
           />
         </div>

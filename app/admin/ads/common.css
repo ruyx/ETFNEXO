@@ -1,0 +1,541 @@
+/* ============================================
+   ADMIN ADS COMMON - Estilos comunes para el sistema de ads
+   ============================================ */
+
+/* ==================== PAGE LAYOUT ==================== */
+.admin-ads-page {
+  width: 100%;
+}
+
+.admin-ads-page__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+  flex-wrap: wrap;
+}
+
+.admin-ads-page__header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.admin-ads-page__title {
+  font-family: var(--font-heading);
+  font-size: 2rem; /* 32px */
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--spacing-2) 0;
+}
+
+.admin-ads-page__subtitle {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-neutral-600);
+  margin: 0;
+}
+
+/* ==================== BUTTONS ==================== */
+.admin-ads-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-5);
+  font-family: var(--font-body);
+  font-size: 0.938rem; /* 15px */
+  font-weight: 600;
+  border-radius: var(--btn-radius);
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+}
+
+.admin-ads-btn--primary {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.admin-ads-btn--primary:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.admin-ads-btn--primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-ads-btn--secondary {
+  background: var(--color-white);
+  color: var(--color-neutral-700);
+  border-color: var(--color-neutral-300);
+}
+
+.admin-ads-btn--secondary:hover {
+  background: var(--color-neutral-50);
+  border-color: var(--color-neutral-400);
+}
+
+.admin-ads-btn--sm {
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: 0.875rem; /* 14px */
+}
+
+.admin-ads-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Icon Buttons */
+.admin-ads-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: var(--color-neutral-600);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.admin-ads-icon-btn:hover {
+  border-color: var(--color-neutral-400);
+  background: var(--color-neutral-50);
+}
+
+.admin-ads-icon-btn--view {
+  color: var(--color-primary);
+  border-color: var(--color-primary-light);
+}
+
+.admin-ads-icon-btn--view:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.admin-ads-icon-btn--edit {
+  color: var(--color-warning);
+  border-color: var(--color-warning-light);
+}
+
+.admin-ads-icon-btn--edit:hover {
+  background: var(--color-warning-light);
+  border-color: var(--color-warning);
+}
+
+.admin-ads-icon-btn--delete {
+  color: var(--color-danger);
+  border-color: var(--color-danger-light);
+}
+
+.admin-ads-icon-btn--delete:hover {
+  background: var(--color-danger-light);
+  border-color: var(--color-danger);
+}
+
+.admin-ads-icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ==================== CARDS ==================== */
+.admin-ads-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--btn-radius);
+  padding: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+}
+
+.admin-ads-card--full {
+  grid-column: 1 / -1;
+}
+
+.admin-ads-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-5);
+}
+
+.admin-ads-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem; /* 20px */
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+/* ==================== MINI STATS ==================== */
+.admin-ads-stats-mini {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+}
+
+.admin-ads-stat-mini {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  padding: var(--spacing-4);
+  background: var(--color-white);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--btn-radius);
+}
+
+.admin-ads-stat-mini__label {
+  font-family: var(--font-body);
+  font-size: 0.813rem; /* 13px */
+  color: var(--color-neutral-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-ads-stat-mini__value {
+  font-family: var(--font-heading);
+  font-size: 1.5rem; /* 24px */
+  font-weight: 700;
+  color: var(--color-neutral-900);
+}
+
+.admin-ads-stat-mini__value--success {
+  color: var(--color-success);
+}
+
+.admin-ads-stat-mini__value--neutral {
+  color: var(--color-neutral-500);
+}
+
+.admin-ads-stat-mini__value--danger {
+  color: var(--color-danger);
+}
+
+/* ==================== TABLES ==================== */
+.admin-ads-table-container {
+  overflow-x: auto;
+  margin: calc(-1 * var(--spacing-6));
+  padding: var(--spacing-6);
+}
+
+.admin-ads-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-ads-table thead {
+  background: var(--color-neutral-50);
+  border-bottom: 2px solid var(--color-neutral-200);
+}
+
+.admin-ads-table th {
+  font-family: var(--font-body);
+  font-size: 0.813rem; /* 13px */
+  font-weight: 600;
+  color: var(--color-neutral-700);
+  text-align: left;
+  padding: var(--spacing-3) var(--spacing-4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.admin-ads-table td {
+  font-family: var(--font-body);
+  font-size: 0.938rem; /* 15px */
+  color: var(--color-neutral-800);
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--color-neutral-100);
+}
+
+.admin-ads-table tbody tr:hover {
+  background: var(--color-neutral-50);
+}
+
+.admin-ads-table__empty {
+  text-align: center;
+  color: var(--color-neutral-500);
+  padding: var(--spacing-8) !important;
+}
+
+.admin-ads-table__empty a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.admin-ads-table__empty a:hover {
+  color: var(--color-primary-dark);
+}
+
+.admin-ads-table__name a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+.admin-ads-table__name a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.admin-ads-table__link {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.admin-ads-table__link:hover {
+  text-decoration: underline;
+}
+
+.admin-ads-table__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+/* Count Badge */
+.admin-ads-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 var(--spacing-2);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-size: 0.813rem; /* 13px */
+  font-weight: 700;
+  border-radius: var(--radius-full);
+}
+
+/* ==================== FORMS ==================== */
+.admin-ads-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.admin-ads-form__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.admin-ads-form__section-title {
+  font-family: var(--font-heading);
+  font-size: 1.125rem; /* 18px */
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  margin: 0;
+  padding-bottom: var(--spacing-3);
+  border-bottom: 2px solid var(--color-neutral-200);
+}
+
+.admin-ads-form__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.admin-ads-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.admin-ads-form__field--full {
+  grid-column: 1 / -1;
+}
+
+.admin-ads-form__label {
+  font-family: var(--font-body);
+  font-size: 0.938rem; /* 15px */
+  font-weight: 600;
+  color: var(--color-neutral-700);
+}
+
+.admin-ads-form__required {
+  color: var(--color-danger);
+}
+
+.admin-ads-form__input,
+.admin-ads-form__select,
+.admin-ads-form__textarea {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  font-family: var(--font-body);
+  font-size: 0.938rem; /* 15px */
+  color: var(--color-neutral-900);
+  background: var(--color-white);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--btn-radius);
+  transition: all var(--transition-base);
+}
+
+.admin-ads-form__input:focus,
+.admin-ads-form__select:focus,
+.admin-ads-form__textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.admin-ads-form__textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.admin-ads-form__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+/* ==================== ALERTS ==================== */
+.admin-ads-alert {
+  padding: var(--spacing-4) var(--spacing-5);
+  border-radius: var(--btn-radius);
+  font-family: var(--font-body);
+  font-size: 0.938rem; /* 15px */
+  margin-bottom: var(--spacing-4);
+}
+
+.admin-ads-alert--error {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.admin-ads-alert--success {
+  background: var(--color-success-light);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.admin-ads-alert--info {
+  background: rgba(59, 130, 246, 0.1);
+  color: rgb(59, 130, 246);
+  border: 1px solid rgb(59, 130, 246);
+}
+
+/* ==================== DETAIL PAGE ==================== */
+.admin-ads-detail-grid {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: var(--spacing-6);
+}
+
+.admin-ads-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.admin-ads-info-item {
+  display: flex;
+  gap: var(--spacing-3);
+}
+
+.admin-ads-info-item--full {
+  flex-direction: column;
+}
+
+.admin-ads-info-item__icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-neutral-500);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.admin-ads-info-item__label {
+  font-family: var(--font-body);
+  font-size: 0.813rem; /* 13px */
+  font-weight: 600;
+  color: var(--color-neutral-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 var(--spacing-1) 0;
+}
+
+.admin-ads-info-item__value {
+  font-family: var(--font-body);
+  font-size: 0.938rem; /* 15px */
+  color: var(--color-neutral-900);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.admin-ads-info-item__value--link {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+.admin-ads-info-item__value--link:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+/* Empty State */
+.admin-ads-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-8);
+  text-align: center;
+  color: var(--color-neutral-500);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+  .admin-ads-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-ads-page__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-ads-page__title {
+    font-size: 1.5rem; /* 24px */
+  }
+
+  .admin-ads-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-ads-form__row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-ads-form__actions {
+    flex-direction: column-reverse;
+  }
+
+  .admin-ads-form__actions .admin-ads-btn {
+    width: 100%;
+  }
+}

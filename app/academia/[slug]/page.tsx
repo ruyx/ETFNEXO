@@ -4,9 +4,10 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import AdSlot from '@/components/AdSlot';
-import ArticleFAQ from '@/components/ArticleFAQ';
+import FixedTopBanner from '@/components/FixedTopBanner';
 import DifficultyBadge from '@/components/DifficultyBadge';
 import ReadingTimeBadge from '@/components/ReadingTimeBadge';
+import ArticleDetailWithFAQ from '@/components/ArticleDetailWithFAQ';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { formatArticleContent } from '@/lib/format-article-content';
 
@@ -40,6 +41,7 @@ async function getArticle(slug: string) {
     return null;
   }
 }
+
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const article = await getArticle(params.slug);
@@ -98,6 +100,10 @@ export default async function AcademiaDetailPage({ params }: PageProps) {
   return (
     <>
       <Header />
+
+      {/* Banner Fixed Encima del Breadcrumb */}
+      <FixedTopBanner placement="article_top" />
+
       <main>
         {/* Breadcrumb */}
         <section className="article-breadcrumb">
@@ -118,235 +124,6 @@ export default async function AcademiaDetailPage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* Article Header */}
-        <article className="article-detail">
-          <div className="container">
-            <div className="article-detail__wrapper">
-              {/* Category Badge & Difficulty */}
-              <div className="article-detail__category">
-                {article.category_name && (
-                  <span
-                    className="article-detail__category-badge"
-                    style={{ backgroundColor: article.category_color || 'var(--color-success)' }}
-                  >
-                    {article.category_name}
-                  </span>
-                )}
-                {article.difficulty_level && (
-                  <div className="ml-2">
-                    <DifficultyBadge level={article.difficulty_level} size="md" />
-                  </div>
-                )}
-                {article.estimated_reading_time && (
-                  <div className="ml-2">
-                    <ReadingTimeBadge minutes={article.estimated_reading_time} size="md" />
-                  </div>
-                )}
-              </div>
-
-              {/* Title */}
-              <h1 className="article-detail__title">
-                {article.title}
-              </h1>
-
-              {/* Meta Info */}
-              <div className="article-detail__meta">
-                <div className="article-detail__meta-item article-detail__author">
-                  {authorLink ? (
-                    <Link
-                      href={authorLink}
-                      className="article-detail__author-link"
-                    >
-                      <div className="article-detail__author-avatar">
-                        {authorAvatar ? (
-                          <img
-                            src={authorAvatar}
-                            alt={displayAuthorName}
-                            className="article-detail__author-avatar-img"
-                          />
-                        ) : (
-                          <span className="article-detail__author-avatar-initials">
-                            {getInitials(displayAuthorName)}
-                          </span>
-                        )}
-                      </div>
-                      <span className="article-detail__author-name">{displayAuthorName}</span>
-                    </Link>
-                  ) : (
-                    <div className="article-detail__author-link">
-                      <div className="article-detail__author-avatar">
-                        {authorAvatar ? (
-                          <img
-                            src={authorAvatar}
-                            alt={displayAuthorName}
-                            className="article-detail__author-avatar-img"
-                          />
-                        ) : (
-                          <span className="article-detail__author-avatar-initials">
-                            {getInitials(displayAuthorName)}
-                          </span>
-                        )}
-                      </div>
-                      <span className="article-detail__author-name">{displayAuthorName}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="article-detail__meta-item">
-                  <svg className="article-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <time dateTime={article.published_at || undefined}>
-                    {publishedDate}
-                  </time>
-                </div>
-                {article.views_count !== null && article.views_count > 0 && (
-                  <div className="article-detail__meta-item">
-                    <svg className="article-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    <span>{article.views_count} lecturas</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Featured Image */}
-              {article.featured_image_url && (
-                <div className="article-image article-image--featured">
-                  <img
-                    src={article.featured_image_url}
-                    alt={article.featured_image_alt || article.title || 'Imagen destacada'}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                </div>
-              )}
-
-              {/* Excerpt */}
-              {article.excerpt && (
-                <div className="article-detail__excerpt">
-                  <p dangerouslySetInnerHTML={{
-                    __html: article.excerpt.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ')
-                  }} />
-                </div>
-              )}
-
-              {/* Ad Slot - Article Top */}
-              <AdSlot placement="article_top" />
-
-              {/* Content - Always show */}
-              {article.content && (
-                <div
-                  className="article-content"
-                  dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content) }}
-                />
-              )}
-
-              {/* Ad Slot - Article Bottom */}
-              <AdSlot placement="article_bottom" />
-
-              {/* FAQ Resumen Exprés */}
-              {article.faq && article.faq.length > 0 && (
-                <ArticleFAQ
-                  faqs={article.faq}
-                  articleTitle={article.title}
-                />
-              )}
-
-              {/* Tags */}
-              {article.tags && Array.isArray(article.tags) && article.tags.length > 0 && (
-                <div className="article-detail__tags">
-                  <h3 className="article-detail__tags-title">
-                    Etiquetas:
-                  </h3>
-                  <div className="article-detail__tags-list">
-                    {article.tags.map((tag: any) => (
-                      <span
-                        key={tag.id}
-                        className="article-detail__tag"
-                      >
-                        {tag.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Related ETFs */}
-              {article.related_etfs && Array.isArray(article.related_etfs) && article.related_etfs.length > 0 && (
-                <div className="article-detail__related">
-                  <h3 className="article-detail__related-title">
-                    ETFs relacionados:
-                  </h3>
-                  <div className="article-detail__related-grid">
-                    {article.related_etfs.map((etf: any) => (
-                      <Link
-                        key={etf.id}
-                        href={`/etfs/${etf.isin}`}
-                        className="article-detail__related-card"
-                      >
-                        <div>
-                          <p className="article-detail__related-name">{etf.name}</p>
-                        </div>
-                        <svg className="article-detail__related-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Prerequisites - Educational Path */}
-              {article.prerequisites && Array.isArray(article.prerequisites) && article.prerequisites.length > 0 && (
-                <div className="article-detail__related academia-prerequisites">
-                  <div className="academia-prerequisites__header">
-                    <div className="academia-prerequisites__icon">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
-                    </div>
-                    <h3 className="article-detail__related-title">
-                      📚 Requisitos previos - Ruta de aprendizaje
-                    </h3>
-                  </div>
-                  <p className="academia-prerequisites__description">
-                    Para aprovechar al máximo este artículo, te recomendamos leer primero:
-                  </p>
-                  <div className="article-detail__related-grid">
-                    {article.prerequisites.map((slug: string, index: number) => (
-                      <Link
-                        key={slug}
-                        href={`/academia/${slug}`}
-                        className="article-detail__related-card academia-prerequisites__card"
-                      >
-                        <div className="academia-prerequisites__badge">
-                          Paso {index + 1}
-                        </div>
-                        <div>
-                          <p className="article-detail__related-name">{slug}</p>
-                        </div>
-                        <svg className="article-detail__related-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Back to Academia */}
-              <div className="article-detail__back">
-                <Link href="/academia" className="article-detail__back-link">
-                  <svg className="article-detail__back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                  <span>Volver a Academia</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </article>
-
         {/* CTA Section */}
         <section className="noticias-cta">
           <div className="container noticias-cta__container">
@@ -361,6 +138,224 @@ export default async function AcademiaDetailPage({ params }: PageProps) {
             </Link>
           </div>
         </section>
+
+        {/* Infinite Scroll Component with FAQ */}
+        <ArticleDetailWithFAQ initialArticle={article} basePath="academia">
+          {/* Article Header */}
+          <article className="article-detail">
+            <div className="container">
+              <div className="article-detail__wrapper">
+                {/* Category Badge & Difficulty */}
+                <div className="article-detail__category">
+                  {article.category_name && (
+                    <span
+                      className="article-detail__category-badge"
+                      style={{ backgroundColor: article.category_color || 'var(--color-success)' }}
+                    >
+                      {article.category_name}
+                    </span>
+                  )}
+                  {article.difficulty_level && (
+                    <div className="ml-2">
+                      <DifficultyBadge level={article.difficulty_level} size="md" />
+                    </div>
+                  )}
+                  {article.estimated_reading_time && (
+                    <div className="ml-2">
+                      <ReadingTimeBadge minutes={article.estimated_reading_time} size="md" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Title */}
+                <h1 className="article-detail__title">
+                  {article.title}
+                </h1>
+
+                {/* Meta Info */}
+                <div className="article-detail__meta">
+                  <div className="article-detail__meta-item article-detail__author">
+                    {authorLink ? (
+                      <Link
+                        href={authorLink}
+                        className="article-detail__author-link"
+                      >
+                        <div className="article-detail__author-avatar">
+                          {authorAvatar ? (
+                            <img
+                              src={authorAvatar}
+                              alt={displayAuthorName}
+                              className="article-detail__author-avatar-img"
+                            />
+                          ) : (
+                            <span className="article-detail__author-avatar-initials">
+                              {getInitials(displayAuthorName)}
+                            </span>
+                          )}
+                        </div>
+                        <span className="article-detail__author-name">{displayAuthorName}</span>
+                      </Link>
+                    ) : (
+                      <div className="article-detail__author-link">
+                        <div className="article-detail__author-avatar">
+                          {authorAvatar ? (
+                            <img
+                              src={authorAvatar}
+                              alt={displayAuthorName}
+                              className="article-detail__author-avatar-img"
+                            />
+                          ) : (
+                            <span className="article-detail__author-avatar-initials">
+                              {getInitials(displayAuthorName)}
+                            </span>
+                          )}
+                        </div>
+                        <span className="article-detail__author-name">{displayAuthorName}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="article-detail__meta-item">
+                    <svg className="article-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <time dateTime={article.published_at || undefined}>
+                      {publishedDate}
+                    </time>
+                  </div>
+                  {article.views_count !== null && article.views_count > 0 && (
+                    <div className="article-detail__meta-item">
+                      <svg className="article-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      <span>{article.views_count} lecturas</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Featured Image */}
+                {article.featured_image_url && (
+                  <div className="article-image article-image--featured">
+                    <img
+                      src={article.featured_image_url}
+                      alt={article.featured_image_alt || article.title || 'Imagen destacada'}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </div>
+                )}
+
+                {/* Excerpt */}
+                {article.excerpt && (
+                  <div className="article-detail__excerpt">
+                    <p dangerouslySetInnerHTML={{
+                      __html: article.excerpt.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ')
+                    }} />
+                  </div>
+                )}
+
+                {/* Content - Always show */}
+                {article.content && (
+                  <div
+                    className="article-content"
+                    dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content) }}
+                  />
+                )}
+
+                {/* Tags */}
+                {article.tags && Array.isArray(article.tags) && article.tags.length > 0 && (
+                  <div className="article-detail__tags">
+                    <h3 className="article-detail__tags-title">
+                      Etiquetas:
+                    </h3>
+                    <div className="article-detail__tags-list">
+                      {article.tags.map((tag: any) => (
+                        <span
+                          key={tag.id}
+                          className="article-detail__tag"
+                        >
+                          {tag.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Related ETFs */}
+                {article.related_etfs && Array.isArray(article.related_etfs) && article.related_etfs.length > 0 && (
+                  <div className="article-detail__related">
+                    <h3 className="article-detail__related-title">
+                      ETFs relacionados:
+                    </h3>
+                    <div className="article-detail__related-grid">
+                      {article.related_etfs.map((etf: any) => (
+                        <Link
+                          key={etf.id}
+                          href={`/etfs/${etf.isin}`}
+                          className="article-detail__related-card"
+                        >
+                          <div>
+                            <p className="article-detail__related-name">{etf.name}</p>
+                          </div>
+                          <svg className="article-detail__related-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Prerequisites - Educational Path */}
+                {article.prerequisites && Array.isArray(article.prerequisites) && article.prerequisites.length > 0 && (
+                  <div className="article-detail__related academia-prerequisites">
+                    <div className="academia-prerequisites__header">
+                      <div className="academia-prerequisites__icon">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                      </div>
+                      <h3 className="article-detail__related-title">
+                        📚 Requisitos previos - Ruta de aprendizaje
+                      </h3>
+                    </div>
+                    <p className="academia-prerequisites__description">
+                      Para aprovechar al máximo este artículo, te recomendamos leer primero:
+                    </p>
+                    <div className="article-detail__related-grid">
+                      {article.prerequisites.map((slug: string, index: number) => (
+                        <Link
+                          key={slug}
+                          href={`/academia/${slug}`}
+                          className="article-detail__related-card academia-prerequisites__card"
+                        >
+                          <div className="academia-prerequisites__badge">
+                            Paso {index + 1}
+                          </div>
+                          <div>
+                            <p className="article-detail__related-name">{slug}</p>
+                          </div>
+                          <svg className="article-detail__related-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Back to Academia */}
+                <div className="article-detail__back">
+                  <Link href="/academia" className="article-detail__back-link">
+                    <svg className="article-detail__back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>Volver a Academia</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </article>
+        </ArticleDetailWithFAQ>
       </main>
     </>
   );

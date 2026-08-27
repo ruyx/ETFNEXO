@@ -15,9 +15,6 @@ export default function Header() {
 
           {/* Navigation */}
           <nav className="site-header__nav">
-            <Link href="/" className="site-header__nav-link">
-              Inicio
-            </Link>
             <Link href="/noticias" className="site-header__nav-link">
               Noticias
             </Link>
