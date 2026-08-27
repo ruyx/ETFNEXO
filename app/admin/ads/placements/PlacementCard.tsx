@@ -33,11 +33,11 @@ export default function PlacementCard({ placement }: PlacementCardProps) {
         </div>
         <div className="placement-card__badge">
           {placement.activeAds > 0 ? (
-            <span className="admin-ads-badge admin-ads-badge--success">
+            <span className="badge badge--success">
               {placement.activeAds} activo{placement.activeAds > 1 ? 's' : ''}
             </span>
           ) : (
-            <span className="admin-ads-badge admin-ads-badge--neutral">
+            <span className="badge badge--neutral">
               Sin anuncios
             </span>
           )}

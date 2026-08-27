@@ -78,20 +78,19 @@ export default async function PlacementsPage() {
   const totalActivePlacementAds = placements.reduce((sum, p) => sum + p.activeAds, 0);
 
   return (
-    <div className="admin-ads-page">
-      <div className="container">
-        {/* Header */}
-        <div className="admin-ads-page__header">
-          <div>
-            <h1 className="admin-ads-page__title">Ubicaciones de Anuncios</h1>
-            <p className="admin-ads-page__subtitle">
-              Gestiona las ubicaciones publicitarias y configura Google AdSense
-            </p>
-          </div>
-          <Link href="/admin/ads/campaigns/new" className="admin-ads-btn admin-ads-btn--primary">
-            + Nuevo Anuncio
-          </Link>
+    <div className="admin-container">
+      {/* Header */}
+      <div className="admin-header">
+        <div>
+          <h1 className="admin-header__title">Ubicaciones de Anuncios</h1>
+          <p className="admin-header__description">
+            Gestiona las ubicaciones publicitarias y configura Google AdSense
+          </p>
         </div>
+        <Link href="/admin/ads/campaigns/new" className="btn btn-primary">
+          + Nuevo Anuncio
+        </Link>
+      </div>
 
         {/* Summary */}
       <div className="placements-summary">
@@ -150,7 +149,7 @@ export default async function PlacementsPage() {
             <h3>Vista Previa Visual</h3>
             <p>Para ver cómo se muestran los anuncios en cada ubicación, visita la página de vista previa.</p>
           </div>
-          <Link href="/admin/ads/placements/preview" className="admin-ads-btn admin-ads-btn--secondary">
+          <Link href="/admin/ads/placements/preview" className="btn btn-secondary">
             <ExternalLink className="w-4 h-4" />
             Ver Preview
           </Link>
