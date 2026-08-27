@@ -128,6 +128,14 @@ export default function InfiniteArticleScroll({ initialArticle, initialArticleEl
           entries.forEach((entry) => {
             const ratio = entry.intersectionRatio;
 
+            console.log('👁️ Observer [SCROLL] event:', {
+              articleId: article.id,
+              articleTitle: article.title.substring(0, 50),
+              isIntersecting: entry.isIntersecting,
+              ratio: ratio.toFixed(3),
+              meetsThreshold: ratio > 0.5
+            });
+
             if (entry.isIntersecting && ratio > 0.5) {
               // Actualizar si es un artículo diferente O si tiene mayor ratio que el actual
               const isDifferentArticle = !currentVisibleArticle.current || currentVisibleArticle.current.article.id !== article.id;
