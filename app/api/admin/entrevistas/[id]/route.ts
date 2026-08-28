@@ -19,6 +19,7 @@ export async function GET(
     const { id } = params;
     const supabase = createAdminClient();
 
+    // @ts-ignore - Supabase type instantiation depth limit with interviews_with_metadata view
     const { data, error } = await supabase
       .from('interviews_with_metadata')
       .select('*')

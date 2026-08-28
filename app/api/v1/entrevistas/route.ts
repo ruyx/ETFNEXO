@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
 
     // Build base query
+    // @ts-ignore - Supabase type instantiation depth limit with interviews_with_metadata view
     let query = supabase
       .from('interviews_with_metadata' as any)
       .select('*', { count: 'exact' })

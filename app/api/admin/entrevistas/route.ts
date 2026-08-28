@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     const supabase = createAdminClient();
 
     // Build query (bypasses RLS with admin client)
+    // @ts-ignore - Supabase type instantiation depth limit with interviews_with_metadata view
     let query = supabase
       .from('interviews_with_metadata')
       .select('*', { count: 'exact' })
