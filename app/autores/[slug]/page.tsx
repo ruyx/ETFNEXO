@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import NewsCard from '@/components/NewsCard';
 import AcademyCard from '@/components/AcademyCard';
 import { createAdminClient } from '@/lib/supabase/admin';
@@ -171,6 +172,8 @@ export default async function AuthorPage({ params }: PageProps) {
           )}
         </div>
       </main>
+
+      <Footer />
     </>
   );
 }

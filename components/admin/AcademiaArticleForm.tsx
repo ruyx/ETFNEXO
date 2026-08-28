@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { Save, X, Eye, Upload, Image as ImageIcon, Plus, Trash2, HelpCircle, Search, Loader2, BookOpen, Clock } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
+import CategoryManager from '@/components/admin/CategoryManager';
 
 // Import Quill dynamically to avoid SSR issues
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -167,6 +168,19 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
 
     loadData();
   }, []);
+
+  // Function to reload categories after CRUD operations
+  const loadCategories = async () => {
+    try {
+      const categoriesRes = await fetch('/api/admin/academia/categorias');
+      if (categoriesRes.ok) {
+        const categoriesData = await categoriesRes.json();
+        setCategories(categoriesData.data.categories || []);
+      }
+    } catch (err) {
+      console.error('Error loading categories:', err);
+    }
+  };
 
   // FAQ handlers
   const addFaq = () => {
@@ -391,27 +405,17 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
           </div>
 
           <div className="admin-form-group">
-            <label htmlFor="category" className="admin-form-label admin-form-label--required">
+            <label className="admin-form-label admin-form-label--required">
               Categoría ETF
             </label>
-            {loadingData ? (
-              <div className="admin-form-help">Cargando...</div>
-            ) : (
-              <select
-                id="category"
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-                className="admin-form-select"
-                required
-              >
-                <option value="">Selecciona una categoría</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            )}
+            <CategoryManager
+              categories={categories}
+              selectedCategoryId={categoryId}
+              onCategoryChange={setCategoryId}
+              onCategoriesUpdate={loadCategories}
+              apiEndpoint="/api/admin/academia/categorias"
+              loading={loadingData}
+            />
             {categoryId && categories.find(c => c.id === categoryId) && (
               <p className="admin-form-help" style={{ marginTop: 'var(--spacing-1)' }}>
                 {categories.find(c => c.id === categoryId)?.description}

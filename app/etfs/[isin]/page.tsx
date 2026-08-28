@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import ETFRating from '@/components/ETFRating';
 
 interface ETFDetail {
@@ -162,6 +163,8 @@ export default function ETFDetailPage() {
                           <Link href={`/gestoras/${fundManager.slug}`} className="etf-hero__meta-link">
                             {fundManager.name}
                           </Link>
+
+      <Footer />
                         </>
                       )}
                     </div>

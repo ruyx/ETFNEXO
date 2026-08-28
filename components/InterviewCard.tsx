@@ -31,8 +31,10 @@ export default function InterviewCard({
     }).format(date);
   };
 
-  // YouTube thumbnail URL
-  const thumbnailUrl = `https://img.youtube.com/vi/${interview.youtube_video_id}/maxresdefault.jpg`;
+  // YouTube thumbnail URL with fallback (usa hqdefault que siempre existe)
+  const thumbnailUrl = interview.youtube_video_id
+    ? `https://img.youtube.com/vi/${interview.youtube_video_id}/hqdefault.jpg`
+    : 'https://placehold.co/640x360/1e293b/f1f5f9?text=Video+Entrevista';
 
   if (variant === 'featured') {
     return (

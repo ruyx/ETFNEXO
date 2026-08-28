@@ -3,34 +3,10 @@ import { createAdminClient } from '@/lib/supabase/admin';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
-  try {
-    const supabase = createAdminClient();
-
-    const { data, error } = await supabase
-      .from('interview_categories')
-      .select('*')
-      .order('name');
-
-    if (error) {
-      console.error('Error fetching interview categories:', error);
-      return NextResponse.json(
-        { error: 'Error al obtener categorías' },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ success: true, data: data || [] });
-  } catch (error) {
-    console.error('Unexpected error:', error);
-    return NextResponse.json(
-      { error: 'Error inesperado' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(request: Request) {
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const supabase = createAdminClient();
     const body = await request.json();
@@ -57,23 +33,54 @@ export async function POST(request: Request) {
 
     const { data, error } = await supabase
       .from('interview_categories')
-      .insert({
+      .update({
         name: name.trim(),
         slug,
         color_hex: color_hex || '#3B82F6'
       })
+      .eq('id', params.id)
       .select()
       .single();
 
     if (error) {
-      console.error('Error creating interview category:', error);
+      console.error('Error updating interview category:', error);
       return NextResponse.json(
-        { error: 'Error al crear categoría' },
+        { error: 'Error al actualizar categoría' },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ success: true, data });
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return NextResponse.json(
+      { error: 'Error inesperado' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const supabase = createAdminClient();
+
+    const { error } = await supabase
+      .from('interview_categories')
+      .delete()
+      .eq('id', params.id);
+
+    if (error) {
+      console.error('Error deleting interview category:', error);
+      return NextResponse.json(
+        { error: 'Error al eliminar categoría' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Unexpected error:', error);
     return NextResponse.json(

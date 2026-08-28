@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 interface ETF {
   id: string;
@@ -290,6 +291,8 @@ export default function ETFsPage() {
           </div>
         </section>
       </main>
+
+      <Footer />
     </>
   );
 }

@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         category_id: body.category_id,
         status: body.status || 'draft',
         published_at: body.status === 'published' ? new Date().toISOString() : null,
-        key_points: body.key_points || [],
+        faq: body.faq || [],
         meta_title: body.meta_title,
         meta_description: body.meta_description
       }])
@@ -102,7 +102,7 @@ export async function PUT(
       youtube_video_id: body.youtube_video_id,
       category_id: body.category_id,
       status: body.status,
-      key_points: body.key_points || [],
+      faq: body.faq || [],
       meta_title: body.meta_title,
       meta_description: body.meta_description,
       updated_at: new Date().toISOString()

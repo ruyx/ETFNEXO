@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import MarketTicker from '@/components/MarketTicker';
 import ProgressBar from '@/components/ProgressBar';
 import MarketStats from '@/components/MarketStats';
@@ -379,6 +380,8 @@ function RankingsContent() {
                   ))}
                 </div>
               </div>
+
+      <Footer />
             </>
           )}
         </div>

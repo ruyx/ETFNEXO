@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import NewsCard, { NewsArticle } from '@/components/NewsCard';
 
 export default function NoticiasPage() {
@@ -194,6 +195,8 @@ export default function NoticiasPage() {
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }

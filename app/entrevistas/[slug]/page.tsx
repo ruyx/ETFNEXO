@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import ArticleFAQ from '@/components/ArticleFAQ';
 import { Calendar, Eye, ArrowLeft } from 'lucide-react';
 import { createAdminClient } from '@/lib/supabase/admin';
 
@@ -67,8 +69,6 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
       })
     : 'Fecha no disponible';
 
-  const keyPoints = Array.isArray(interview.key_points) ? interview.key_points : [];
-
   return (
     <>
       <Header />
@@ -130,8 +130,9 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
               )}
             </div>
 
-            {/* YouTube Embed */}
-            {interview.youtube_video_id && (
+            {/* Video Embed */}
+            {/* YouTube video - con fallback para entrevistas antiguas sin video_provider */}
+            {((interview.video_provider === 'youtube' || !interview.video_provider) && interview.youtube_video_id) && (
               <div className="mb-12">
                 <div className="aspect-video bg-slate-100 rounded-lg overflow-hidden shadow-lg">
                   <iframe
@@ -147,33 +148,24 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
               </div>
             )}
 
-            {/* Description */}
-            {interview.description && (
+            {/* Custom iframe video */}
+            {interview.video_provider === 'custom' && interview.custom_iframe_code && (
               <div className="mb-12">
-                <p className="text-lg text-slate-700 leading-relaxed">
-                  {interview.description}
-                </p>
+                <div className="bg-slate-100 rounded-lg overflow-hidden shadow-lg" style={{ minHeight: '400px' }}>
+                  <div dangerouslySetInnerHTML={{ __html: interview.custom_iframe_code }} />
+                </div>
               </div>
             )}
 
-            {/* Key Points (Resumen Exprés) */}
-            {keyPoints.length > 0 && (
-              <div className="mb-12 bg-white rounded-lg border border-slate-200 p-6 md:p-8">
-                <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                  Puntos Clave
-                </h2>
-                <ul className="space-y-4">
-                  {keyPoints.map((point: any, index: number) => (
-                    <li key={index} className="flex gap-4">
-                      <div className="flex-shrink-0 w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
-                        {index + 1}
-                      </div>
-                      <p className="text-slate-700 flex-1 pt-1">
-                        {point.text || point}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
+            {/* Excerpt */}
+            {interview.excerpt && (
+              <div className="mb-12">
+                <div
+                  className="text-lg text-slate-700 leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html: interview.excerpt.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ')
+                  }}
+                />
               </div>
             )}
 
@@ -189,7 +181,12 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
             </div>
           </div>
         </article>
+
+        {/* FAQ Floating Bubble */}
+        <ArticleFAQ faqs={interview.faq || []} articleTitle={interview.title} />
       </main>
+
+      <Footer />
     </>
   );
 }

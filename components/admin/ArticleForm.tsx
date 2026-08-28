@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { Save, X, Eye, Upload, Tag as TagIcon, Image as ImageIcon, Plus, Trash2, HelpCircle, Search, Loader2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
+import CategoryManager from '@/components/admin/CategoryManager';
 
 // Import Quill dynamically to avoid SSR issues
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -200,6 +201,19 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
       setSelectedAgentId(initialData.author_id);
     }
   }, [initialData]);
+
+  // Function to reload categories after CRUD operations
+  const loadCategories = async () => {
+    try {
+      const categoriesRes = await fetch('/api/admin/categorias');
+      if (categoriesRes.ok) {
+        const categoriesData = await categoriesRes.json();
+        setCategories(categoriesData.data.categories || []);
+      }
+    } catch (err) {
+      console.error('Error loading categories:', err);
+    }
+  };
 
   const handleToggleTag = (tagId: string) => {
     setSelectedTags(prev =>
@@ -438,26 +452,17 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
           </div>
 
           <div className="admin-form-group">
-            <label htmlFor="category" className="admin-form-label">
+            <label className="admin-form-label">
               Categoría
             </label>
-            {loadingData ? (
-              <div className="admin-form-help">Cargando...</div>
-            ) : (
-              <select
-                id="category"
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-                className="admin-form-select"
-              >
-                <option value="">Sin categoría</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            )}
+            <CategoryManager
+              categories={categories}
+              selectedCategoryId={categoryId}
+              onCategoryChange={setCategoryId}
+              onCategoriesUpdate={loadCategories}
+              apiEndpoint="/api/admin/categorias"
+              loading={loadingData}
+            />
           </div>
 
           <div className="admin-form-group">

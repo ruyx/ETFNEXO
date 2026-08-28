@@ -18,11 +18,11 @@ export default function Header() {
             <Link href="/noticias" className="site-header__nav-link">
               Noticias
             </Link>
-            <Link href="/entrevistas" className="site-header__nav-link">
-              Entrevistas
-            </Link>
             <Link href="/academia" className="site-header__nav-link">
               Academia
+            </Link>
+            <Link href="/entrevistas" className="site-header__nav-link">
+              Entrevistas
             </Link>
             <Link href="/rankings" className="site-header__nav-link">
               Rankings

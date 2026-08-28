@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 interface FundManager {
   id: string;
@@ -269,6 +270,8 @@ export default function GestorasPage() {
                     </Link>
                   ))}
                 </div>
+
+      <Footer />
               </>
             )}
           </div>

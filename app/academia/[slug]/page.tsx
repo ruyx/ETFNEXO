@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import AdSlot from '@/components/AdSlot';
 import FixedTopBanner from '@/components/FixedTopBanner';
 import DifficultyBadge from '@/components/DifficultyBadge';
@@ -353,6 +354,8 @@ export default async function AcademiaDetailPage({ params }: PageProps) {
           </article>
         </ArticleDetailWithFAQ>
       </main>
+
+      <Footer />
     </>
   );
 }
