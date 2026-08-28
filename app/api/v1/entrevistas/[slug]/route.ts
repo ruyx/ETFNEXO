@@ -19,7 +19,7 @@ export async function GET(
     const supabase = await createClient();
 
     // Get interview details
-    // @ts-expect-error - Supabase type instantiation depth limit
+    // @ts-ignore - Supabase type instantiation depth limit with interviews_with_metadata view
     const { data: interview, error } = await supabase
       .from('interviews_with_metadata' as any)
       .select('*')
