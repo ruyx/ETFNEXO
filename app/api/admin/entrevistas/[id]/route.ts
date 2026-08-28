@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
@@ -23,7 +22,7 @@ export async function GET(
     const { data, error } = await supabase
       .from('interviews_with_metadata')
       .select('*')
-      .eq('id', id)
+      .eq('id' as any, id as any)
       .single();
 
     if (error || !data) {
@@ -63,7 +62,7 @@ export async function POST(request: NextRequest) {
         faq: body.faq || [],
         meta_title: body.meta_title,
         meta_description: body.meta_description
-      }])
+      } as any])
       .select()
       .single();
 
@@ -114,10 +113,10 @@ export async function PUT(
       const { data: existing } = await supabase
         .from('interviews')
         .select('published_at')
-        .eq('id', id)
+        .eq('id' as any, id as any)
         .single();
 
-      if (!existing?.published_at) {
+      if (!existing || !(existing as any).published_at) {
         updateData.published_at = new Date().toISOString();
       }
     }
@@ -125,7 +124,7 @@ export async function PUT(
     const { data, error } = await supabase
       .from('interviews')
       .update(updateData)
-      .eq('id', id)
+      .eq('id' as any, id as any)
       .select()
       .single();
 
@@ -160,7 +159,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('interviews')
       .delete()
-      .eq('id', id);
+      .eq('id' as any, id as any);
 
     if (error) {
       console.error('Error deleting interview:', error);

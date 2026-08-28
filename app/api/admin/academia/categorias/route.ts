@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * API Admin - Categorías de Academia
  * CRUD completo para categorías especializadas en ETF
@@ -93,7 +92,7 @@ export async function POST(request: NextRequest) {
       .limit(1)
       .single();
 
-    const nextOrder = (lastCategory && !orderError) ? (lastCategory.display_order || 0) + 1 : 1;
+    const nextOrder = (lastCategory && !orderError) ? ((lastCategory as any).display_order || 0) + 1 : 1;
 
     // Preparar datos
     const categoryData = {

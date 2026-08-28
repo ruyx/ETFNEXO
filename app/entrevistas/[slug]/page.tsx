@@ -131,9 +131,8 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
               )}
             </div>
 
-            {/* Video Embed */}
-            {/* YouTube video - con fallback para entrevistas antiguas sin video_provider */}
-            {((interview.video_provider === 'youtube' || !interview.video_provider) && interview.youtube_video_id) && (
+            {/* Video Embed - YouTube only */}
+            {interview.youtube_video_id && (
               <div className="mb-12">
                 <div className="aspect-video bg-slate-100 rounded-lg overflow-hidden shadow-lg">
                   <iframe
@@ -146,27 +145,6 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
                     allowFullScreen
                   />
                 </div>
-              </div>
-            )}
-
-            {/* Custom iframe video */}
-            {interview.video_provider === 'custom' && interview.custom_iframe_code && (
-              <div className="mb-12">
-                <div className="bg-slate-100 rounded-lg overflow-hidden shadow-lg" style={{ minHeight: '400px' }}>
-                  <div dangerouslySetInnerHTML={{ __html: interview.custom_iframe_code }} />
-                </div>
-              </div>
-            )}
-
-            {/* Excerpt */}
-            {interview.excerpt && (
-              <div className="mb-12">
-                <div
-                  className="text-lg text-slate-700 leading-relaxed"
-                  dangerouslySetInnerHTML={{
-                    __html: interview.excerpt.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ')
-                  }}
-                />
               </div>
             )}
 

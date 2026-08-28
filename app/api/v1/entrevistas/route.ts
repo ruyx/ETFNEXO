@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
     // Build base query
     let query = supabase
-      .from('interviews_with_metadata')
+      .from('interviews_with_metadata' as any)
       .select('*', { count: 'exact' })
       .eq('status' as any, 'published' as any)
       .order('published_at', { ascending: false })

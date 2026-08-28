@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 
 /**
@@ -150,7 +149,7 @@ export default function EntrevistasPage() {
                     <InterviewCard
                       key={interview.id}
                       interview={interview}
-                      variant="card"
+                      variant="default"
                     />
                   ))}
                 </div>

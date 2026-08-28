@@ -61,7 +61,7 @@ export async function POST(request: Request) {
         name: name.trim(),
         slug,
         color_hex: color_hex || '#3B82F6'
-      })
+      } as any)
       .select()
       .single();
 

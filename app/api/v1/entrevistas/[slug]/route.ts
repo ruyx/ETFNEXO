@@ -19,8 +19,9 @@ export async function GET(
     const supabase = await createClient();
 
     // Get interview details
+    // @ts-expect-error - Supabase type instantiation depth limit
     const { data: interview, error } = await supabase
-      .from('interviews_with_metadata')
+      .from('interviews_with_metadata' as any)
       .select('*')
       .eq('slug' as any, slug as any)
       .eq('status' as any, 'published' as any)
@@ -35,9 +36,9 @@ export async function GET(
 
     // Increment views count
     const { error: updateError } = await supabase
-      .from('interviews')
-      .update({ views_count: (interview.views_count || 0) + 1 })
-      .eq('id', interview.id);
+      .from('interviews' as any)
+      .update({ views_count: ((interview as any).views_count || 0) + 1 })
+      .eq('id' as any, (interview as any).id as any);
 
     if (updateError) {
       console.error('Error updating views count:', updateError);

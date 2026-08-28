@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
@@ -38,8 +37,8 @@ export async function PUT(
         name: name.trim(),
         slug,
         color_hex: color_hex || '#3B82F6'
-      })
-      .eq('id', params.id)
+      } as any)
+      .eq('id' as any, params.id as any)
       .select()
       .single();
 
@@ -71,7 +70,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('interview_categories')
       .delete()
-      .eq('id', params.id);
+      .eq('id' as any, params.id as any);
 
     if (error) {
       console.error('Error deleting interview category:', error);
