@@ -1,5 +1,22 @@
 # Configuración de Supabase Storage para Banners
 
+## ⚠️ IMPORTANTE: Configuración requerida
+
+**Este paso es OBLIGATORIO antes de usar la función de subida de imágenes.**
+
+### 🚀 Instalación rápida
+
+Ejecuta el script de migración en Supabase Dashboard > SQL Editor:
+
+```sql
+-- Ver archivo: supabase/migrations/20260916_setup_storage_banners.sql
+```
+
+O usa Supabase CLI:
+```bash
+supabase db push
+```
+
 ## Bucket necesario: `public`
 
 El sistema de publicidad usa el bucket `public` de Supabase Storage para almacenar imágenes de banners.

@@ -58,6 +58,8 @@ export default function BannerImageUpload({
       const fileName = `${safeCampaignName}-${Date.now()}.${fileExt}`;
       const filePath = `banners/${fileName}`;
 
+      console.log('Uploading to Supabase Storage:', { fileName, filePath, fileSize: file.size });
+
       // Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('public')
@@ -67,20 +69,43 @@ export default function BannerImageUpload({
         });
 
       if (uploadError) {
-        throw uploadError;
+        console.error('Upload error details:', uploadError);
+
+        // Mensajes de error más específicos
+        if (uploadError.message?.includes('Bucket not found')) {
+          throw new Error('El bucket de almacenamiento no está configurado. Por favor contacta al administrador.');
+        }
+        if (uploadError.message?.includes('not allowed')) {
+          throw new Error('No tienes permisos para subir archivos. Verifica que estés autenticado.');
+        }
+        if (uploadError.message?.includes('size')) {
+          throw new Error('La imagen excede el tamaño máximo permitido (5MB).');
+        }
+
+        throw new Error(uploadError.message || 'Error al subir la imagen');
       }
+
+      console.log('Upload successful:', uploadData);
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('public')
         .getPublicUrl(filePath);
 
+      console.log('Public URL generated:', publicUrl);
+
       setPreviewUrl(publicUrl);
       onImageChange(publicUrl);
 
     } catch (err: any) {
       console.error('Error uploading banner image:', err);
-      setError(err.message || 'Error al subir la imagen');
+
+      // Error de red o bloqueado
+      if (err.message?.includes('Failed to fetch') || err.name === 'TypeError') {
+        setError('Error de conexión. Verifica:\n1. Tu conexión a internet\n2. Que no tengas bloqueadores de anuncios activos\n3. Que Supabase esté configurado correctamente');
+      } else {
+        setError(err.message || 'Error al subir la imagen');
+      }
     } finally {
       setUploading(false);
     }
