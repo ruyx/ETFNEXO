@@ -9,6 +9,7 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Image as ImageIcon, Type, Code, Info, Upload } from 'lucide-react';
 import Link from 'next/link';
+import BannerImageUpload from '@/components/admin/BannerImageUpload';
 
 interface Advertiser {
   id: string;
@@ -271,20 +272,33 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                 <h2 className="admin-form-section__title">Contenido del Banner</h2>
 
                 <div className="admin-form-group">
-                  <label htmlFor="image_url" className="admin-form-label admin-form-label--required">
-                    URL de la Imagen
+                  <label className="admin-form-label admin-form-label--required">
+                    Imagen del Banner
+                  </label>
+                  <BannerImageUpload
+                    currentImageUrl={formData.image_url || null}
+                    onImageChange={(url) => setFormData({ ...formData, image_url: url })}
+                    campaignName={formData.name}
+                  />
+                  <p className="admin-form-help" style={{ marginTop: 'var(--spacing-2)' }}>
+                    Sube tu imagen directamente o pega una URL externa abajo
+                  </p>
+                </div>
+
+                <div className="admin-form-group">
+                  <label htmlFor="image_url" className="admin-form-label">
+                    URL de la Imagen (Opcional)
                   </label>
                   <input
                     type="url"
                     id="image_url"
-                    required={formData.type === 'image_banner'}
                     value={formData.image_url}
                     onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
                     className="admin-form-input"
                     placeholder="https://ejemplo.com/imagen.jpg"
                   />
                   <p className="admin-form-help">
-                    Sube la imagen a un servicio de hosting o usa una URL existente
+                    O pega una URL externa si prefieres no subir el archivo
                   </p>
                 </div>
 
