@@ -26,8 +26,10 @@ El sistema de publicidad usa el bucket `public` de Supabase Storage para almacen
 ```
 public/
 ├── avatars/          # Avatares de usuarios y agentes
-└── banners/          # Imágenes de banners publicitarios (NUEVO)
+└── media/            # Imágenes de publicidad y medios (NUEVO)
 ```
+
+**Nota importante:** El directorio se llama `media/` en lugar de `banners/` para evitar que los bloqueadores de anuncios bloqueen las URLs.
 
 ### Configuración del bucket
 
@@ -104,10 +106,10 @@ ON CONFLICT (id) DO NOTHING;
 
 Los archivos se guardan con este formato:
 ```
-banners/{campaign-name-sanitized}-{timestamp}.{ext}
+media/{campaign-name-sanitized}-{timestamp}.{ext}
 
 Ejemplo:
-banners/banner-sidebar-principal-1704123456789.jpg
+media/banner-sidebar-principal-1704123456789.jpg
 ```
 
 ### Validaciones
@@ -121,7 +123,7 @@ banners/banner-sidebar-principal-1704123456789.jpg
 Las imágenes subidas generan URLs públicas del tipo:
 
 ```
-https://[project-ref].supabase.co/storage/v1/object/public/public/banners/[filename]
+https://[project-ref].supabase.co/storage/v1/object/public/public/media/[filename]
 ```
 
 Estas URLs se guardan en el campo `image_url` de la tabla `ads`.

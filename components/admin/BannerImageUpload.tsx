@@ -56,7 +56,7 @@ export default function BannerImageUpload({
         .replace(/[^a-z0-9]/g, '-')
         .substring(0, 50);
       const fileName = `${safeCampaignName}-${Date.now()}.${fileExt}`;
-      const filePath = `banners/${fileName}`;
+      const filePath = `media/${fileName}`;
 
       console.log('Uploading to Supabase Storage:', { fileName, filePath, fileSize: file.size });
 
