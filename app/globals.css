@@ -19,6 +19,7 @@
 @import './styles/components/category-manager.css';
 @import './styles/components/article-faq.css';
 @import './styles/components/academia.css';
+@import './styles/components/legal.css';
 
 @tailwind base;
 @tailwind components;

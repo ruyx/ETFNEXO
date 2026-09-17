@@ -1,0 +1,129 @@
+/* ============================================
+   LEGAL PAGES - Metodología, Términos, Disclaimer
+   ============================================ */
+
+/* ==================== PAGE CONTAINER ==================== */
+.legal-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-8) var(--spacing-4);
+}
+
+/* ==================== HEADER ==================== */
+.legal-page__header {
+  margin-bottom: var(--spacing-8);
+  text-align: center;
+}
+
+.legal-page__icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin-bottom: var(--spacing-4);
+}
+
+.legal-page__icon-wrapper--primary {
+  background: var(--color-primary-50);
+}
+
+.legal-page__icon-wrapper--warning {
+  background: var(--color-amber-50);
+}
+
+.legal-page__icon {
+  color: var(--color-primary);
+}
+
+.legal-page__icon--warning {
+  color: var(--color-amber-600);
+}
+
+.legal-page__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-2);
+  color: var(--color-neutral-900);
+}
+
+.legal-page__subtitle {
+  font-size: 1.125rem;
+  color: var(--color-neutral-600);
+}
+
+/* ==================== CONTENT ==================== */
+.legal-page__content {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-neutral-700);
+}
+
+.legal-page__content p {
+  margin-bottom: var(--spacing-6);
+}
+
+.legal-page__content p:last-child {
+  margin-bottom: 0;
+}
+
+/* ==================== SECTIONS ==================== */
+.legal-page__section {
+  margin-bottom: var(--spacing-10);
+}
+
+.legal-page__section:last-child {
+  margin-bottom: 0;
+}
+
+.legal-page__section-header {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-6);
+  color: var(--color-neutral-900);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.legal-page__section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-4);
+  color: var(--color-neutral-900);
+}
+
+.legal-page__subsection-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-3);
+  color: var(--color-neutral-900);
+}
+
+/* ==================== LISTS ==================== */
+.legal-page__list {
+  margin-bottom: var(--spacing-6);
+  padding-left: var(--spacing-6);
+  list-style-type: disc;
+}
+
+.legal-page__list-item {
+  margin-bottom: var(--spacing-2);
+}
+
+/* ==================== LINKS ==================== */
+.legal-page__link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  transition: color var(--transition-base);
+}
+
+.legal-page__link:hover {
+  color: var(--color-primary-dark);
+}
+
+/* ==================== EMPHASIS ==================== */
+.legal-page__emphasis {
+  font-weight: 600;
+}
