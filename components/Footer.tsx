@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+// Updated 2026-09-17 - Force rebuild for legal pages
 export default function Footer() {
   return (
     <footer className="py-12 px-6 bg-white border-t border-slate-200">
