@@ -22,22 +22,29 @@ export async function GET(
       .from('ads')
       .select('*')
       .eq('id', params.id)
-      .single();
+      .maybeSingle();
 
     if (adError) {
-      return NextResponse.json({ error: adError.message }, { status: 404 });
+      console.error('Error fetching ad:', adError);
+      return NextResponse.json({ error: adError.message }, { status: 500 });
+    }
+
+    if (!adData) {
+      return NextResponse.json({ error: 'Campaña no encontrada' }, { status: 404 });
     }
 
     // Luego obtener el advertiser si existe
     let advertiser = null;
     if (adData.advertiser_id) {
-      const { data: advertiserData } = await supabase
+      const { data: advertiserData, error: advertiserError } = await supabase
         .from('advertisers')
         .select('id, name')
         .eq('id', adData.advertiser_id)
-        .single();
+        .maybeSingle();
 
-      advertiser = advertiserData;
+      if (!advertiserError && advertiserData) {
+        advertiser = advertiserData;
+      }
     }
 
     return NextResponse.json({
@@ -121,6 +128,23 @@ export async function PUT(
 
     const supabase = await createClient();
 
+    // Primero verificar que el ad existe
+    const { data: existingAd, error: checkError } = await supabase
+      .from('ads')
+      .select('id')
+      .eq('id', params.id)
+      .maybeSingle();
+
+    if (checkError) {
+      console.error('Error checking ad existence:', checkError);
+      return NextResponse.json({ error: checkError.message }, { status: 500 });
+    }
+
+    if (!existingAd) {
+      return NextResponse.json({ error: 'Campaña no encontrada' }, { status: 404 });
+    }
+
+    // Actualizar el ad
     const { data, error } = await supabase
       .from('ads')
       .update({
@@ -149,10 +173,15 @@ export async function PUT(
       })
       .eq('id', params.id)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
+      console.error('Error updating ad:', error);
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    if (!data) {
+      return NextResponse.json({ error: 'No se pudo actualizar la campaña' }, { status: 500 });
     }
 
     return NextResponse.json(data);
