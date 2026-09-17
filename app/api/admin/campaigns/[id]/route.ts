@@ -128,24 +128,8 @@ export async function PUT(
 
     const supabase = await createClient();
 
-    // Primero verificar que el ad existe
-    const { data: existingAd, error: checkError } = await supabase
-      .from('ads')
-      .select('id')
-      .eq('id', params.id)
-      .maybeSingle();
-
-    if (checkError) {
-      console.error('Error checking ad existence:', checkError);
-      return NextResponse.json({ error: checkError.message }, { status: 500 });
-    }
-
-    if (!existingAd) {
-      return NextResponse.json({ error: 'Campaña no encontrada' }, { status: 404 });
-    }
-
     // Actualizar el ad
-    const { data, error } = await supabase
+    const { error: updateError } = await supabase
       .from('ads')
       .update({
         advertiser_id: advertiser_id || null,
@@ -171,20 +155,30 @@ export async function PUT(
         status: status || 'draft',
         updated_at: new Date().toISOString()
       })
+      .eq('id', params.id);
+
+    if (updateError) {
+      console.error('Error updating ad:', updateError);
+      return NextResponse.json({ error: updateError.message }, { status: 500 });
+    }
+
+    // Luego obtener el ad actualizado
+    const { data: updatedAd, error: fetchError } = await supabase
+      .from('ads')
+      .select('*')
       .eq('id', params.id)
-      .select()
       .maybeSingle();
 
-    if (error) {
-      console.error('Error updating ad:', error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (fetchError) {
+      console.error('Error fetching updated ad:', fetchError);
+      return NextResponse.json({ error: fetchError.message }, { status: 500 });
     }
 
-    if (!data) {
-      return NextResponse.json({ error: 'No se pudo actualizar la campaña' }, { status: 500 });
+    if (!updatedAd) {
+      return NextResponse.json({ error: 'Campaña no encontrada después de actualizar' }, { status: 404 });
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json(updatedAd);
   } catch (error: any) {
     return NextResponse.json(
       { error: error.message || 'Unauthorized' },
