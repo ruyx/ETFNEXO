@@ -87,9 +87,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!placement) {
+    if (!placement || placement.trim() === '') {
       return NextResponse.json(
         { error: 'La ubicación es requerida' },
+        { status: 400 }
+      );
+    }
+
+    // Validar que placement sea uno de los valores permitidos
+    const validPlacements = [
+      'sidebar_top', 'sidebar_bottom',
+      'article_top', 'article_mid', 'article_bottom',
+      'feed_inline',
+      'header', 'footer'
+    ];
+
+    if (!validPlacements.includes(placement)) {
+      return NextResponse.json(
+        { error: `Ubicación no válida. Debe ser una de: ${validPlacements.join(', ')}` },
         { status: 400 }
       );
     }
