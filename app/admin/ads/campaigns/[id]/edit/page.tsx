@@ -20,16 +20,9 @@ async function getCampaign(id: string) {
     .eq('id', id)
     .maybeSingle();
 
-  if (error) {
-    console.error('Error fetching campaign:', error);
+  if (error || !data) {
     return null;
   }
-
-  if (!data) {
-    return null;
-  }
-
-  console.log('Campaign loaded:', data);
 
   return data;
 }

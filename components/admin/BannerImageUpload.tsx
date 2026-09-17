@@ -92,13 +92,8 @@ export default function BannerImageUpload({
         .from('public')
         .getPublicUrl(filePath);
 
-      console.log('Public URL generated:', publicUrl);
-      console.log('Calling onImageChange with URL:', publicUrl);
-
       setPreviewUrl(publicUrl);
       onImageChange(publicUrl);
-
-      console.log('Image change callback executed');
 
     } catch (err: any) {
       console.error('Error uploading banner image:', err);

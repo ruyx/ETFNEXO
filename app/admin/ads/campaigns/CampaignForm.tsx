@@ -74,12 +74,7 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
 
   // Handler para cambios de imagen - usa forma funcional para evitar stale closures
   const handleImageChange = (url: string) => {
-    console.log('🖼️ handleImageChange called with URL:', url);
-    setFormData(prev => {
-      const updated = { ...prev, image_url: url };
-      console.log('✅ FormData updated. New image_url:', updated.image_url);
-      return updated;
-    });
+    setFormData(prev => ({ ...prev, image_url: url }));
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -94,8 +89,6 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
 
       const method = mode === 'create' ? 'POST' : 'PUT';
 
-      console.log('Enviando datos:', formData);
-
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -103,14 +96,10 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
       });
 
       const responseData = await res.json();
-      console.log('Respuesta del servidor:', responseData);
 
       if (!res.ok) {
         throw new Error(responseData.error || 'Error al guardar');
       }
-
-      // Esperar un poco antes de redirigir para asegurar que la DB se actualizó
-      await new Promise(resolve => setTimeout(resolve, 500));
 
       router.push('/admin/ads/campaigns');
       router.refresh();

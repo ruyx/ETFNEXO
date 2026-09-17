@@ -28,7 +28,6 @@ export async function GET(
       .maybeSingle();
 
     if (adError) {
-      console.error('Error fetching ad:', adError);
       return NextResponse.json({ error: adError.message }, { status: 500 });
     }
 
@@ -130,51 +129,39 @@ export async function PUT(
       );
     }
 
-    // Preparar datos de actualización
-    const updateData = {
-      advertiser_id: advertiser_id || null,
-      name: name.trim(),
-      type,
-      placement,
-      image_url: type === 'image_banner' ? image_url?.trim() : null,
-      image_alt: type === 'image_banner' ? image_alt?.trim() : null,
-      title: type === 'text_banner' ? title?.trim() : null,
-      description: type === 'text_banner' ? description?.trim() : null,
-      cta_text: type === 'text_banner' ? cta_text?.trim() : null,
-      script_code: type === 'script' ? script_code?.trim() : null,
-      link_url: link_url?.trim() || null,
-      target: target || '_blank',
-      size: size?.trim() || null,
-      priority: priority || 0,
-      max_impressions: max_impressions || null,
-      max_clicks: max_clicks || null,
-      start_date: start_date || null,
-      end_date: end_date || null,
-      target_pages: target_pages || null,
-      target_categories: target_categories || null,
-      status: status || 'draft',
-      updated_at: new Date().toISOString()
-    };
-
-    console.log('🔄 Actualizando ad con datos:', {
-      id: params.id,
-      image_url: updateData.image_url,
-      type: updateData.type
-    });
-
     // Actualizar el ad
     // @ts-ignore - Admin client type mismatch
     const { error: updateError } = await supabase
       .from('ads')
-      .update(updateData)
+      .update({
+        advertiser_id: advertiser_id || null,
+        name: name.trim(),
+        type,
+        placement,
+        image_url: type === 'image_banner' ? image_url?.trim() : null,
+        image_alt: type === 'image_banner' ? image_alt?.trim() : null,
+        title: type === 'text_banner' ? title?.trim() : null,
+        description: type === 'text_banner' ? description?.trim() : null,
+        cta_text: type === 'text_banner' ? cta_text?.trim() : null,
+        script_code: type === 'script' ? script_code?.trim() : null,
+        link_url: link_url?.trim() || null,
+        target: target || '_blank',
+        size: size?.trim() || null,
+        priority: priority || 0,
+        max_impressions: max_impressions || null,
+        max_clicks: max_clicks || null,
+        start_date: start_date || null,
+        end_date: end_date || null,
+        target_pages: target_pages || null,
+        target_categories: target_categories || null,
+        status: status || 'draft',
+        updated_at: new Date().toISOString()
+      })
       .eq('id', params.id);
 
     if (updateError) {
-      console.error('❌ Error updating ad:', updateError);
       return NextResponse.json({ error: updateError.message }, { status: 500 });
     }
-
-    console.log('✅ Update ejecutado sin errores');
 
     // Luego obtener el ad actualizado
     // @ts-ignore - Admin client type mismatch
@@ -183,11 +170,6 @@ export async function PUT(
       .select('*')
       .eq('id', params.id)
       .maybeSingle();
-
-    console.log('📥 Ad recuperado después de update:', {
-      id: updatedAd?.id,
-      image_url: updatedAd?.image_url
-    });
 
     if (fetchError) {
       console.error('Error fetching updated ad:', fetchError);
