@@ -72,6 +72,16 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
     status: campaign?.status || 'draft'
   });
 
+  // Handler para cambios de imagen - usa forma funcional para evitar stale closures
+  const handleImageChange = (url: string) => {
+    console.log('🖼️ handleImageChange called with URL:', url);
+    setFormData(prev => {
+      const updated = { ...prev, image_url: url };
+      console.log('✅ FormData updated. New image_url:', updated.image_url);
+      return updated;
+    });
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
@@ -297,7 +307,7 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                   </label>
                   <BannerImageUpload
                     currentImageUrl={formData.image_url || null}
-                    onImageChange={(url) => setFormData({ ...formData, image_url: url })}
+                    onImageChange={handleImageChange}
                     campaignName={formData.name}
                   />
                   <p className="admin-form-help" style={{ marginTop: 'var(--spacing-2)' }}>
