@@ -105,6 +105,26 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  async redirects() {
+    return [
+      // Redirect old legal page URLs to new ones
+      {
+        source: '/metodología',
+        destination: '/metodologia',
+        permanent: true,
+      },
+      {
+        source: '/privacidad',
+        destination: '/terminos-y-privacidad',
+        permanent: true,
+      },
+      {
+        source: '/terminos',
+        destination: '/terminos-y-privacidad',
+        permanent: true,
+      },
+    ];
+  },
 }
 
 export default nextConfig
