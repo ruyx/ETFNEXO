@@ -17,23 +17,33 @@ export async function GET(
 
     const supabase = await createClient();
 
-    const { data, error } = await supabase
+    // Primero obtener el ad
+    const { data: adData, error: adError } = await supabase
       .from('ads')
-      .select(`
-        *,
-        advertiser:advertiser_id (
-          id,
-          name
-        )
-      `)
+      .select('*')
       .eq('id', params.id)
       .single();
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 404 });
+    if (adError) {
+      return NextResponse.json({ error: adError.message }, { status: 404 });
     }
 
-    return NextResponse.json(data);
+    // Luego obtener el advertiser si existe
+    let advertiser = null;
+    if (adData.advertiser_id) {
+      const { data: advertiserData } = await supabase
+        .from('advertisers')
+        .select('id, name')
+        .eq('id', adData.advertiser_id)
+        .single();
+
+      advertiser = advertiserData;
+    }
+
+    return NextResponse.json({
+      ...adData,
+      advertiser
+    });
   } catch (error: any) {
     return NextResponse.json(
       { error: error.message || 'Unauthorized' },
