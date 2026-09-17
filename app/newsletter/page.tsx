@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function NewsletterPage() {
   const [email, setEmail] = useState('');
@@ -341,32 +342,7 @@ export default function NewsletterPage() {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="relative py-12 px-6 bg-slate-900 border-t border-slate-800">
-          <div className="container">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-              <div className="text-2xl font-bold text-white">
-                ETF<span className="text-blue-400">Nexo</span>
-              </div>
-
-              <nav className="flex gap-8">
-                {['Inicio', 'Rankings', 'Gestoras', 'Metodología'].map((item) => (
-                  <Link
-                    key={item}
-                    href={item === 'Inicio' ? '/' : `/${item.toLowerCase()}`}
-                    className="text-sm text-slate-400 hover:text-white transition-colors uppercase tracking-wide font-medium"
-                  >
-                    {item}
-                  </Link>
-                ))}
-              </nav>
-
-              <div className="text-sm text-slate-400">
-                © 2026 ETFNexo. Todos los derechos reservados.
-              </div>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </main>
     </div>
   );

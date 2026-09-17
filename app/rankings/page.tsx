@@ -381,19 +381,12 @@ function RankingsContent() {
                 </div>
               </div>
 
-      <Footer />
             </>
           )}
         </div>
       </main>
 
-      <footer className="rankings-footer">
-        <div className="container">
-          <p className="rankings-footer__text">
-            © 2026 ETFNexo. Rankings actualizados diariamente con datos de mercado en tiempo real.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
