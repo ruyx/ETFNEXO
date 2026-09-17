@@ -84,20 +84,28 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
 
       const method = mode === 'create' ? 'POST' : 'PUT';
 
+      console.log('Enviando datos:', formData);
+
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
 
+      const responseData = await res.json();
+      console.log('Respuesta del servidor:', responseData);
+
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Error al guardar');
+        throw new Error(responseData.error || 'Error al guardar');
       }
+
+      // Esperar un poco antes de redirigir para asegurar que la DB se actualizó
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       router.push('/admin/ads/campaigns');
       router.refresh();
     } catch (err: any) {
+      console.error('Error al guardar campaña:', err);
       setError(err.message);
       setIsSubmitting(false);
     }

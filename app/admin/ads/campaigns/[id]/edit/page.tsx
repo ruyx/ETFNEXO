@@ -18,11 +18,18 @@ async function getCampaign(id: string) {
     .from('ads')
     .select('*')
     .eq('id', id)
-    .single();
+    .maybeSingle();
 
-  if (error || !data) {
+  if (error) {
+    console.error('Error fetching campaign:', error);
     return null;
   }
+
+  if (!data) {
+    return null;
+  }
+
+  console.log('Campaign loaded:', data);
 
   return data;
 }
