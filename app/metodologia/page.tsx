@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   description: 'Cómo elaboramos la información de ETF Nexo. Criterios editoriales y proceso de creación de contenidos.',
 };
 
+// Force dynamic rendering to bypass Vercel's prerender cache
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function MetodologiaPage() {
   return (
     <>

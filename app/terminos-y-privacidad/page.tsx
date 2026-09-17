@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   description: 'Términos y condiciones de uso y política de privacidad de ETF Nexo.',
 };
 
+// Force dynamic rendering to bypass Vercel's prerender cache
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function TerminosPrivacidadPage() {
   return (
     <>

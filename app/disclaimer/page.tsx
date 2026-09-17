@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   description: 'Aviso de responsabilidad y limitaciones de la información publicada en ETF Nexo.',
 };
 
+// Force dynamic rendering to bypass Vercel's prerender cache
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function DisclaimerPage() {
   return (
     <>
