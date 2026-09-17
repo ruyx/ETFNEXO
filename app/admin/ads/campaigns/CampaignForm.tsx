@@ -253,14 +253,26 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                     className="admin-form-select"
                   >
                     <option value="">Selecciona ubicación</option>
-                    <option value="sidebar_top">Sidebar Superior</option>
-                    <option value="sidebar_bottom">Sidebar Inferior</option>
-                    <option value="article_top">Artículo - Encabezado</option>
-                    <option value="article_mid">Artículo - Medio</option>
-                    <option value="article_bottom">Artículo - Pie</option>
-                    <option value="feed_inline">Feed Inline</option>
-                    <option value="header">Header</option>
-                    <option value="footer">Footer</option>
+                    <optgroup label="Home">
+                      <option value="home_top">Home - Banner Superior Fixed</option>
+                      <option value="home_news_sidebar">Home - Sidebar Noticias (Sticky)</option>
+                      <option value="home_after_ranking">Home - Después del Ranking</option>
+                    </optgroup>
+                    <optgroup label="Artículos">
+                      <option value="article_top">Artículo - Banner Superior Fixed</option>
+                      <option value="article_mid">Artículo - Medio del Contenido</option>
+                      <option value="article_bottom">Artículo - Pie del Contenido</option>
+                    </optgroup>
+                    <optgroup label="Sidebar">
+                      <option value="sidebar_top">Sidebar - Superior</option>
+                      <option value="sidebar_mid">Sidebar - Medio</option>
+                      <option value="sidebar_bottom">Sidebar - Inferior</option>
+                    </optgroup>
+                    <optgroup label="Global">
+                      <option value="header">Header Global</option>
+                      <option value="footer">Footer Global</option>
+                      <option value="feed_inline">Feed - Inline entre items</option>
+                    </optgroup>
                   </select>
                 </div>
               </div>

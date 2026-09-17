@@ -96,10 +96,14 @@ export async function POST(request: NextRequest) {
 
     // Validar que placement sea uno de los valores permitidos
     const validPlacements = [
-      'sidebar_top', 'sidebar_bottom',
+      // Home
+      'home_top', 'home_news_sidebar', 'home_after_ranking',
+      // Artículos
       'article_top', 'article_mid', 'article_bottom',
-      'feed_inline',
-      'header', 'footer'
+      // Sidebar
+      'sidebar_top', 'sidebar_mid', 'sidebar_bottom',
+      // Global
+      'header', 'footer', 'feed_inline'
     ];
 
     if (!validPlacements.includes(placement)) {
