@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Newspaper } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Metodología | ETF Nexo',
@@ -8,7 +10,9 @@ export const metadata: Metadata = {
 
 export default function MetodologiaPage() {
   return (
-    <div className="legal-page">
+    <>
+      <Header />
+      <div className="legal-page">
       {/* Header */}
       <div className="legal-page__header">
         <div className="legal-page__icon-wrapper legal-page__icon-wrapper--primary">
@@ -65,5 +69,7 @@ export default function MetodologiaPage() {
         </p>
       </div>
     </div>
+    <Footer />
+    </>
   );
 }

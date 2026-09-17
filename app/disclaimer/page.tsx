@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { AlertTriangle } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Disclaimer - Aviso de Responsabilidad | ETF Nexo',
@@ -8,7 +10,9 @@ export const metadata: Metadata = {
 
 export default function DisclaimerPage() {
   return (
-    <div className="legal-page">
+    <>
+      <Header />
+      <div className="legal-page">
       {/* Header */}
       <div className="legal-page__header">
         <div className="legal-page__icon-wrapper legal-page__icon-wrapper--warning">
@@ -67,5 +71,7 @@ export default function DisclaimerPage() {
         </p>
       </div>
     </div>
+    <Footer />
+    </>
   );
 }

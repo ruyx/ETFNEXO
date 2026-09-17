@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { FileText, Shield } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Términos y Privacidad | ETF Nexo',
@@ -8,7 +10,9 @@ export const metadata: Metadata = {
 
 export default function TerminosPrivacidadPage() {
   return (
-    <div className="legal-page">
+    <>
+      <Header />
+      <div className="legal-page">
       {/* Header */}
       <div className="legal-page__header">
         <div className="legal-page__icon-wrapper legal-page__icon-wrapper--primary">
@@ -138,5 +142,7 @@ export default function TerminosPrivacidadPage() {
         </section>
       </div>
     </div>
+    <Footer />
+    </>
   );
 }
