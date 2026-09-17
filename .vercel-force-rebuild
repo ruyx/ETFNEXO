@@ -1,2 +1,4 @@
 This file forces Vercel to do a complete rebuild.
-Build timestamp: 2026-09-17 09:05:00
+Build timestamp: 2026-09-17 10:15:00
+Footer.tsx updated with legal pages links
+Cache invalidation required - commit c0758b5
