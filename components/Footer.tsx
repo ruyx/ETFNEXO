@@ -47,13 +47,21 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">Legal</h4>
             <ul className="space-y-2">
-              {['Metodología', 'Términos', 'Privacidad', 'Disclaimer'].map((item) => (
-                <li key={item}>
-                  <Link href={`/${item.toLowerCase()}`} className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
-                    {item}
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link href="/metodologia" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+                  Metodología
+                </Link>
+              </li>
+              <li>
+                <Link href="/terminos-y-privacidad" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+                  Términos y Privacidad
+                </Link>
+              </li>
+              <li>
+                <Link href="/disclaimer" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+                  Disclaimer
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

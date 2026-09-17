@@ -279,6 +279,22 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
                   />
                 )}
 
+                {/* Disclaimer Notice */}
+                <div style={{
+                  marginTop: 'var(--spacing-8)',
+                  paddingTop: 'var(--spacing-6)',
+                  borderTop: '1px solid var(--color-neutral-200)'
+                }}>
+                  <p style={{
+                    fontSize: '0.875rem',
+                    lineHeight: '1.5',
+                    color: 'var(--color-neutral-500)',
+                    fontStyle: 'italic'
+                  }}>
+                    <strong>* Aviso:</strong> El contenido de este artículo tiene carácter exclusivamente informativo y educativo y no constituye asesoramiento ni recomendación de inversión. La rentabilidad pasada no garantiza resultados futuros y toda inversión implica riesgos, incluida la posible pérdida de capital. Antes de invertir, consulte la documentación oficial del producto y valore su situación financiera y perfil de riesgo.
+                  </p>
+                </div>
+
                 {/* Source Link - At the bottom */}
                 {article.source_url && article.source_name && (
                   <div className="article-detail__source">
