@@ -5,8 +5,11 @@
 -- Date: 2026-09-18
 -- =====================================================
 
+-- Eliminar vista existente
+DROP VIEW IF EXISTS interviews_with_metadata;
+
 -- Recrear vista interviews_with_metadata con nuevos campos
-CREATE OR REPLACE VIEW interviews_with_metadata AS
+CREATE VIEW interviews_with_metadata AS
 SELECT
   i.id,
   i.title,
