@@ -131,6 +131,18 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
               )}
             </div>
 
+            {/* Featured Image */}
+            {interview.featured_image_url && (
+              <div className="mb-12">
+                <img
+                  src={interview.featured_image_url}
+                  alt={interview.featured_image_alt || interview.title}
+                  className="w-full rounded-lg shadow-lg"
+                  style={{ maxHeight: '500px', objectFit: 'cover' }}
+                />
+              </div>
+            )}
+
             {/* Video Embed - YouTube only */}
             {interview.youtube_video_id && (
               <div className="mb-12">
@@ -145,6 +157,13 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
                     allowFullScreen
                   />
                 </div>
+              </div>
+            )}
+
+            {/* Content - Show if no video */}
+            {!interview.youtube_video_id && interview.content && (
+              <div className="mb-12 prose prose-slate max-w-none">
+                <div dangerouslySetInnerHTML={{ __html: interview.content }} />
               </div>
             )}
 

@@ -7,7 +7,7 @@
 
 import { useState, useEffect, FormEvent, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Eye, Youtube, Plus, Trash2, HelpCircle } from 'lucide-react';
+import { Save, X, Eye, Youtube, Plus, Trash2, HelpCircle, Upload, Search, Loader2, Image as ImageIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import CategoryManager from '@/components/admin/CategoryManager';
@@ -40,11 +40,14 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
   const [title, setTitle] = useState(initialData?.title || '');
   const [slug, setSlug] = useState(initialData?.slug || '');
   const [description, setDescription] = useState(initialData?.description || '');
+  const [content, setContent] = useState(initialData?.content || '');
   const [faqs, setFaqs] = useState<FAQ[]>(initialData?.faq || []);
   const [videoProvider, setVideoProvider] = useState<'youtube' | 'custom'>(initialData?.video_provider || 'youtube');
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [youtubeVideoId, setYoutubeVideoId] = useState(initialData?.youtube_video_id || '');
   const [customIframeCode, setCustomIframeCode] = useState(initialData?.custom_iframe_code || '');
+  const [featuredImageUrl, setFeaturedImageUrl] = useState(initialData?.featured_image_url || '');
+  const [featuredImageAlt, setFeaturedImageAlt] = useState(initialData?.featured_image_alt || '');
   const [categoryId, setCategoryId] = useState(initialData?.category_id || '');
   const [status, setStatus] = useState(initialData?.status || 'draft');
   const [metaTitle, setMetaTitle] = useState(initialData?.meta_title || '');
@@ -54,6 +57,11 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [showPexelsModal, setShowPexelsModal] = useState(false);
+  const [pexelsQuery, setPexelsQuery] = useState('');
+  const [pexelsResults, setPexelsResults] = useState<any[]>([]);
+  const [pexelsLoading, setPexelsLoading] = useState(false);
 
   // Quill modules configuration
   const quillModules = useMemo(() => ({
@@ -116,6 +124,21 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
     }
   }, [youtubeUrl]);
 
+  // Control body overflow when modal is open
+  useEffect(() => {
+    if (showPexelsModal) {
+      document.body.style.overflow = 'hidden';
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
+    };
+  }, [showPexelsModal]);
+
   // Load categories
   useEffect(() => {
     loadCategories();
@@ -134,6 +157,68 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
     } finally {
       setLoadingData(false);
     }
+  };
+
+  // Image upload handler
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload/image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to upload image');
+      }
+
+      const data = await response.json();
+      setFeaturedImageUrl(data.url);
+      setFeaturedImageAlt(file.name.replace(/\.[^/.]+$/, ''));
+    } catch (err: any) {
+      alert(err.message || 'Error al subir la imagen');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Search Pexels images
+  const searchPexels = async () => {
+    if (!pexelsQuery.trim()) return;
+
+    setPexelsLoading(true);
+    try {
+      const response = await fetch(
+        `/api/pexels/search?query=${encodeURIComponent(pexelsQuery)}&per_page=12`
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to search images');
+      }
+
+      const data = await response.json();
+      setPexelsResults(data.photos);
+    } catch (err: any) {
+      alert(err.message || 'Error al buscar imágenes');
+    } finally {
+      setPexelsLoading(false);
+    }
+  };
+
+  // Select Pexels image
+  const selectPexelsImage = (photo: any) => {
+    setFeaturedImageUrl(photo.url);
+    setFeaturedImageAlt(photo.alt);
+    setShowPexelsModal(false);
+    setPexelsQuery('');
+    setPexelsResults([]);
   };
 
   // FAQ handlers
@@ -163,6 +248,9 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
         title,
         slug,
         description,
+        content,
+        featured_image_url: featuredImageUrl || null,
+        featured_image_alt: featuredImageAlt || null,
         faq: faqs.filter(faq => faq.question.trim() && faq.answer.trim()),
         video_provider: videoProvider,
         youtube_video_id: videoProvider === 'youtube' ? youtubeVideoId : null,
@@ -206,6 +294,7 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
   };
 
   return (
+    <>
     <form onSubmit={(e) => handleSubmit(e, false)} className="admin-form admin-form--grid">
       {/* SIDEBAR - Opciones de publicación */}
       <div className="admin-form-sidebar">
@@ -237,6 +326,88 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
             apiEndpoint="/api/admin/entrevistas/categorias"
             loading={loadingData}
           />
+        </div>
+
+        {/* Featured Image Card */}
+        <div className="admin-form-section--compact">
+          <h2 className="admin-form-section__title">Imagen Destacada</h2>
+
+          {featuredImageUrl && (
+            <div className="article-form-image-preview">
+              <img
+                src={featuredImageUrl}
+                alt={featuredImageAlt || 'Preview'}
+                className="article-form-image-preview__img"
+              />
+              <button
+                type="button"
+                onClick={() => setFeaturedImageUrl('')}
+                className="article-form-image-preview__remove"
+              >
+                ×
+              </button>
+            </div>
+          )}
+
+          {!featuredImageUrl && (
+            <div className="article-form-image-placeholder">
+              <ImageIcon className="w-12 h-12" />
+              <p>Sin imagen</p>
+            </div>
+          )}
+
+          {/* Image Upload and Search Buttons */}
+          <div style={{ display: 'flex', gap: 'var(--spacing-2)', marginTop: 'var(--spacing-4)' }}>
+            <label className="btn btn-secondary" style={{ flex: 1, cursor: 'pointer' }}>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onChange={handleImageUpload}
+                disabled={uploading}
+                style={{ display: 'none' }}
+              />
+              <Upload className="w-4 h-4" />
+              {uploading ? 'Subiendo...' : 'Subir'}
+            </label>
+            <button
+              type="button"
+              onClick={() => setShowPexelsModal(true)}
+              className="btn btn-secondary"
+              style={{ flex: 1 }}
+              disabled={uploading}
+            >
+              <Search className="w-4 h-4" />
+              Pexels
+            </button>
+          </div>
+
+          <div className="admin-form-group" style={{ marginTop: 'var(--spacing-4)' }}>
+            <label htmlFor="featured_image_url" className="admin-form-label">
+              URL de imagen
+            </label>
+            <input
+              type="url"
+              id="featured_image_url"
+              value={featuredImageUrl}
+              onChange={(e) => setFeaturedImageUrl(e.target.value)}
+              className="admin-form-input"
+              placeholder="https://..."
+            />
+          </div>
+
+          <div className="admin-form-group">
+            <label htmlFor="featured_image_alt" className="admin-form-label">
+              Texto alternativo
+            </label>
+            <input
+              type="text"
+              id="featured_image_alt"
+              value={featuredImageAlt}
+              onChange={(e) => setFeaturedImageAlt(e.target.value)}
+              className="admin-form-input"
+              placeholder="Descripción"
+            />
+          </div>
         </div>
       </div>
 
@@ -292,6 +463,30 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
                 rows={4}
                 placeholder="Breve descripción de la entrevista..."
               />
+            </div>
+          </div>
+
+          {/* Content WYSIWYG Section */}
+          <div className="admin-form-section">
+            <h2 className="admin-form-section__title">Contenido Escrito</h2>
+
+            <div className="admin-form-group">
+              <label className="admin-form-label">
+                Contenido de la Entrevista (opcional)
+              </label>
+              <div className="article-form-editor article-form-editor--large">
+                <ReactQuill
+                  theme="snow"
+                  value={content}
+                  onChange={setContent}
+                  modules={quillModules}
+                  formats={quillFormats}
+                  placeholder="Escribe el contenido de la entrevista para casos sin material audiovisual..."
+                />
+              </div>
+              <p className="admin-form-help">
+                Para entrevistas sin video o con contenido adicional escrito, usa este editor para el contenido principal
+              </p>
             </div>
           </div>
 
@@ -594,5 +789,97 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
         </div>
       </div>
     </form>
+
+    {/* Pexels Modal */}
+    {showPexelsModal && (
+      <div className="admin-modal">
+        <div className="admin-modal__backdrop" onClick={() => setShowPexelsModal(false)} />
+        <div className="admin-modal__content" style={{ maxWidth: '1000px' }}>
+          <div className="admin-modal__header">
+            <h3 className="admin-modal__title">Buscar Imágenes en Pexels</h3>
+            <button
+              onClick={() => setShowPexelsModal(false)}
+              className="admin-modal__close"
+              type="button"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="admin-modal__body">
+            {/* Search Bar */}
+            <div className="pexels-search">
+              <input
+                type="text"
+                value={pexelsQuery}
+                onChange={(e) => setPexelsQuery(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && searchPexels()}
+                placeholder="Buscar imágenes... (ej: finanzas, negocios, tecnología)"
+                className="admin-form-input"
+              />
+              <button
+                type="button"
+                onClick={searchPexels}
+                disabled={pexelsLoading || !pexelsQuery.trim()}
+                className="btn btn-primary"
+              >
+                {pexelsLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Buscando...
+                  </>
+                ) : (
+                  <>
+                    <Search className="w-4 h-4" />
+                    Buscar
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Results Grid */}
+            {pexelsLoading ? (
+              <div className="pexels-loading">
+                <Loader2 className="w-8 h-8 animate-spin" style={{ color: 'var(--color-primary)' }} />
+                <p>Buscando imágenes...</p>
+              </div>
+            ) : pexelsResults.length > 0 ? (
+              <div className="pexels-grid">
+                {pexelsResults.map((photo) => (
+                  <div
+                    key={photo.id}
+                    onClick={() => selectPexelsImage(photo)}
+                    className="pexels-card"
+                  >
+                    <img
+                      src={photo.thumbnail}
+                      alt={photo.alt}
+                    />
+                    <div className="pexels-card__info">
+                      <span className="pexels-card__photographer">
+                        Por {photo.photographer}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : !pexelsLoading && pexelsQuery ? (
+              <div className="pexels-empty">
+                <ImageIcon className="w-16 h-16" style={{ color: 'var(--color-slate-300)' }} />
+                <p>No se encontraron imágenes</p>
+                <span>Intenta con otra búsqueda</span>
+              </div>
+            ) : !pexelsQuery ? (
+              <div className="pexels-empty">
+                <ImageIcon className="w-16 h-16" style={{ color: 'var(--color-slate-300)' }} />
+                <p>Busca imágenes de stock gratis</p>
+                <span>Ingresa un término de búsqueda arriba</span>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }

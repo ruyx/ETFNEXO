@@ -11,6 +11,8 @@ export interface Interview {
   views_count: number;
   category_name?: string | null;
   category_color?: string | null;
+  featured_image_url?: string | null;
+  featured_image_alt?: string | null;
 }
 
 interface InterviewCardProps {
@@ -31,10 +33,13 @@ export default function InterviewCard({
     }).format(date);
   };
 
-  // YouTube thumbnail URL with fallback (usa hqdefault que siempre existe)
-  const thumbnailUrl = interview.youtube_video_id
-    ? `https://img.youtube.com/vi/${interview.youtube_video_id}/hqdefault.jpg`
-    : 'https://placehold.co/640x360/1e293b/f1f5f9?text=Video+Entrevista';
+  // Image priority: Featured Image > YouTube Thumbnail > Placeholder
+  const thumbnailUrl = interview.featured_image_url
+    || (interview.youtube_video_id
+        ? `https://img.youtube.com/vi/${interview.youtube_video_id}/hqdefault.jpg`
+        : 'https://placehold.co/640x360/1e293b/f1f5f9?text=Entrevista');
+
+  const thumbnailAlt = interview.featured_image_alt || interview.title;
 
   if (variant === 'featured') {
     return (
@@ -45,7 +50,7 @@ export default function InterviewCard({
             <div className="relative w-full h-64 md:h-full bg-slate-100 overflow-hidden">
               <img
                 src={thumbnailUrl}
-                alt={interview.title}
+                alt={thumbnailAlt}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
               {/* Play Button Overlay */}
@@ -115,7 +120,7 @@ export default function InterviewCard({
         <div className="relative w-full h-48 bg-slate-100 overflow-hidden">
           <img
             src={thumbnailUrl}
-            alt={interview.title}
+            alt={thumbnailAlt}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           {/* Play Button Overlay */}
