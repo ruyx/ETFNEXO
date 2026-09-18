@@ -133,7 +133,7 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
 
             {/* Featured Image */}
             {interview.featured_image_url && (
-              <div className="mb-12">
+              <div className="mb-8">
                 <img
                   src={interview.featured_image_url}
                   alt={interview.featured_image_alt || interview.title}
@@ -143,8 +143,32 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
               </div>
             )}
 
-            {/* Video Embed - YouTube only */}
-            {interview.youtube_video_id && (
+            {/* Content - Always show if exists */}
+            {interview.content && (
+              <div className="mb-12 prose prose-slate max-w-none">
+                {/* Video Embed - Floats to the right if content exists */}
+                {interview.youtube_video_id && (
+                  <div className="float-right ml-6 mb-6 w-full md:w-96 bg-slate-100 rounded-lg overflow-hidden shadow-lg">
+                    <div className="aspect-video">
+                      <iframe
+                        width="100%"
+                        height="100%"
+                        src={`https://www.youtube.com/embed/${interview.youtube_video_id}`}
+                        title={interview.title}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  </div>
+                )}
+                <div dangerouslySetInnerHTML={{ __html: interview.content }} />
+                <div className="clear-both"></div>
+              </div>
+            )}
+
+            {/* Video only - Show full width if no content */}
+            {!interview.content && interview.youtube_video_id && (
               <div className="mb-12">
                 <div className="aspect-video bg-slate-100 rounded-lg overflow-hidden shadow-lg">
                   <iframe
@@ -157,13 +181,6 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
                     allowFullScreen
                   />
                 </div>
-              </div>
-            )}
-
-            {/* Content - Show if no video */}
-            {!interview.youtube_video_id && interview.content && (
-              <div className="mb-12 prose prose-slate max-w-none">
-                <div dangerouslySetInnerHTML={{ __html: interview.content }} />
               </div>
             )}
 

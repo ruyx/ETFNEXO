@@ -15,6 +15,8 @@ interface AdminInterviewCardProps {
     published_at: string | null;
     views_count: number;
     youtube_video_id: string;
+    featured_image_url?: string | null;
+    featured_image_alt?: string | null;
     category: {
       name: string;
       slug: string;
@@ -55,16 +57,21 @@ export default function AdminInterviewCard({ interview, onPublishToggle, onDelet
     );
   };
 
-  // YouTube thumbnail URL
-  const thumbnailUrl = `https://img.youtube.com/vi/${interview.youtube_video_id}/mqdefault.jpg`;
+  // Image priority: Featured Image > YouTube Thumbnail
+  const thumbnailUrl = interview.featured_image_url
+    || (interview.youtube_video_id
+        ? `https://img.youtube.com/vi/${interview.youtube_video_id}/mqdefault.jpg`
+        : 'https://placehold.co/320x180/1e293b/f1f5f9?text=Entrevista');
+
+  const thumbnailAlt = interview.featured_image_alt || interview.title;
 
   return (
     <div className="card hover-lift bg-white border-slate-200 overflow-hidden flex flex-col h-full">
-      {/* YouTube Thumbnail */}
+      {/* Thumbnail (Featured or YouTube) */}
       <div className="relative w-full h-48 bg-slate-100 overflow-hidden">
         <img
           src={thumbnailUrl}
-          alt={interview.title}
+          alt={thumbnailAlt}
           className="object-cover transition-transform duration-300"
           style={{ width: '100%', height: '100%' }}
         />

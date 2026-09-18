@@ -30,6 +30,7 @@ SELECT
   i.featured_image_url,
   i.featured_image_alt,
   i.content,
+  i.faq,
 
   -- Category data
   c.name as category_name,
