@@ -730,6 +730,8 @@
   gap: var(--spacing-4);
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 10; /* Asegurar que esté por encima del sidebar sticky */
 }
 
 @media (min-width: 640px) {
