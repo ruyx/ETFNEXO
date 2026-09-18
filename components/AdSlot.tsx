@@ -120,17 +120,24 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
 
   // Image banner
   if (ad.type === 'image_banner') {
+    // Ajustar altura según el placement
+    const isTopBanner = placement === 'article_top';
+    const maxHeight = isTopBanner ? '90px' : '250px';
+    const containerMargin = isTopBanner ? '0' : '24px 0';
+    const borderRadius = isTopBanner ? '8px' : '12px';
+
     return (
       <div
         className={`ad-slot ad-slot--image ad-slot--${placement} ${className}`}
         style={{
           backgroundColor: '#ffffff',
           border: '2px solid #e2e8f0',
-          borderRadius: '12px',
+          borderRadius,
           overflow: 'hidden',
-          margin: '24px 0',
+          margin: containerMargin,
           position: 'relative',
-          maxHeight: '250px' // Limitar altura máxima del contenedor
+          maxHeight, // Altura adaptativa según placement
+          height: isTopBanner ? '90px' : 'auto' // Altura fija para top banner
         }}
       >
         <div
@@ -159,7 +166,8 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
           onKeyPress={(e) => e.key === 'Enter' && handleAdClick()}
           style={{
             cursor: 'pointer',
-            maxHeight: '250px', // Limitar altura del contenedor de imagen
+            maxHeight, // Altura adaptativa
+            height: isTopBanner ? '90px' : 'auto', // Altura fija para top banner
             overflow: 'hidden',
             display: 'flex',
             justifyContent: 'center',
@@ -172,10 +180,10 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
             className="ad-slot__image"
             style={{
               width: '100%',
-              height: 'auto',
-              maxHeight: '250px', // Limitar altura de la imagen
+              height: isTopBanner ? '90px' : 'auto', // Altura fija para top banner
+              maxHeight,
               display: 'block',
-              objectFit: 'contain' // Mantener proporciones sin deformar
+              objectFit: isTopBanner ? 'cover' : 'contain' // Cover para banners horizontales, contain para otros
             }}
           />
         </div>

@@ -19,7 +19,7 @@ export default function FixedTopBanner({ placement }: FixedTopBannerProps) {
   return (
     <>
       {/* Espaciador para evitar que el contenido salte cuando el banner se vuelve fixed */}
-      <div style={{ height: isFixed ? '110px' : '0' }} />
+      <div style={{ height: isFixed ? '106px' : '0' }} />
 
       {/* Banner Fixed - Solo tamaños horizontales 728x90 o 970x90 con fondo oscuro */}
       <div
@@ -36,8 +36,8 @@ export default function FixedTopBanner({ placement }: FixedTopBannerProps) {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          padding: 'var(--spacing-2)',
-          height: '110px', // Altura fija
+          padding: '8px 16px', // Padding reducido para banner más compacto
+          height: '106px', // Altura ajustada: 90px banner + 16px padding vertical
           overflow: 'hidden' // Ocultar contenido que exceda
         }}
       >
