@@ -297,7 +297,7 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
     <>
     <form onSubmit={(e) => handleSubmit(e, false)} className="admin-form admin-form--grid">
       {/* SIDEBAR - Opciones de publicación */}
-      <div className="admin-form-sidebar">
+      <div className="admin-form-sidebar" style={{ paddingBottom: 'var(--spacing-8)' }}>
         {/* Publish Options */}
         <div className="admin-form-section--compact">
           <h2 className="admin-form-section__title">Publicación</h2>
