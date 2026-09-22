@@ -65,7 +65,9 @@ export async function POST(request: NextRequest) {
         published_at: body.status === 'published' ? new Date().toISOString() : null,
         faq: body.faq || [],
         meta_title: body.meta_title,
-        meta_description: body.meta_description
+        meta_description: body.meta_description,
+        author_id: body.author_id || null,
+        mostrar_en_noticias: body.mostrar_en_noticias || false
       } as any])
       .select()
       .single();
@@ -112,6 +114,8 @@ export async function PUT(
       faq: body.faq || [],
       meta_title: body.meta_title,
       meta_description: body.meta_description,
+      author_id: body.author_id || null,
+      mostrar_en_noticias: body.mostrar_en_noticias || false,
       updated_at: new Date().toISOString()
     };
 

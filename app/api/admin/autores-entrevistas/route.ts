@@ -1,0 +1,95 @@
+// @ts-nocheck
+/**
+ * API Admin - Autores de Entrevistas
+ * GET: Listar todos los autores
+ * POST: Crear nuevo autor
+ */
+
+import { createAdminClient } from '@/lib/supabase/admin';
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  try {
+    const supabase = createAdminClient();
+
+    const { data: authors, error } = await supabase
+      .from('interview_authors')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        authors: authors || []
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Error fetching interview authors:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const supabase = createAdminClient();
+    const body = await request.json();
+
+    // Validaciones
+    if (!body.name || !body.slug || !body.display_name) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'name, slug y display_name son requeridos'
+        },
+        { status: 400 }
+      );
+    }
+
+    const { data: author, error } = await supabase
+      .from('interview_authors')
+      .insert({
+        name: body.name,
+        slug: body.slug,
+        display_name: body.display_name,
+        bio: body.bio || null,
+        expertise: body.expertise || [],
+        avatar_url: body.avatar_url || null,
+        role: body.role || 'editor',
+        email: body.email || null,
+        social_links: body.social_links || null,
+        signature: body.signature || null,
+        is_active: body.is_active !== undefined ? body.is_active : true,
+        can_publish: body.can_publish !== undefined ? body.can_publish : true
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        author
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Error creating interview author:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message
+      },
+      { status: 500 }
+    );
+  }
+}

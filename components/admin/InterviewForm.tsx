@@ -52,8 +52,8 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
   const [status, setStatus] = useState(initialData?.status || 'draft');
   const [metaTitle, setMetaTitle] = useState(initialData?.meta_title || '');
   const [metaDescription, setMetaDescription] = useState(initialData?.meta_description || '');
-  const [authorName, setAuthorName] = useState(initialData?.author_name || 'Redacción ETF Nexo');
-  const [authorEmail, setAuthorEmail] = useState(initialData?.author_email || '');
+  const [authorId, setAuthorId] = useState(initialData?.author_id || '');
+  const [authors, setAuthors] = useState<any[]>([]);
   const [mostrarEnNoticias, setMostrarEnNoticias] = useState(initialData?.mostrar_en_noticias || false);
 
   // UI state
@@ -145,6 +145,7 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
   // Load categories
   useEffect(() => {
     loadCategories();
+    loadAuthors();
   }, []);
 
   const loadCategories = async () => {
@@ -159,6 +160,18 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
       console.error('Error loading categories:', error);
     } finally {
       setLoadingData(false);
+    }
+  };
+
+  const loadAuthors = async () => {
+    try {
+      const response = await fetch('/api/admin/autores-entrevistas');
+      if (response.ok) {
+        const result = await response.json();
+        setAuthors(result.data?.authors || []);
+      }
+    } catch (error) {
+      console.error('Error loading interview authors:', error);
     }
   };
 
@@ -262,8 +275,7 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
         status: shouldPublish ? 'published' : status,
         meta_title: metaTitle || title,
         meta_description: metaDescription || description,
-        author_name: authorName,
-        author_email: authorEmail || null,
+        author_id: authorId || null,
         mostrar_en_noticias: mostrarEnNoticias
       };
 
@@ -339,31 +351,33 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
           <h2 className="admin-form-section__title">Autor</h2>
 
           <div className="admin-form-group">
-            <label htmlFor="authorName" className="admin-form-label">
-              Nombre del Autor
+            <label htmlFor="authorId" className="admin-form-label">
+              Seleccionar Autor
             </label>
-            <input
-              type="text"
-              id="authorName"
-              value={authorName}
-              onChange={(e) => setAuthorName(e.target.value)}
-              className="admin-form-input"
-              placeholder="Redacción ETF Nexo"
-            />
-          </div>
-
-          <div className="admin-form-group">
-            <label htmlFor="authorEmail" className="admin-form-label">
-              Email del Autor (opcional)
-            </label>
-            <input
-              type="email"
-              id="authorEmail"
-              value={authorEmail}
-              onChange={(e) => setAuthorEmail(e.target.value)}
-              className="admin-form-input"
-              placeholder="redaccion@etfnexo.com"
-            />
+            <select
+              id="authorId"
+              value={authorId}
+              onChange={(e) => setAuthorId(e.target.value)}
+              className="admin-form-select"
+            >
+              <option value="">Sin autor</option>
+              {authors.map((author) => (
+                <option key={author.id} value={author.id}>
+                  {author.display_name}
+                </option>
+              ))}
+            </select>
+            <p className="admin-form-hint" style={{ marginTop: 'var(--spacing-2)' }}>
+              Gestiona autores en{' '}
+              <a
+                href="/admin/autores-entrevistas"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 underline"
+              >
+                Autores de Entrevistas
+              </a>
+            </p>
           </div>
         </div>
 
