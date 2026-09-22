@@ -103,7 +103,7 @@ export default async function AutoresEntrevistasPage() {
             {interviewAuthors.map((author) => (
               <Link
                 key={author.id}
-                href={`/admin/autores-entrevistas/${author.id}`}
+                href={`/admin/autores-entrevistas/${author.id}/editar`}
                 className="card hover-lift group cursor-pointer"
               >
                 <div className="flex items-start gap-4 p-6">
