@@ -31,7 +31,7 @@ export default async function AutoresEntrevistasPage() {
 
   // Obtener autores
   const { data: authors, error } = await supabase
-    .from('interview_authors')
+    .from('interview_authors' as any)
     .select('*')
     .order('created_at', { ascending: false });
 

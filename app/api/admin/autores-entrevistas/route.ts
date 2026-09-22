@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const supabase = createAdminClient();
 
     const { data: authors, error } = await supabase
-      .from('interview_authors')
+      .from('interview_authors' as any)
       .select('*')
       .order('created_at', { ascending: false });
 
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { data: author, error } = await supabase
-      .from('interview_authors')
+      .from('interview_authors' as any)
       .insert({
         name: body.name,
         slug: body.slug,

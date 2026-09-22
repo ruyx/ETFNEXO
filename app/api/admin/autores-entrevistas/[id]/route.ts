@@ -17,7 +17,7 @@ export async function GET(
     const { id } = params;
 
     const { data: author, error } = await supabase
-      .from('interview_authors')
+      .from('interview_authors' as any)
       .select('*')
       .eq('id' as any, id as any)
       .single();
@@ -75,7 +75,7 @@ export async function PUT(
     updateData.updated_at = new Date().toISOString();
 
     const { data: authors, error } = await supabase
-      .from('interview_authors')
+      .from('interview_authors' as any)
       .update(updateData as any)
       .eq('id' as any, id as any)
       .select();
@@ -120,7 +120,7 @@ export async function DELETE(
     const { id } = params;
 
     const { error } = await supabase
-      .from('interview_authors')
+      .from('interview_authors' as any)
       .delete()
       .eq('id' as any, id as any);
 
