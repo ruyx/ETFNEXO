@@ -52,6 +52,9 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
   const [status, setStatus] = useState(initialData?.status || 'draft');
   const [metaTitle, setMetaTitle] = useState(initialData?.meta_title || '');
   const [metaDescription, setMetaDescription] = useState(initialData?.meta_description || '');
+  const [authorName, setAuthorName] = useState(initialData?.author_name || 'Redacción ETF Nexo');
+  const [authorEmail, setAuthorEmail] = useState(initialData?.author_email || '');
+  const [mostrarEnNoticias, setMostrarEnNoticias] = useState(initialData?.mostrar_en_noticias || false);
 
   // UI state
   const [loading, setLoading] = useState(false);
@@ -258,7 +261,10 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
         category_id: categoryId || null,
         status: shouldPublish ? 'published' : status,
         meta_title: metaTitle || title,
-        meta_description: metaDescription || description
+        meta_description: metaDescription || description,
+        author_name: authorName,
+        author_email: authorEmail || null,
+        mostrar_en_noticias: mostrarEnNoticias
       };
 
       // Si se proporciona onSubmit, usarlo (para páginas que manejan submit externamente)
@@ -326,6 +332,65 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
             apiEndpoint="/api/admin/entrevistas/categorias"
             loading={loadingData}
           />
+        </div>
+
+        {/* Author Section */}
+        <div className="admin-form-section--compact">
+          <h2 className="admin-form-section__title">Autor</h2>
+
+          <div className="admin-form-group">
+            <label htmlFor="authorName" className="admin-form-label">
+              Nombre del Autor
+            </label>
+            <input
+              type="text"
+              id="authorName"
+              value={authorName}
+              onChange={(e) => setAuthorName(e.target.value)}
+              className="admin-form-input"
+              placeholder="Redacción ETF Nexo"
+            />
+          </div>
+
+          <div className="admin-form-group">
+            <label htmlFor="authorEmail" className="admin-form-label">
+              Email del Autor (opcional)
+            </label>
+            <input
+              type="email"
+              id="authorEmail"
+              value={authorEmail}
+              onChange={(e) => setAuthorEmail(e.target.value)}
+              className="admin-form-input"
+              placeholder="redaccion@etfnexo.com"
+            />
+          </div>
+        </div>
+
+        {/* Mostrar en Noticias Toggle */}
+        <div className="admin-form-section--compact">
+          <h2 className="admin-form-section__title">Visibilidad</h2>
+
+          <div className="admin-form-group">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+              <label className="admin-form-switch">
+                <input
+                  type="checkbox"
+                  checked={mostrarEnNoticias}
+                  onChange={(e) => setMostrarEnNoticias(e.target.checked)}
+                />
+                <span className="admin-form-switch-slider"></span>
+              </label>
+              <div>
+                <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-slate-900)', lineHeight: '1.2' }}>
+                  {mostrarEnNoticias ? 'Mostrar en Noticias' : 'Ocultar de Noticias'}
+                </div>
+              </div>
+            </div>
+            <p className="admin-form-hint" style={{ marginTop: 'var(--spacing-2)' }}>
+              Si está activado, esta entrevista aparecerá también en la sección de noticias
+            </p>
+          </div>
         </div>
 
         {/* Featured Image Card */}

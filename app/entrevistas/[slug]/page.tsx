@@ -184,6 +184,13 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
               </div>
             )}
 
+            {/* Disclosure Legal */}
+            <div className="mt-8 p-6 bg-slate-50 border-l-4 border-blue-500 rounded-r-lg">
+              <p className="text-sm text-slate-600 leading-relaxed">
+                <strong className="text-slate-900">Aviso:</strong> Las opiniones de este artículo tienen carácter exclusivamente informativo y educativo y no constituyen asesoramiento ni recomendación de inversión. La rentabilidad pasada no garantiza resultados futuros y toda inversión implica riesgos, incluida la posible pérdida de capital. Antes de invertir, consulte la documentación oficial del producto y valore su situación financiera y perfil de riesgo.
+              </p>
+            </div>
+
             {/* Back to Entrevistas */}
             <div className="mt-12 pt-8 border-t border-slate-200">
               <Link
