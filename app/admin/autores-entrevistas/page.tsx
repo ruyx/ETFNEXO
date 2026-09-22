@@ -39,7 +39,7 @@ export default async function AutoresEntrevistasPage() {
     console.error('Error fetching interview authors:', error);
   }
 
-  const interviewAuthors: InterviewAuthor[] = (authors as InterviewAuthor[]) || [];
+  const interviewAuthors: InterviewAuthor[] = (authors as unknown as InterviewAuthor[]) || [];
 
   return (
     <div className="admin-container">
