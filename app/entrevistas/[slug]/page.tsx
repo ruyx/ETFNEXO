@@ -70,6 +70,24 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
       })
     : 'Fecha no disponible';
 
+  // Determinar autor (autor de entrevista)
+  const displayAuthorName = interview.author_display_name || interview.author_name || 'ETF Nexo';
+  const authorSlug = interview.author_slug || null;
+  const authorAvatar = interview.author_avatar_url || null;
+
+  // Link a perfil del autor
+  const authorLink = authorSlug ? `/autores/${authorSlug}` : null;
+
+  // Función para obtener iniciales del nombre
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+  };
+
   return (
     <>
       <Header />
@@ -113,13 +131,51 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
             </h1>
 
             {/* Meta Info */}
-            <div className="flex items-center gap-4 text-sm text-slate-600 mb-8 pb-8 border-b border-slate-200">
+            <div className="flex items-center gap-4 text-sm text-slate-600 mb-8 pb-8 border-b border-slate-200 flex-wrap">
+              {/* Author */}
+              <div className="flex items-center gap-2">
+                {authorLink ? (
+                  <Link
+                    href={authorLink}
+                    className="flex items-center gap-2 hover:text-slate-900 transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-200 flex items-center justify-center">
+                      {authorAvatar ? (
+                        <img
+                          src={authorAvatar}
+                          alt={displayAuthorName}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-xs font-semibold text-slate-600">
+                          {getInitials(displayAuthorName)}
+                        </span>
+                      )}
+                    </div>
+                    <span className="font-medium">{displayAuthorName}</span>
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-200 flex items-center justify-center">
+                      <span className="text-xs font-semibold text-slate-600">
+                        {getInitials(displayAuthorName)}
+                      </span>
+                    </div>
+                    <span className="font-medium">{displayAuthorName}</span>
+                  </div>
+                )}
+              </div>
+
+              <span className="text-slate-300">•</span>
+
+              {/* Date */}
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 <time dateTime={interview.published_at || undefined}>
                   {publishedDate}
                 </time>
               </div>
+
               {interview.views_count > 0 && (
                 <>
                   <span className="text-slate-300">•</span>

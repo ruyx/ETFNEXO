@@ -6,6 +6,7 @@ export interface NewsArticle {
   title: string
   slug: string
   content: string
+  excerpt?: string
   featured_image_url: string | null
   published_at: string
   author_name: string | null
@@ -13,6 +14,7 @@ export interface NewsArticle {
   source_url: string
   pinned?: boolean
   pinned_at?: string | null
+  source_type?: 'news' | 'interview'
 }
 
 interface NewsCardProps {
@@ -39,9 +41,14 @@ export default function NewsCard({
     return text.substring(0, maxLength).trim() + '...'
   }
 
+  // Determinar la URL según el tipo de fuente
+  const articleUrl = article.source_type === 'interview'
+    ? `/entrevistas/${article.slug}`
+    : `/noticias/${article.slug}`;
+
   if (variant === 'featured') {
     return (
-      <Link href={`/noticias/${article.slug}`} className="block">
+      <Link href={articleUrl} className="block">
         <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden">
           <div className="grid md:grid-cols-[300px_1fr] gap-6">
             {/* Featured Image */}
@@ -86,7 +93,7 @@ export default function NewsCard({
 
                 {/* Excerpt */}
                 <p className="text-sm text-slate-600 line-clamp-3 mb-4">
-                  {getExcerpt(article.content, 200)}
+                  {article.excerpt || getExcerpt(article.content, 200)}
                 </p>
               </div>
 
@@ -110,7 +117,7 @@ export default function NewsCard({
   // Card variant (vertical card with image on top)
   if (variant === 'card') {
     return (
-      <Link href={`/noticias/${article.slug}`} className="block h-full">
+      <Link href={articleUrl} className="block h-full">
         <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden flex flex-col h-full">
           {/* Featured Image */}
           {article.featured_image_url && (
@@ -153,7 +160,7 @@ export default function NewsCard({
 
             {/* Excerpt */}
             <p className="text-sm text-slate-600 line-clamp-3 mb-4 flex-1">
-              {getExcerpt(article.content, 150)}
+              {article.excerpt || getExcerpt(article.content, 150)}
             </p>
 
             {/* Footer */}
@@ -174,7 +181,7 @@ export default function NewsCard({
 
   // Default variant (compact)
   return (
-    <Link href={`/noticias/${article.slug}`} className="block">
+    <Link href={articleUrl} className="block">
       <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden">
         <div className="flex gap-4">
           {/* Thumbnail */}
@@ -199,7 +206,7 @@ export default function NewsCard({
 
               {/* Excerpt */}
               <p className="text-xs text-slate-600 line-clamp-2 mb-2">
-                {getExcerpt(article.content, 120)}
+                {article.excerpt || getExcerpt(article.content, 120)}
               </p>
             </div>
 
