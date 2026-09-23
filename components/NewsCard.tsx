@@ -36,7 +36,18 @@ export default function NewsCard({
   }
 
   const getExcerpt = (content: string, maxLength: number = 150): string => {
-    const text = content.replace(/<[^>]*>/g, '').trim()
+    // Limpiar HTML: eliminar tags y decodificar entidades HTML
+    const text = content
+      .replace(/<[^>]*>/g, '') // Eliminar tags HTML
+      .replace(/&nbsp;/g, ' ') // Reemplazar &nbsp; con espacio
+      .replace(/&amp;/g, '&')  // Reemplazar &amp; con &
+      .replace(/&lt;/g, '<')   // Reemplazar &lt; con <
+      .replace(/&gt;/g, '>')   // Reemplazar &gt; con >
+      .replace(/&quot;/g, '"') // Reemplazar &quot; con "
+      .replace(/&#39;/g, "'")  // Reemplazar &#39; con '
+      .replace(/\s+/g, ' ')    // Normalizar espacios múltiples
+      .trim()
+
     if (text.length <= maxLength) return text
     return text.substring(0, maxLength).trim() + '...'
   }
@@ -93,7 +104,7 @@ export default function NewsCard({
 
                 {/* Excerpt */}
                 <p className="text-sm text-slate-600 line-clamp-3 mb-4">
-                  {article.excerpt || getExcerpt(article.content, 200)}
+                  {article.excerpt ? getExcerpt(article.excerpt, 200) : getExcerpt(article.content, 200)}
                 </p>
               </div>
 
@@ -160,7 +171,7 @@ export default function NewsCard({
 
             {/* Excerpt */}
             <p className="text-sm text-slate-600 line-clamp-3 mb-4 flex-1">
-              {article.excerpt || getExcerpt(article.content, 150)}
+              {article.excerpt ? getExcerpt(article.excerpt, 150) : getExcerpt(article.content, 150)}
             </p>
 
             {/* Footer */}
@@ -206,7 +217,7 @@ export default function NewsCard({
 
               {/* Excerpt */}
               <p className="text-xs text-slate-600 line-clamp-2 mb-2">
-                {article.excerpt || getExcerpt(article.content, 120)}
+                {article.excerpt ? getExcerpt(article.excerpt, 120) : getExcerpt(article.content, 120)}
               </p>
             </div>
 
