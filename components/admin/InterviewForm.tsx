@@ -531,17 +531,22 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
             </div>
 
             <div className="admin-form-group">
-              <label htmlFor="description" className="admin-form-label">
+              <label className="admin-form-label">
                 Descripción
               </label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="admin-form-input admin-form-input--textarea"
-                rows={4}
-                placeholder="Breve descripción de la entrevista..."
-              />
+              <p className="admin-form-help">
+                Breve descripción que aparecerá en el listado de entrevistas. Admite formato de texto.
+              </p>
+              <div className="article-form-editor article-form-editor--small">
+                <ReactQuill
+                  theme="snow"
+                  value={description}
+                  onChange={setDescription}
+                  modules={quillModules}
+                  formats={quillFormats}
+                  placeholder="Breve descripción de la entrevista..."
+                />
+              </div>
             </div>
           </div>
 
