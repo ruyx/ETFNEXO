@@ -33,6 +33,24 @@ export default async function AgentesPage() {
     console.error('Error fetching interview authors:', interviewError);
   }
 
+  // Convertir tipos para TypeScript
+  const typedInterviewAuthors = interviewAuthors as unknown as Array<{
+    id: string;
+    name: string;
+    slug: string;
+    display_name: string;
+    bio: string | null;
+    expertise: string[] | null;
+    avatar_url: string | null;
+    role: string;
+    email: string | null;
+    is_active: boolean;
+    can_publish: boolean;
+    interviews_count: number;
+    total_views: number;
+    created_at: string;
+  }>;
+
   // Combinar ambos tipos de agentes
   const agentProfiles: AgentProfile[] = [
     // Agentes AI
@@ -55,7 +73,7 @@ export default async function AgentesPage() {
     } as AgentProfile)) || []),
 
     // Autores de entrevistas
-    ...(interviewAuthors?.map(author => ({
+    ...(typedInterviewAuthors?.map(author => ({
       id: author.id,
       name: author.name,
       slug: author.slug,
