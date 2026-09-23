@@ -13,31 +13,66 @@ export const dynamic = 'force-dynamic';
 export default async function AgentesPage() {
   const supabase = await createClient();
 
-  // Obtener agentes
-  const { data: agents, error } = await supabase
+  // Obtener agentes AI (redactores y educadores)
+  const { data: aiAgents, error: aiError } = await supabase
     .from('ai_agents')
     .select('*')
     .order('created_at', { ascending: false});
 
-  if (error) {
-    console.error('Error fetching agents:', error);
+  if (aiError) {
+    console.error('Error fetching AI agents:', aiError);
   }
 
-  const agentProfiles: AgentProfile[] = agents?.map(agent => ({
-    id: agent.id,
-    name: agent.name,
-    slug: agent.slug,
-    display_name: agent.display_name,
-    bio: agent.bio,
-    expertise: agent.expertise,
-    avatar_url: agent.avatar_url,
-    role: agent.role,
-    email: agent.email,
-    is_active: agent.is_active,
-    can_publish: agent.can_publish,
-    articles_count: agent.articles_count || 0,
-    total_views: agent.total_views || 0
-  } as AgentProfile)) || [];
+  // Obtener autores de entrevistas (entrevistadores)
+  const { data: interviewAuthors, error: interviewError } = await supabase
+    .from('interview_authors' as any)
+    .select('*')
+    .order('created_at', { ascending: false});
+
+  if (interviewError) {
+    console.error('Error fetching interview authors:', interviewError);
+  }
+
+  // Combinar ambos tipos de agentes
+  const agentProfiles: AgentProfile[] = [
+    // Agentes AI
+    ...(aiAgents?.map(agent => ({
+      id: agent.id,
+      name: agent.name,
+      slug: agent.slug,
+      display_name: agent.display_name,
+      bio: agent.bio,
+      expertise: agent.expertise,
+      avatar_url: agent.avatar_url,
+      role: agent.role,
+      email: agent.email,
+      is_active: agent.is_active,
+      can_publish: agent.can_publish,
+      articles_count: agent.articles_count || 0,
+      total_views: agent.total_views || 0,
+      agent_type: agent.agent_type, // 'redactor' | 'educador'
+      source: 'ai_agents' as const
+    } as AgentProfile)) || []),
+
+    // Autores de entrevistas
+    ...(interviewAuthors?.map(author => ({
+      id: author.id,
+      name: author.name,
+      slug: author.slug,
+      display_name: author.display_name,
+      bio: author.bio,
+      expertise: author.expertise,
+      avatar_url: author.avatar_url,
+      role: author.role,
+      email: author.email,
+      is_active: author.is_active,
+      can_publish: author.can_publish,
+      articles_count: author.interviews_count || 0, // Campo diferente para entrevistas
+      total_views: author.total_views || 0,
+      agent_type: 'entrevistador' as const,
+      source: 'interview_authors' as const
+    } as AgentProfile)) || [])
+  ].sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
 
   return (
     <div className="admin-container">

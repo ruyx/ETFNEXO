@@ -15,6 +15,9 @@ export interface AgentProfile {
   can_publish: boolean | null;
   articles_count: number;
   total_views: number;
+  agent_type?: 'redactor' | 'educador' | 'entrevistador';
+  source?: 'ai_agents' | 'interview_authors';
+  created_at?: string;
 }
 
 interface AgentCardProps {
@@ -27,13 +30,30 @@ export default function AgentCard({ agent }: AgentCardProps) {
     const roles: Record<string, string> = {
       analyst: 'Analista',
       editor: 'Editor',
-      researcher: 'Investigador'
+      researcher: 'Investigador',
+      journalist: 'Periodista',
+      guest: 'Invitado'
     };
     return roles[role] || role;
   };
 
+  const getAgentTypeLabel = (agentType: string | undefined): string => {
+    if (!agentType) return '';
+    const types: Record<string, string> = {
+      redactor: 'Redactor (Noticias)',
+      educador: 'Educador (Academia)',
+      entrevistador: 'Entrevistador'
+    };
+    return types[agentType] || agentType;
+  };
+
+  // Determinar la ruta de edición según el source
+  const editUrl = agent.source === 'interview_authors'
+    ? `/admin/autores-entrevistas/${agent.id}/editar`
+    : `/admin/agentes/${agent.id}/editar`;
+
   return (
-    <Link href={`/admin/agentes/${agent.id}/editar`} className="block h-full">
+    <Link href={editUrl} className="block h-full">
       <div className="agent-profile-card">
         {/* Card Content */}
         <div className="agent-profile-card__content">
@@ -71,11 +91,16 @@ export default function AgentCard({ agent }: AgentCardProps) {
               @{agent.slug}
             </p>
 
-            {/* Role Badge */}
+            {/* Role and Agent Type Badges */}
             <div className="agent-profile-card__role">
               <span className="admin-badge admin-badge--neutral">
                 {getRoleLabel(agent.role)}
               </span>
+              {agent.agent_type && (
+                <span className="admin-badge admin-badge--primary">
+                  {getAgentTypeLabel(agent.agent_type)}
+                </span>
+              )}
             </div>
 
             {/* Bio */}

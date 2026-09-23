@@ -24,8 +24,8 @@ export default function CrearAgentePage() {
     bio: '',
     expertise: [] as string[],
     expertiseInput: '',
-    role: 'analyst' as 'analyst' | 'editor' | 'researcher',
-    agent_type: 'redactor' as 'redactor' | 'educador',
+    role: 'analyst' as 'analyst' | 'editor' | 'researcher' | 'journalist' | 'guest',
+    agent_type: 'redactor' as 'redactor' | 'educador' | 'entrevistador',
     email: '',
     signature: '',
     avatar_url: '',
@@ -251,6 +251,8 @@ export default function CrearAgentePage() {
               <option value="analyst">Analista</option>
               <option value="editor">Editor</option>
               <option value="researcher">Investigador</option>
+              <option value="journalist">Periodista</option>
+              <option value="guest">Invitado</option>
             </select>
           </div>
 
@@ -268,9 +270,10 @@ export default function CrearAgentePage() {
             >
               <option value="redactor">Redactor (Noticias)</option>
               <option value="educador">Educador (Academia)</option>
+              <option value="entrevistador">Entrevistador</option>
             </select>
             <p className="admin-form-help">
-              Los redactores publican noticias, los educadores publican contenido de Academia
+              Los redactores publican noticias, los educadores publican contenido de Academia, los entrevistadores publican entrevistas
             </p>
           </div>
         </div>
