@@ -14,21 +14,21 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
 
     // Verificar todas las entrevistas
-    const { data: allInterviews, error: allError } = await supabase
+    const { data: allInterviews, error: allError } = await (supabase as any)
       .from('interviews_with_metadata')
       .select('id, title, slug, mostrar_en_noticias, status, published_at')
-      .eq('status' as any, 'published' as any);
+      .eq('status', 'published');
 
     if (allError) {
       console.error('Error fetching all interviews:', allError);
     }
 
     // Verificar entrevistas con mostrar_en_noticias = true
-    const { data: newsInterviews, error: newsError } = await supabase
+    const { data: newsInterviews, error: newsError } = await (supabase as any)
       .from('interviews_with_metadata')
       .select('*')
-      .eq('status' as any, 'published' as any)
-      .eq('mostrar_en_noticias' as any, true as any);
+      .eq('status', 'published')
+      .eq('mostrar_en_noticias', true);
 
     if (newsError) {
       console.error('Error fetching news interviews:', newsError);

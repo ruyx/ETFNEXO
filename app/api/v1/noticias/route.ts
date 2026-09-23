@@ -41,11 +41,11 @@ export async function GET(request: NextRequest) {
     }
 
     // 2. Obtener entrevistas marcadas para mostrar en noticias
-    let interviewsQuery = supabase
+    let interviewsQuery = (supabase as any)
       .from('interviews_with_metadata')
       .select('*')
-      .eq('status' as any, 'published' as any)
-      .eq('mostrar_en_noticias' as any, true as any);
+      .eq('status', 'published')
+      .eq('mostrar_en_noticias', true);
 
     // Aplicar filtro de categoría si existe
     if (categorySlug) {
