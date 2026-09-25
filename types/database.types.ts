@@ -925,10 +925,7 @@ export type Database = {
           source_name: string | null
           source_published_at: string | null
           source_url: string | null
-          sponsor_company_name: string | null
-          sponsor_enabled: boolean | null
-          sponsor_logo_url: string | null
-          sponsor_website_url: string | null
+          sponsors: Json | null
           status: string | null
           title: string
           updated_at: string | null
@@ -954,10 +951,7 @@ export type Database = {
           source_name?: string | null
           source_published_at?: string | null
           source_url?: string | null
-          sponsor_company_name?: string | null
-          sponsor_enabled?: boolean | null
-          sponsor_logo_url?: string | null
-          sponsor_website_url?: string | null
+          sponsors?: Json | null
           status?: string | null
           title: string
           updated_at?: string | null
@@ -983,10 +977,7 @@ export type Database = {
           source_name?: string | null
           source_published_at?: string | null
           source_url?: string | null
-          sponsor_company_name?: string | null
-          sponsor_enabled?: boolean | null
-          sponsor_logo_url?: string | null
-          sponsor_website_url?: string | null
+          sponsors?: Json | null
           status?: string | null
           title?: string
           updated_at?: string | null

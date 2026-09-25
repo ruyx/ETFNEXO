@@ -7,10 +7,11 @@
 
 import { useState, useEffect, FormEvent, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Eye, Upload, Tag as TagIcon, Image as ImageIcon, Plus, Trash2, HelpCircle, Search, Loader2 } from 'lucide-react';
+import { Save, X, Eye, Upload, Tag as TagIcon, Image as ImageIcon, Plus, Trash2, HelpCircle, Search, Loader2, Building2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import CategoryManager from '@/components/admin/CategoryManager';
+import { Sponsor, createEmptySponsor } from '@/types/sponsor';
 
 // Import Quill dynamically to avoid SSR issues
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -110,11 +111,8 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   const [pinned, setPinned] = useState<boolean>((initialData as any)?.pinned || false);
   const [faqs, setFaqs] = useState<FAQ[]>(initialData?.faq || []);
 
-  // Sponsor state
-  const [sponsorEnabled, setSponsorEnabled] = useState<boolean>((initialData as any)?.sponsor_enabled || false);
-  const [sponsorCompanyName, setSponsorCompanyName] = useState<string>((initialData as any)?.sponsor_company_name || '');
-  const [sponsorLogoUrl, setSponsorLogoUrl] = useState<string>((initialData as any)?.sponsor_logo_url || '');
-  const [sponsorWebsiteUrl, setSponsorWebsiteUrl] = useState<string>((initialData as any)?.sponsor_website_url || '');
+  // Sponsors state
+  const [sponsors, setSponsors] = useState<Sponsor[]>((initialData as any)?.sponsors || []);
 
   // Image upload and Pexels states
   const [uploading, setUploading] = useState(false);
@@ -246,6 +244,51 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
     setFaqs(prev => prev.filter((_, i) => i !== index));
   };
 
+  // Sponsor handlers
+  const addSponsor = () => {
+    setSponsors(prev => [...prev, createEmptySponsor()]);
+  };
+
+  const updateSponsorField = (index: number, field: keyof Sponsor, value: string) => {
+    setSponsors(prev => prev.map((sponsor, i) =>
+      i === index ? { ...sponsor, [field]: value } : sponsor
+    ));
+  };
+
+  const removeSponsor = (index: number) => {
+    setSponsors(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSponsorLogoUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target?.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor selecciona un archivo de imagen válido');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload/image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to upload logo');
+      }
+
+      const data = await response.json();
+      updateSponsorField(index, 'logo_url', data.url);
+    } catch (err: any) {
+      alert(err.message || 'Error al subir el logo');
+    }
+  };
+
   // Image upload handler
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -330,10 +373,7 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
         pinned,
         tags: selectedTags,
         faq: faqs.filter(faq => faq.question.trim() && faq.answer.trim()),
-        sponsor_enabled: sponsorEnabled,
-        sponsor_company_name: sponsorEnabled ? sponsorCompanyName || null : null,
-        sponsor_logo_url: sponsorEnabled ? sponsorLogoUrl || null : null,
-        sponsor_website_url: sponsorEnabled ? sponsorWebsiteUrl || null : null
+        sponsors: sponsors.filter(s => s.company_name.trim().length > 0)
       };
 
       // Determinar autor según tipo seleccionado
@@ -840,130 +880,140 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
           </p>
         </div>
 
-        {/* Sponsor Section - Patrocinio */}
+        {/* Sponsors Section - Patrocinadores */}
         <div className="admin-form-section--compact">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', marginBottom: 'var(--spacing-4)' }}>
-            <div className="sponsor-icon" style={{
-              width: '20px',
-              height: '20px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '12px'
-            }}>
-              ★
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-4)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)' }}>
+              <Building2 className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+              <h2 className="admin-form-section__title" style={{ marginBottom: 0 }}>
+                Patrocinadores
+              </h2>
             </div>
-            <h2 className="admin-form-section__title" style={{ marginBottom: 0 }}>
-              Patrocinio
-            </h2>
+            <button
+              type="button"
+              onClick={addSponsor}
+              className="btn btn-secondary btn-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Agregar Patrocinador
+            </button>
           </div>
 
           <p className="admin-form-help" style={{ marginBottom: 'var(--spacing-4)' }}>
-            Activa el patrocinio para mostrar información del sponsor en el "Resumen Exprés"
+            Agrega información de los patrocinadores que se mostrarán en el artículo.
           </p>
 
-          {/* Toggle Switch */}
-          <div className="admin-form-group">
-            <label className="admin-form-checkbox-label">
-              <input
-                type="checkbox"
-                checked={sponsorEnabled}
-                onChange={(e) => setSponsorEnabled(e.target.checked)}
-                className="admin-form-checkbox"
-              />
-              <span>Activar Patrocinio</span>
-            </label>
-          </div>
+          {sponsors.length === 0 ? (
+            <div className="article-form-faq-empty">
+              <Building2 className="w-12 h-12" />
+              <p>Sin patrocinadores</p>
+              <p className="admin-form-help">
+                Agrega patrocinadores para mostrar información en el artículo
+              </p>
+            </div>
+          ) : (
+            <div className="article-form-faq-list">
+              {sponsors.map((sponsor, index) => (
+                <div key={index} className="article-form-faq-item">
+                  <div className="article-form-faq-item__header">
+                    <span className="article-form-faq-item__number">
+                      Patrocinador {index + 1}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => removeSponsor(index)}
+                      className="article-form-faq-item__remove"
+                      title="Eliminar patrocinador"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
 
-          {/* Campos condicionales cuando sponsor está activo */}
-          {sponsorEnabled && (
-            <div className="sponsor-fields" style={{
-              marginTop: 'var(--spacing-4)',
-              padding: 'var(--spacing-4)',
-              background: 'rgba(255, 215, 0, 0.05)',
-              border: '1px solid rgba(255, 215, 0, 0.2)',
-              borderRadius: 'var(--spacing-2)'
-            }}>
-              <div className="admin-form-group">
-                <label htmlFor="sponsor_company_name" className="admin-form-label admin-form-label--required">
-                  Nombre de la Empresa
-                </label>
-                <input
-                  type="text"
-                  id="sponsor_company_name"
-                  value={sponsorCompanyName}
-                  onChange={(e) => setSponsorCompanyName(e.target.value)}
-                  className="admin-form-input"
-                  placeholder="Ej: BlackRock, Vanguard..."
-                  required={sponsorEnabled}
-                />
-                <p className="admin-form-help">
-                  Nombre de la empresa patrocinadora (obligatorio)
-                </p>
-              </div>
-
-              <div className="admin-form-group">
-                <label htmlFor="sponsor_logo_url" className="admin-form-label">
-                  URL del Logo
-                </label>
-                <input
-                  type="url"
-                  id="sponsor_logo_url"
-                  value={sponsorLogoUrl}
-                  onChange={(e) => setSponsorLogoUrl(e.target.value)}
-                  className="admin-form-input"
-                  placeholder="https://..."
-                />
-                <p className="admin-form-help">
-                  URL del logo de la empresa (opcional)
-                </p>
-                {sponsorLogoUrl && (
-                  <div style={{
-                    marginTop: 'var(--spacing-2)',
-                    padding: 'var(--spacing-2)',
-                    background: 'var(--color-neutral-0)',
-                    borderRadius: 'var(--spacing-1)',
-                    border: '1px solid var(--color-neutral-200)'
-                  }}>
-                    <p style={{ fontSize: '12px', marginBottom: 'var(--spacing-1)', color: 'var(--color-neutral-600)' }}>
-                      Preview:
-                    </p>
-                    <img
-                      src={sponsorLogoUrl}
-                      alt="Logo preview"
-                      style={{
-                        maxWidth: '200px',
-                        maxHeight: '60px',
-                        objectFit: 'contain'
-                      }}
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
+                  <div className="admin-form-group">
+                    <label className="admin-form-label admin-form-label--required">
+                      Nombre de la Empresa
+                    </label>
+                    <input
+                      type="text"
+                      value={sponsor.company_name}
+                      onChange={(e) => updateSponsorField(index, 'company_name', e.target.value)}
+                      className="admin-form-input"
+                      placeholder="Ej: BlackRock, Vanguard..."
+                      required={sponsors.length > 0}
                     />
                   </div>
-                )}
-              </div>
 
-              <div className="admin-form-group">
-                <label htmlFor="sponsor_website_url" className="admin-form-label">
-                  URL del Sitio Web
-                </label>
-                <input
-                  type="url"
-                  id="sponsor_website_url"
-                  value={sponsorWebsiteUrl}
-                  onChange={(e) => setSponsorWebsiteUrl(e.target.value)}
-                  className="admin-form-input"
-                  placeholder="https://www.empresa.com"
-                />
-                <p className="admin-form-help">
-                  Link al sitio web de la empresa (opcional)
-                </p>
-              </div>
+                  <div className="admin-form-group">
+                    <label className="admin-form-label">
+                      Logo del Patrocinador
+                    </label>
+                    <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+                      <label className="btn btn-secondary" style={{ flex: '0 0 auto', cursor: 'pointer' }}>
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp,image/gif"
+                          onChange={(e) => handleSponsorLogoUpload(index, e)}
+                          style={{ display: 'none' }}
+                        />
+                        <Upload className="w-4 h-4" />
+                        Subir Logo
+                      </label>
+                      <input
+                        type="url"
+                        value={sponsor.logo_url}
+                        onChange={(e) => updateSponsorField(index, 'logo_url', e.target.value)}
+                        className="admin-form-input"
+                        style={{ flex: 1 }}
+                        placeholder="https://..."
+                      />
+                    </div>
+                    {sponsor.logo_url && (
+                      <div style={{
+                        marginTop: 'var(--spacing-2)',
+                        padding: 'var(--spacing-2)',
+                        background: 'var(--color-neutral-0)',
+                        borderRadius: 'var(--spacing-1)',
+                        border: '1px solid var(--color-neutral-200)'
+                      }}>
+                        <p style={{ fontSize: '12px', marginBottom: 'var(--spacing-1)', color: 'var(--color-neutral-600)' }}>
+                          Preview:
+                        </p>
+                        <img
+                          src={sponsor.logo_url}
+                          alt="Logo preview"
+                          style={{
+                            maxWidth: '200px',
+                            maxHeight: '60px',
+                            objectFit: 'contain'
+                          }}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label className="admin-form-label">
+                      Sitio Web
+                    </label>
+                    <input
+                      type="url"
+                      value={sponsor.website_url}
+                      onChange={(e) => updateSponsorField(index, 'website_url', e.target.value)}
+                      className="admin-form-input"
+                      placeholder="https://www.empresa.com"
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           )}
+
+          <p className="admin-form-help" style={{ marginTop: 'var(--spacing-3)' }}>
+            {sponsors.length} patrocinador(es) agregado(s)
+          </p>
         </div>
       </div>
 

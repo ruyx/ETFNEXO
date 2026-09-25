@@ -2,6 +2,14 @@
    SPONSOR BADGE - Patrocinio
    ============================================ */
 
+/* ==================== SPONSOR LIST (Container) ==================== */
+.sponsor-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-4);
+}
+
 /* ==================== SPONSOR BADGE ==================== */
 .sponsor-badge {
   display: flex;

@@ -1,32 +1,32 @@
 /**
- * Sponsor Types - Sistema de patrocinio
- * Usado en news_articles e interviews
+ * Sponsor Types - Sistema de patrocinio (Repeater/Array)
+ * Usado en news_articles, interviews y academy_articles
  */
 
-export interface SponsorData {
-  sponsor_enabled: boolean;
-  sponsor_company_name: string | null;
-  sponsor_logo_url: string | null;
-  sponsor_website_url: string | null;
-}
-
-export interface SponsorFormData {
-  sponsor_enabled: boolean;
-  sponsor_company_name: string;
-  sponsor_logo_url: string;
-  sponsor_website_url: string;
+export interface Sponsor {
+  company_name: string;
+  logo_url: string;
+  website_url: string;
 }
 
 /**
- * Validar que los datos de sponsor son válidos
+ * Validar que un sponsor individual es válido
  */
-export function validateSponsorData(data: Partial<SponsorFormData>): boolean {
-  if (!data.sponsor_enabled) {
-    return true; // No sponsor, siempre válido
+export function validateSponsor(sponsor: Partial<Sponsor>): boolean {
+  // El nombre de la empresa es obligatorio
+  return !!(sponsor.company_name && sponsor.company_name.trim().length > 0);
+}
+
+/**
+ * Validar array completo de sponsors
+ */
+export function validateSponsors(sponsors: Partial<Sponsor>[]): boolean {
+  if (!sponsors || sponsors.length === 0) {
+    return true; // Array vacío es válido (sin sponsors)
   }
 
-  // Si sponsor está habilitado, debe tener al menos el nombre de la empresa
-  return !!(data.sponsor_company_name && data.sponsor_company_name.trim().length > 0);
+  // Todos los sponsors deben tener al menos company_name
+  return sponsors.every(validateSponsor);
 }
 
 /**
@@ -43,4 +43,15 @@ export function isValidUrl(url: string): boolean {
   } catch {
     return false;
   }
+}
+
+/**
+ * Crear sponsor vacío (para agregar al repeater)
+ */
+export function createEmptySponsor(): Sponsor {
+  return {
+    company_name: '',
+    logo_url: '',
+    website_url: ''
+  };
 }

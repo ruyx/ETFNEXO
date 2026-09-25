@@ -8,27 +8,21 @@
 
 import { useState, useEffect } from 'react';
 import { HelpCircle, X, ExternalLink } from 'lucide-react';
-import SponsorBadge from './SponsorBadge';
+import SponsorList from './SponsorList';
+import { Sponsor } from '@/types/sponsor';
 
 interface FAQ {
   question: string;
   answer: string;
 }
 
-interface SponsorData {
-  sponsor_enabled?: boolean;
-  sponsor_company_name?: string | null;
-  sponsor_logo_url?: string | null;
-  sponsor_website_url?: string | null;
-}
-
 interface ArticleFAQProps {
   faqs: FAQ[];
   articleTitle: string;
-  sponsorData?: SponsorData;
+  sponsors?: Sponsor[];
 }
 
-export default function ArticleFAQ({ faqs, articleTitle, sponsorData }: ArticleFAQProps) {
+export default function ArticleFAQ({ faqs, articleTitle, sponsors }: ArticleFAQProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   // Reset modal state when article changes (articleTitle or faqs change)
@@ -196,13 +190,9 @@ export default function ArticleFAQ({ faqs, articleTitle, sponsorData }: ArticleF
                   <span>Ver artículo completo</span>
                 </button>
 
-                {/* Sponsor Badge - Solo si está habilitado */}
-                {sponsorData?.sponsor_enabled && sponsorData?.sponsor_company_name && (
-                  <SponsorBadge
-                    companyName={sponsorData.sponsor_company_name}
-                    logoUrl={sponsorData.sponsor_logo_url}
-                    websiteUrl={sponsorData.sponsor_website_url}
-                  />
+                {/* Sponsor List - Múltiples patrocinadores */}
+                {sponsors && sponsors.length > 0 && (
+                  <SponsorList sponsors={sponsors} />
                 )}
               </div>
             </div>
