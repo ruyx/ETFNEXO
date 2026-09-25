@@ -13,8 +13,22 @@ interface SponsorListProps {
 }
 
 export default function SponsorList({ sponsors }: SponsorListProps) {
+  // DEBUG: Ver todos los sponsors recibidos
+  console.group('🔍 [SponsorList] Debug');
+  console.log('Total sponsors recibidos:', sponsors?.length || 0);
+  console.log('Sponsors completos:', JSON.stringify(sponsors, null, 2));
+
   // Filtrar sponsors válidos (con company_name)
-  const validSponsors = sponsors.filter(s => s.company_name && s.company_name.trim().length > 0);
+  const validSponsors = sponsors.filter(s => {
+    const isValid = s.company_name && s.company_name.trim().length > 0;
+    if (!isValid) {
+      console.warn('❌ Sponsor filtrado (sin company_name):', s);
+    }
+    return isValid;
+  });
+
+  console.log('✅ Valid sponsors después de filtro:', validSponsors.length);
+  console.groupEnd();
 
   if (validSponsors.length === 0) {
     return null;
