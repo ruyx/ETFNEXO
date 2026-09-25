@@ -18,8 +18,8 @@ export default function SponsorBadge({
   logoUrl,
   websiteUrl
 }: SponsorBadgeProps) {
-  const content = (
-    <div className="sponsor-badge">
+  return (
+    <div className="sponsor-badge" style={{ position: 'relative' }}>
       <div className="sponsor-badge__label">
         Patrocinado por
       </div>
@@ -44,30 +44,19 @@ export default function SponsorBadge({
           </span>
 
           {websiteUrl && (
-            <div className="sponsor-badge__link-icon">
-              <ExternalLink className="w-3 h-3" />
-            </div>
+            <a
+              href={websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer nofollow sponsored"
+              className="sponsor-badge__link"
+              aria-label={`Visitar sitio web de ${companyName}`}
+            >
+              <span>Visitar sitio web</span>
+              <ExternalLink className="sponsor-badge__link-icon" />
+            </a>
           )}
         </div>
       </div>
     </div>
   );
-
-  // Si hay URL del sitio web, hacer el badge clickeable
-  if (websiteUrl) {
-    return (
-      <a
-        href={websiteUrl}
-        target="_blank"
-        rel="noopener noreferrer nofollow sponsored"
-        className="sponsor-badge-link"
-        aria-label={`Visitar sitio web de ${companyName}`}
-      >
-        {content}
-      </a>
-    );
-  }
-
-  // Sin URL, solo mostrar el badge
-  return content;
 }
