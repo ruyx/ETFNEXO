@@ -8,7 +8,8 @@ import ArticleFAQ from '@/components/ArticleFAQ';
 import { Calendar, Eye, ArrowLeft } from 'lucide-react';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-export const revalidate = 3600;
+// Revalidate every 5 minutes to ensure fresh content from database
+export const revalidate = 300;
 
 interface PageProps {
   params: { slug: string };

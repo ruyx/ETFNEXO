@@ -10,8 +10,8 @@ import ArticleDetailWithFAQ from '@/components/ArticleDetailWithFAQ';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { formatArticleContent } from '@/lib/format-article-content';
 
-// Revalidate every hour to ensure fresh content from database
-export const revalidate = 3600;
+// Revalidate every 5 minutes to ensure fresh content from database
+export const revalidate = 300;
 
 interface PageProps {
   params: { slug: string };
