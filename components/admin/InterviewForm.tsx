@@ -1023,7 +1023,13 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
         </div>
 
       {/* Action Bar */}
-      <div className="admin-form-actions">
+      <div className="admin-form-actions" style={{
+        marginTop: 'var(--spacing-8)',
+        paddingTop: 'var(--spacing-6)',
+        borderTop: '2px solid var(--color-neutral-200)',
+        position: 'relative',
+        zIndex: 1
+      }}>
         <div className="admin-form-actions__group">
           <button
             type="button"

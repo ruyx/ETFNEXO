@@ -1018,7 +1018,14 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
       </div>
 
       {/* Form Actions - Full width */}
-      <div style={{ gridColumn: '1 / -1' }}>
+      <div style={{
+        gridColumn: '1 / -1',
+        marginTop: 'var(--spacing-8)',
+        paddingTop: 'var(--spacing-6)',
+        borderTop: '2px solid var(--color-neutral-200)',
+        position: 'relative',
+        zIndex: 1
+      }}>
         <div className="admin-form-actions">
           <button
             type="button"
