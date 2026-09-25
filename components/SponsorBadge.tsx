@@ -19,11 +19,7 @@ export default function SponsorBadge({
   websiteUrl
 }: SponsorBadgeProps) {
   return (
-    <div className="sponsor-badge" style={{ position: 'relative' }}>
-      <div className="sponsor-badge__label">
-        Patrocinado por
-      </div>
-
+    <div className="sponsor-badge">
       <div className="sponsor-badge__content">
         {logoUrl && (
           <div className="sponsor-badge__logo">

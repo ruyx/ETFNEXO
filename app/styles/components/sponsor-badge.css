@@ -2,14 +2,26 @@
    SPONSOR BADGE - Patrocinio
    ============================================ */
 
-/* ==================== SPONSOR LIST (Container) ==================== */
-.sponsor-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  margin-top: var(--spacing-4);
-  padding-top: var(--spacing-4);
+/* ==================== SPONSOR SECTION ==================== */
+.sponsor-section {
+  margin-top: var(--spacing-5);
+  padding-top: var(--spacing-5);
   border-top: 1px solid var(--color-neutral-200);
+}
+
+.sponsor-section__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-neutral-700);
+  margin-bottom: var(--spacing-3);
+  letter-spacing: 0.01em;
+}
+
+/* ==================== SPONSOR GRID ==================== */
+.sponsor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-3);
 }
 
 /* ==================== SPONSOR BADGE ==================== */
@@ -25,18 +37,7 @@
   transition: all 0.2s ease;
 }
 
-.sponsor-badge__label {
-  position: absolute;
-  top: -10px;
-  left: var(--spacing-3);
-  font-size: 0.625rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-neutral-500);
-  background: white;
-  padding: 0 var(--spacing-1);
-}
+/* Label removido - ahora hay un título global en sponsor-section */
 
 .sponsor-badge__content {
   display: flex;
@@ -111,6 +112,11 @@
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
+  .sponsor-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2);
+  }
+
   .sponsor-badge {
     padding: var(--spacing-2);
     min-height: 56px; /* IMPORTANTE: min-height permite crecimiento dinámico */
@@ -129,13 +135,12 @@
     font-size: 0.813rem;
   }
 
-  .sponsor-badge__label {
-    font-size: 0.563rem;
-    top: -8px;
-  }
-
   .sponsor-badge__link {
     font-size: 0.688rem;
+  }
+
+  .sponsor-section__title {
+    font-size: 0.813rem;
   }
 }
 
