@@ -261,7 +261,16 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
         </article>
 
         {/* FAQ Floating Bubble */}
-        <ArticleFAQ faqs={interview.faq || []} articleTitle={interview.title} />
+        <ArticleFAQ
+          faqs={interview.faq || []}
+          articleTitle={interview.title}
+          sponsorData={{
+            sponsor_enabled: interview.sponsor_enabled,
+            sponsor_company_name: interview.sponsor_company_name,
+            sponsor_logo_url: interview.sponsor_logo_url,
+            sponsor_website_url: interview.sponsor_website_url
+          }}
+        />
       </main>
 
       <Footer />

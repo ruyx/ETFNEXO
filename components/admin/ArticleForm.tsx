@@ -110,6 +110,12 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   const [pinned, setPinned] = useState<boolean>((initialData as any)?.pinned || false);
   const [faqs, setFaqs] = useState<FAQ[]>(initialData?.faq || []);
 
+  // Sponsor state
+  const [sponsorEnabled, setSponsorEnabled] = useState<boolean>((initialData as any)?.sponsor_enabled || false);
+  const [sponsorCompanyName, setSponsorCompanyName] = useState<string>((initialData as any)?.sponsor_company_name || '');
+  const [sponsorLogoUrl, setSponsorLogoUrl] = useState<string>((initialData as any)?.sponsor_logo_url || '');
+  const [sponsorWebsiteUrl, setSponsorWebsiteUrl] = useState<string>((initialData as any)?.sponsor_website_url || '');
+
   // Image upload and Pexels states
   const [uploading, setUploading] = useState(false);
   const [showPexelsModal, setShowPexelsModal] = useState(false);
@@ -323,7 +329,11 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
         status: publishNow ? 'published' : status,
         pinned,
         tags: selectedTags,
-        faq: faqs.filter(faq => faq.question.trim() && faq.answer.trim())
+        faq: faqs.filter(faq => faq.question.trim() && faq.answer.trim()),
+        sponsor_enabled: sponsorEnabled,
+        sponsor_company_name: sponsorEnabled ? sponsorCompanyName || null : null,
+        sponsor_logo_url: sponsorEnabled ? sponsorLogoUrl || null : null,
+        sponsor_website_url: sponsorEnabled ? sponsorWebsiteUrl || null : null
       };
 
       // Determinar autor según tipo seleccionado
@@ -828,6 +838,132 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
           <p className="admin-form-help" style={{ marginTop: 'var(--spacing-3)' }}>
             {faqs.length} pregunta(s) agregada(s)
           </p>
+        </div>
+
+        {/* Sponsor Section - Patrocinio */}
+        <div className="admin-form-section--compact">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', marginBottom: 'var(--spacing-4)' }}>
+            <div className="sponsor-icon" style={{
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '12px'
+            }}>
+              ★
+            </div>
+            <h2 className="admin-form-section__title" style={{ marginBottom: 0 }}>
+              Patrocinio
+            </h2>
+          </div>
+
+          <p className="admin-form-help" style={{ marginBottom: 'var(--spacing-4)' }}>
+            Activa el patrocinio para mostrar información del sponsor en el "Resumen Exprés"
+          </p>
+
+          {/* Toggle Switch */}
+          <div className="admin-form-group">
+            <label className="admin-form-checkbox-label">
+              <input
+                type="checkbox"
+                checked={sponsorEnabled}
+                onChange={(e) => setSponsorEnabled(e.target.checked)}
+                className="admin-form-checkbox"
+              />
+              <span>Activar Patrocinio</span>
+            </label>
+          </div>
+
+          {/* Campos condicionales cuando sponsor está activo */}
+          {sponsorEnabled && (
+            <div className="sponsor-fields" style={{
+              marginTop: 'var(--spacing-4)',
+              padding: 'var(--spacing-4)',
+              background: 'rgba(255, 215, 0, 0.05)',
+              border: '1px solid rgba(255, 215, 0, 0.2)',
+              borderRadius: 'var(--spacing-2)'
+            }}>
+              <div className="admin-form-group">
+                <label htmlFor="sponsor_company_name" className="admin-form-label admin-form-label--required">
+                  Nombre de la Empresa
+                </label>
+                <input
+                  type="text"
+                  id="sponsor_company_name"
+                  value={sponsorCompanyName}
+                  onChange={(e) => setSponsorCompanyName(e.target.value)}
+                  className="admin-form-input"
+                  placeholder="Ej: BlackRock, Vanguard..."
+                  required={sponsorEnabled}
+                />
+                <p className="admin-form-help">
+                  Nombre de la empresa patrocinadora (obligatorio)
+                </p>
+              </div>
+
+              <div className="admin-form-group">
+                <label htmlFor="sponsor_logo_url" className="admin-form-label">
+                  URL del Logo
+                </label>
+                <input
+                  type="url"
+                  id="sponsor_logo_url"
+                  value={sponsorLogoUrl}
+                  onChange={(e) => setSponsorLogoUrl(e.target.value)}
+                  className="admin-form-input"
+                  placeholder="https://..."
+                />
+                <p className="admin-form-help">
+                  URL del logo de la empresa (opcional)
+                </p>
+                {sponsorLogoUrl && (
+                  <div style={{
+                    marginTop: 'var(--spacing-2)',
+                    padding: 'var(--spacing-2)',
+                    background: 'var(--color-neutral-0)',
+                    borderRadius: 'var(--spacing-1)',
+                    border: '1px solid var(--color-neutral-200)'
+                  }}>
+                    <p style={{ fontSize: '12px', marginBottom: 'var(--spacing-1)', color: 'var(--color-neutral-600)' }}>
+                      Preview:
+                    </p>
+                    <img
+                      src={sponsorLogoUrl}
+                      alt="Logo preview"
+                      style={{
+                        maxWidth: '200px',
+                        maxHeight: '60px',
+                        objectFit: 'contain'
+                      }}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="admin-form-group">
+                <label htmlFor="sponsor_website_url" className="admin-form-label">
+                  URL del Sitio Web
+                </label>
+                <input
+                  type="url"
+                  id="sponsor_website_url"
+                  value={sponsorWebsiteUrl}
+                  onChange={(e) => setSponsorWebsiteUrl(e.target.value)}
+                  className="admin-form-input"
+                  placeholder="https://www.empresa.com"
+                />
+                <p className="admin-form-help">
+                  Link al sitio web de la empresa (opcional)
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

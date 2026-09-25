@@ -9,6 +9,10 @@ interface Article {
   slug: string;
   title: string;
   faq?: any[];
+  sponsor_enabled?: boolean;
+  sponsor_company_name?: string | null;
+  sponsor_logo_url?: string | null;
+  sponsor_website_url?: string | null;
   [key: string]: any;
 }
 
@@ -47,6 +51,12 @@ export default function ArticleDetailWithFAQ({ initialArticle, basePath, childre
           key={`${currentArticle.id}-${currentArticle.title}`}
           faqs={currentArticle.faq}
           articleTitle={currentArticle.title}
+          sponsorData={{
+            sponsor_enabled: currentArticle.sponsor_enabled,
+            sponsor_company_name: currentArticle.sponsor_company_name,
+            sponsor_logo_url: currentArticle.sponsor_logo_url,
+            sponsor_website_url: currentArticle.sponsor_website_url
+          }}
         />
       )}
     </>
