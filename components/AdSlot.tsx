@@ -22,28 +22,76 @@ interface AdSlotProps {
   className?: string;
 }
 
+// Helper: Get skeleton height by placement
+function getPlacementHeight(placement: string): string {
+  const heightMap: Record<string, string> = {
+    'article_top': '90px',
+    'home_top': '110px',
+    'home_after_ranking': '110px',
+    'sidebar_top': '250px',
+    'sidebar_bottom': '250px',
+    'home_news_sidebar': '250px',
+    'article_mid': '180px',
+    'article_bottom': '180px',
+    'feed_inline': '180px',
+    'header': '60px',
+    'footer': '90px'
+  };
+  return heightMap[placement] || '180px';
+}
+
+// Above-the-fold placements (load immediately)
+const ABOVE_FOLD_PLACEMENTS = [
+  'article_top',
+  'home_top',
+  'header'
+];
+
 export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   const [ad, setAd] = useState<Ad | null>(null);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const [viewabilityTracked, setViewabilityTracked] = useState(false);
   const adRef = useRef<HTMLDivElement>(null);
+  const viewabilityTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Set mounted flag after hydration
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Check if ad element is actually in the DOM after rendering (reduced logging)
+  // Lazy loading with IntersectionObserver (below-the-fold ads)
   useEffect(() => {
-    if (ad && adRef.current) {
-      // Logging disabled in production - enable for debugging
-      // console.log('[AdSlot] Ad rendered:', { placement, type: ad.type });
-    }
-  }, [ad, placement]);
-
-  useEffect(() => {
-    // Only run on client after mount
     if (!mounted) return;
+
+    // Above-the-fold ads load immediately
+    if (ABOVE_FOLD_PLACEMENTS.includes(placement)) {
+      setIsInView(true);
+      return;
+    }
+
+    // Below-the-fold ads: lazy load when approaching viewport
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !ad) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '200px' } // Start loading 200px before entering viewport
+    );
+
+    if (adRef.current) {
+      observer.observe(adRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [placement, mounted, ad]);
+
+  // Fetch ad when in view
+  useEffect(() => {
+    if (!isInView) return;
 
     const fetchAd = async () => {
       try {
@@ -60,15 +108,6 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
 
         if (data.ad) {
           setAd(data.ad);
-          // Track impression
-          fetch('/api/ads/impression', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              ad_id: data.ad.id,
-              page_url: window.location.pathname
-            })
-          }).catch(() => {});
         }
         setLoading(false);
       } catch (error) {
@@ -78,7 +117,56 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     };
 
     fetchAd();
-  }, [placement, mounted]);
+  }, [isInView, placement]);
+
+  // Viewability tracking (50% visible + 1 second)
+  useEffect(() => {
+    if (!ad || viewabilityTracked || !adRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+
+        if (entry.intersectionRatio >= 0.5) {
+          // 50%+ visible: start 1-second timer
+          if (!viewabilityTimerRef.current) {
+            viewabilityTimerRef.current = setTimeout(() => {
+              // Track viewable impression
+              fetch('/api/ads/impression', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  ad_id: ad.id,
+                  page_url: window.location.pathname,
+                  viewable: true,
+                  viewability_ratio: entry.intersectionRatio
+                })
+              }).catch(() => {});
+
+              setViewabilityTracked(true);
+              observer.disconnect();
+            }, 1000);
+          }
+        } else {
+          // Less than 50% visible: cancel timer
+          if (viewabilityTimerRef.current) {
+            clearTimeout(viewabilityTimerRef.current);
+            viewabilityTimerRef.current = null;
+          }
+        }
+      },
+      { threshold: [0.5] }
+    );
+
+    observer.observe(adRef.current);
+
+    return () => {
+      observer.disconnect();
+      if (viewabilityTimerRef.current) {
+        clearTimeout(viewabilityTimerRef.current);
+      }
+    };
+  }, [ad, viewabilityTracked]);
 
   const handleAdClick = () => {
     if (!ad) return;
@@ -103,9 +191,41 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     }
   };
 
-  // Don't render until mounted and ad is loaded
+  // Skeleton loader while loading
   if (!mounted || loading || !ad) {
-    return null;
+    return (
+      <div
+        ref={adRef}
+        className={`ad-slot ad-slot--skeleton ad-slot--${placement} ${className}`}
+        style={{
+          minHeight: getPlacementHeight(placement),
+          backgroundColor: '#f1f5f9',
+          borderRadius: '12px',
+          overflow: 'hidden',
+          position: 'relative',
+          border: '2px solid #e2e8f0'
+        }}
+      >
+        {/* Shimmer effect */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: '-100%',
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)',
+            animation: 'shimmer 1.5s infinite'
+          }}
+        />
+        <style jsx>{`
+          @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+          }
+        `}</style>
+      </div>
+    );
   }
 
   // Script ad
