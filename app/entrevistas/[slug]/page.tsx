@@ -30,6 +30,14 @@ async function getInterview(slug: string) {
       return null;
     }
 
+    // DEBUG: Verificar si el contenido está llegando
+    console.log('[DEBUG] Interview fetched:', {
+      slug: interview.slug,
+      hasContent: !!interview.content,
+      contentLength: interview.content?.length || 0,
+      contentPreview: interview.content?.substring(0, 100)
+    });
+
     return interview;
   } catch (error) {
     console.error('Error fetching interview:', error);
