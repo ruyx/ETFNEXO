@@ -74,8 +74,23 @@ export default function NoticiasPage() {
   }, [hasMore, loading, page, loadArticles]);
 
   return (
-    <div className="bg-white min-h-screen">
-      <Header />
+    <>
+      {/* Schema.org CollectionPage */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'CollectionPage',
+            name: 'Noticias sobre ETFs',
+            description: 'Últimas noticias y análisis sobre fondos cotizados (ETFs)',
+            url: 'https://etfnexo.com/noticias'
+          })
+        }}
+      />
+
+      <div className="bg-white min-h-screen">
+        <Header />
 
       <main>
         {/* Hero Section */}
@@ -198,5 +213,6 @@ export default function NoticiasPage() {
 
       <Footer />
     </div>
+    </>
   );
 }

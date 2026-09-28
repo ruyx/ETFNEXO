@@ -28,9 +28,28 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="bg-white">
-      <Header />
-      <MarketTicker />
+    <>
+      {/* Schema.org para Homepage */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'ETF Nexo',
+            url: 'https://etfnexo.com',
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: 'https://etfnexo.com/buscar?q={search_term_string}',
+              'query-input': 'required name=search_term_string'
+            }
+          })
+        }}
+      />
+
+      <div className="bg-white">
+        <Header />
+        <MarketTicker />
 
       {/* Banner Superior - Debajo del ticker - Dark background */}
       <section className="py-4 px-6 bg-gradient-to-b from-slate-900 to-slate-800 border-b border-slate-700">
@@ -252,5 +271,6 @@ export default function HomePage() {
         <Footer />
       </main>
     </div>
+    </>
   );
 }

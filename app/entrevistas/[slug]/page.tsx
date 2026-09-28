@@ -46,13 +46,54 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
+  const seoTitle = interview.meta_title ||
+    `${interview.title} - Entrevista con Experto | ETF Nexo`;
+
+  const seoDescription = interview.meta_description ||
+    interview.description?.substring(0, 160) ||
+    `Entrevista exclusiva: ${interview.title}. Conocimiento directo de expertos del sector financiero.`;
+
   return {
-    title: interview.meta_title || `${interview.title} | Entrevistas ETF Nexo`,
-    description: interview.meta_description || interview.description || undefined,
-    openGraph: {
-      title: interview.meta_title || interview.title || undefined,
-      description: interview.meta_description || interview.description || undefined,
+    title: seoTitle,
+    description: seoDescription,
+
+    alternates: {
+      canonical: `https://etfnexo.com/entrevistas/${params.slug}`
     },
+
+    authors: interview.author_display_name ? [{ name: interview.author_display_name }] : undefined,
+
+    openGraph: {
+      type: 'article',
+      title: interview.meta_title || interview.title,
+      description: seoDescription,
+      url: `https://etfnexo.com/entrevistas/${params.slug}`,
+      publishedTime: interview.published_at || undefined,
+      authors: interview.author_display_name ? [interview.author_display_name] : undefined,
+      section: 'Entrevistas',
+      images: interview.featured_image_url ? [
+        {
+          url: interview.featured_image_url,
+          width: 1200,
+          height: 630,
+          alt: interview.featured_image_alt || interview.title
+        }
+      ] : [
+        {
+          url: '/og-image-default-entrevista.png',
+          width: 1200,
+          height: 630,
+          alt: 'ETF Nexo - Entrevistas con Expertos'
+        }
+      ]
+    },
+
+    twitter: {
+      card: 'summary_large_image',
+      title: interview.title.substring(0, 70),
+      description: seoDescription.substring(0, 160),
+      images: interview.featured_image_url ? [interview.featured_image_url] : ['/og-image-default-entrevista.png']
+    }
   };
 }
 
@@ -92,6 +133,68 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
   return (
     <>
       <Header />
+
+      {/* Schema.org VideoObject */}
+      {interview.youtube_video_id && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'VideoObject',
+              name: interview.title,
+              description: interview.description,
+              thumbnailUrl: interview.featured_image_url || `https://img.youtube.com/vi/${interview.youtube_video_id}/maxresdefault.jpg`,
+              uploadDate: interview.published_at,
+              contentUrl: `https://www.youtube.com/watch?v=${interview.youtube_video_id}`,
+              embedUrl: `https://www.youtube.com/embed/${interview.youtube_video_id}`,
+              author: {
+                '@type': 'Person',
+                name: displayAuthorName
+              },
+              publisher: {
+                '@type': 'Organization',
+                name: 'ETF Nexo',
+                logo: {
+                  '@type': 'ImageObject',
+                  url: 'https://etfnexo.com/logo.png'
+                }
+              }
+            })
+          }}
+        />
+      )}
+
+      {/* Schema.org BreadcrumbList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Inicio',
+                item: 'https://etfnexo.com'
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Entrevistas',
+                item: 'https://etfnexo.com/entrevistas'
+              },
+              {
+                '@type': 'ListItem',
+                position: 3,
+                name: interview.title,
+                item: `https://etfnexo.com/entrevistas/${params.slug}`
+              }
+            ]
+          })
+        }}
+      />
 
       <main className="bg-slate-50 min-h-screen">
         {/* Breadcrumb */}

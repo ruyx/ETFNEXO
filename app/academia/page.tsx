@@ -74,10 +74,30 @@ export default function AcademiaPage() {
   }, [hasMore, loading, page, loadArticles]);
 
   return (
-    <div className="bg-white min-h-screen">
-      <Header />
+    <>
+      {/* Schema.org EducationalOrganization */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'CollectionPage',
+            name: 'Academia ETF Nexo',
+            description: 'Contenido educativo sobre ETFs y fondos cotizados',
+            url: 'https://etfnexo.com/academia',
+            about: {
+              '@type': 'Thing',
+              name: 'ETF',
+              description: 'Exchange-Traded Funds (Fondos Cotizados)'
+            }
+          })
+        }}
+      />
 
-      <main>
+      <div className="bg-white min-h-screen">
+        <Header />
+
+        <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-900 text-white py-16 px-6">
           <div className="container max-w-4xl text-center">
@@ -198,5 +218,6 @@ export default function AcademiaPage() {
 
       <Footer />
     </div>
+    </>
   );
 }

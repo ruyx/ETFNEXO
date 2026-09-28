@@ -51,14 +51,58 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
+  // Generar título SEO optimizado
+  const seoTitle = article.meta_title ||
+    `${article.title} - Análisis y Noticias ETF | ETF Nexo`;
+
+  // Generar descripción SEO optimizada
+  const seoDescription = article.meta_description ||
+    article.excerpt?.replace(/<[^>]*>/g, '').substring(0, 160) ||
+    `Análisis completo: ${article.title}. Información actualizada sobre ETFs y fondos cotizados en ETF Nexo.`;
+
   return {
-    title: `${article.title} | ETF Nexo`,
-    description: article.excerpt || undefined,
-    openGraph: {
-      title: article.title || undefined,
-      description: article.excerpt || undefined,
-      images: article.featured_image_url ? [article.featured_image_url] : [],
+    title: seoTitle,
+    description: seoDescription,
+
+    alternates: {
+      canonical: `https://etfnexo.com/noticias/${params.slug}`
     },
+
+    authors: article.agent_name ? [{ name: article.agent_name }] : undefined,
+
+    openGraph: {
+      type: 'article',
+      title: article.meta_title || article.title,
+      description: seoDescription,
+      url: `https://etfnexo.com/noticias/${params.slug}`,
+      publishedTime: article.published_at || article.source_published_at || undefined,
+      modifiedTime: article.updated_at || undefined,
+      authors: article.agent_name ? [article.agent_name] : undefined,
+      section: article.category_name || 'Noticias',
+      tags: article.tags?.map((tag: any) => tag.name) || [],
+      images: article.featured_image_url ? [
+        {
+          url: article.featured_image_url,
+          width: 1200,
+          height: 630,
+          alt: article.featured_image_alt || article.title
+        }
+      ] : [
+        {
+          url: '/og-image-default-noticia.png',
+          width: 1200,
+          height: 630,
+          alt: 'ETF Nexo - Noticias sobre ETFs'
+        }
+      ]
+    },
+
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title.substring(0, 70),
+      description: seoDescription.substring(0, 160),
+      images: article.featured_image_url ? [article.featured_image_url] : ['/og-image-default-noticia.png']
+    }
   };
 }
 
@@ -134,6 +178,73 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
   return (
     <>
       <Header />
+
+      {/* Schema.org NewsArticle */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'NewsArticle',
+            headline: article.title,
+            description: article.excerpt?.replace(/<[^>]*>/g, ''),
+            image: article.featured_image_url || 'https://etfnexo.com/og-image-default-noticia.png',
+            datePublished: dateToFormat,
+            dateModified: article.updated_at || dateToFormat,
+            author: {
+              '@type': article.agent_name ? 'Person' : 'Organization',
+              name: displayAuthorName,
+              url: article.agent_slug ? `https://etfnexo.com/autores/${article.agent_slug}` : 'https://etfnexo.com'
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: 'ETF Nexo',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://etfnexo.com/logo.png'
+              }
+            },
+            mainEntityOfPage: {
+              '@type': 'WebPage',
+              '@id': `https://etfnexo.com/noticias/${params.slug}`
+            },
+            articleSection: article.category_name || 'Noticias',
+            keywords: article.tags?.map((tag: any) => tag.name).join(', '),
+            wordCount: article.content?.split(/\s+/).length || 0
+          })
+        }}
+      />
+
+      {/* Schema.org BreadcrumbList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Inicio',
+                item: 'https://etfnexo.com'
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Noticias',
+                item: 'https://etfnexo.com/noticias'
+              },
+              {
+                '@type': 'ListItem',
+                position: 3,
+                name: article.title,
+                item: `https://etfnexo.com/noticias/${params.slug}`
+              }
+            ]
+          })
+        }}
+      />
 
       {/* Banner Fixed Encima del Breadcrumb */}
       <FixedTopBanner placement="article_top" />

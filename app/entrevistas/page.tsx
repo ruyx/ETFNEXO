@@ -79,8 +79,23 @@ export default function EntrevistasPage() {
   }, [hasMore, loading, page, loadInterviews]);
 
   return (
-    <div className="bg-white min-h-screen">
-      <Header />
+    <>
+      {/* Schema.org VideoObject Collection */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'CollectionPage',
+            name: 'Entrevistas con Expertos en ETFs',
+            description: 'Entrevistas en video con líderes del sector financiero',
+            url: 'https://etfnexo.com/entrevistas'
+          })
+        }}
+      />
+
+      <div className="bg-white min-h-screen">
+        <Header />
 
       <main>
         {/* Hero Section */}
@@ -203,5 +218,6 @@ export default function EntrevistasPage() {
 
       <Footer />
     </div>
+    </>
   );
 }

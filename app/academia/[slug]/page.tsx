@@ -53,14 +53,55 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
+  const seoTitle = article.meta_title ||
+    `${article.title} - Aprende sobre ETFs | Academia ETF Nexo`;
+
+  const seoDescription = article.meta_description ||
+    article.excerpt?.replace(/<[^>]*>/g, '').substring(0, 160) ||
+    `Guía completa: ${article.title}. Contenido educativo sobre inversión en ETFs.`;
+
   return {
-    title: `${article.title} | Academia ETF Nexo`,
-    description: article.excerpt || article.meta_description || undefined,
-    openGraph: {
-      title: article.meta_title || article.title || undefined,
-      description: article.meta_description || article.excerpt || undefined,
-      images: article.featured_image_url ? [article.featured_image_url] : [],
+    title: seoTitle,
+    description: seoDescription,
+
+    alternates: {
+      canonical: `https://etfnexo.com/academia/${params.slug}`
     },
+
+    authors: article.agent_display_name ? [{ name: article.agent_display_name }] : undefined,
+
+    openGraph: {
+      type: 'article',
+      title: article.meta_title || article.title,
+      description: seoDescription,
+      url: `https://etfnexo.com/academia/${params.slug}`,
+      publishedTime: article.published_at || undefined,
+      authors: article.agent_display_name ? [article.agent_display_name] : undefined,
+      section: 'Academia',
+      tags: article.tags?.map((tag: any) => tag.name) || [],
+      images: article.featured_image_url ? [
+        {
+          url: article.featured_image_url,
+          width: 1200,
+          height: 630,
+          alt: article.featured_image_alt || article.title
+        }
+      ] : [
+        {
+          url: '/og-image-default-academia.png',
+          width: 1200,
+          height: 630,
+          alt: 'Academia ETF Nexo - Contenido Educativo'
+        }
+      ]
+    },
+
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title.substring(0, 70),
+      description: seoDescription.substring(0, 160),
+      images: article.featured_image_url ? [article.featured_image_url] : ['/og-image-default-academia.png']
+    }
   };
 }
 
@@ -101,6 +142,72 @@ export default async function AcademiaDetailPage({ params }: PageProps) {
   return (
     <>
       <Header />
+
+      {/* Schema.org LearningResource */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'LearningResource',
+            name: article.title,
+            description: article.excerpt?.replace(/<[^>]*>/g, ''),
+            image: article.featured_image_url || 'https://etfnexo.com/og-image-default-academia.png',
+            datePublished: article.published_at,
+            author: {
+              '@type': 'Person',
+              name: displayAuthorName
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: 'ETF Nexo',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://etfnexo.com/logo.png'
+              }
+            },
+            educationalLevel: article.difficulty_level || 'beginner',
+            learningResourceType: 'Article',
+            timeRequired: article.estimated_reading_time ? `PT${article.estimated_reading_time}M` : undefined,
+            about: {
+              '@type': 'Thing',
+              name: 'ETF',
+              description: 'Exchange-Traded Funds'
+            }
+          })
+        }}
+      />
+
+      {/* Schema.org BreadcrumbList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Inicio',
+                item: 'https://etfnexo.com'
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Academia',
+                item: 'https://etfnexo.com/academia'
+              },
+              {
+                '@type': 'ListItem',
+                position: 3,
+                name: article.title,
+                item: `https://etfnexo.com/academia/${params.slug}`
+              }
+            ]
+          })
+        }}
+      />
 
       {/* Banner Fixed Encima del Breadcrumb */}
       <FixedTopBanner placement="article_top" />
