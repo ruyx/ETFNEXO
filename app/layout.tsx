@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
+import CookieBanner from '@/components/CookieBanner'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://etfnexo.com'),
@@ -119,6 +120,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         {children}
+        <CookieBanner />
       </body>
     </html>
   )
