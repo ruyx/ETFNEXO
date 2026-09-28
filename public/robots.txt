@@ -30,9 +30,9 @@ Allow: /logo.png
 
 # Sitemaps
 Sitemap: https://etfnexo.com/sitemap.xml
-Sitemap: https://etfnexo.com/sitemap-noticias.xml
-Sitemap: https://etfnexo.com/sitemap-entrevistas.xml
-Sitemap: https://etfnexo.com/sitemap-academia.xml
+Sitemap: https://etfnexo.com/noticias/sitemap.xml
+Sitemap: https://etfnexo.com/entrevistas/sitemap.xml
+Sitemap: https://etfnexo.com/academia/sitemap.xml
 
 # Crawl-delay para bots agresivos (opcional)
 User-agent: AhrefsBot
