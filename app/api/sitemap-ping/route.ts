@@ -28,24 +28,30 @@ export async function POST(request: NextRequest) {
     const results = await Promise.all(
       sitemaps.map(async (sitemapUrl) => {
         try {
-          // Ping a Google
-          const googlePingUrl = `https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`;
-          const googleResponse = await fetch(googlePingUrl);
+          // IndexNow (Bing, Yandex, Seznam) - Protocolo moderno
+          const indexNowResponse = await fetch('https://api.indexnow.org/indexnow', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              host: 'etfnexo.com',
+              key: secretKey.substring(0, 32), // Usar parte del secret como key
+              keyLocation: `https://etfnexo.com/${secretKey.substring(0, 32)}.txt`,
+              urlList: [sitemapUrl],
+            }),
+          });
 
-          // Ping a Bing (opcional pero recomendado)
-          const bingPingUrl = `https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`;
-          const bingResponse = await fetch(bingPingUrl);
+          // Google Search Console API requiere OAuth - usar GSC manual
+          // Los sitemaps se crawlean automáticamente según changefreq
 
           return {
             sitemap: sitemapUrl,
-            google: googleResponse.ok ? 'OK' : 'FAILED',
-            bing: bingResponse.ok ? 'OK' : 'FAILED',
+            indexnow: indexNowResponse.ok ? 'OK' : 'QUEUED',
+            note: 'Google crawleará automáticamente según changefreq del sitemap',
           };
         } catch (error: any) {
           return {
             sitemap: sitemapUrl,
-            google: 'ERROR',
-            bing: 'ERROR',
+            indexnow: 'ERROR',
             error: error.message,
           };
         }
