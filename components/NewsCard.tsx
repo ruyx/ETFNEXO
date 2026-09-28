@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Calendar, ExternalLink } from 'lucide-react'
 
 export interface NewsArticle {
@@ -65,11 +66,12 @@ export default function NewsCard({
             {/* Featured Image */}
             {article.featured_image_url && (
               <div className="relative w-full h-48 md:h-full bg-slate-100 overflow-hidden">
-                <img
+                <Image
                   src={article.featured_image_url}
                   alt={article.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 300px"
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  style={{ width: '100%', height: '100%' }}
                 />
               </div>
             )}
@@ -133,11 +135,12 @@ export default function NewsCard({
           {/* Featured Image */}
           {article.featured_image_url && (
             <div className="relative w-full h-48 bg-slate-100 overflow-hidden">
-              <img
+              <Image
                 src={article.featured_image_url}
                 alt={article.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 400px"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
-                style={{ width: '100%', height: '100%' }}
               />
             </div>
           )}
@@ -198,11 +201,12 @@ export default function NewsCard({
           {/* Thumbnail */}
           {article.featured_image_url && (
             <div className="relative w-24 h-24 flex-shrink-0 bg-slate-100 rounded overflow-hidden">
-              <img
+              <Image
                 src={article.featured_image_url}
                 alt={article.title}
+                fill
+                sizes="96px"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
-                style={{ width: '100%', height: '100%' }}
               />
             </div>
           )}
