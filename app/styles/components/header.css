@@ -100,7 +100,7 @@
 
 /* ==================== MOBILE MENU ==================== */
 .site-header__mobile-menu-button {
-  @apply md:hidden text-white;
+  @apply text-white;
   /* Touch target: min 48x48px para móviles */
   min-width: 48px;
   min-height: 48px;
@@ -110,6 +110,13 @@
   justify-content: center;
   transition: background-color var(--transition-base);
   border-radius: 8px;
+}
+
+/* Ocultar en desktop (≥768px) */
+@media (min-width: 768px) {
+  .site-header__mobile-menu-button {
+    display: none;
+  }
 }
 
 .site-header__mobile-menu-button:hover {
