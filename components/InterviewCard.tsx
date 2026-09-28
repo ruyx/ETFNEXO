@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Calendar, Eye } from 'lucide-react';
 
 export interface Interview {
@@ -48,10 +49,13 @@ export default function InterviewCard({
           <div className="grid md:grid-cols-[400px_1fr] gap-6">
             {/* YouTube Thumbnail */}
             <div className="relative w-full h-64 md:h-full bg-slate-100 overflow-hidden">
-              <img
+              <Image
                 src={thumbnailUrl}
                 alt={thumbnailAlt}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                fill
+                sizes="(max-width: 768px) 100vw, 400px"
+                priority
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
 
@@ -112,10 +116,13 @@ export default function InterviewCard({
       <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden flex flex-col h-full">
         {/* YouTube Thumbnail */}
         <div className="relative w-full h-48 bg-slate-100 overflow-hidden">
-          <img
+          <Image
             src={thumbnailUrl}
             alt={thumbnailAlt}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            loading="lazy"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
 

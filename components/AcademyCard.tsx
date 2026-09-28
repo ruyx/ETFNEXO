@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Calendar, User } from 'lucide-react'
 import DifficultyBadge, { DifficultyLevel } from './DifficultyBadge'
 import ReadingTimeBadge from './ReadingTimeBadge'
@@ -61,10 +62,13 @@ export default function AcademyCard({
             {/* Featured Image */}
             {article.featured_image_url && (
               <div className="relative w-full h-48 md:h-full bg-slate-100 overflow-hidden">
-                <img
+                <Image
                   src={article.featured_image_url}
                   alt={article.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 300px"
+                  priority
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
             )}
@@ -140,10 +144,13 @@ export default function AcademyCard({
           {/* Featured Image */}
           {article.featured_image_url && (
             <div className="relative w-full h-48 bg-slate-100 overflow-hidden">
-              <img
+              <Image
                 src={article.featured_image_url}
                 alt={article.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                fill
+                sizes="(max-width: 768px) 100vw, 400px"
+                loading="lazy"
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
           )}
@@ -212,10 +219,13 @@ export default function AcademyCard({
           {/* Thumbnail */}
           {article.featured_image_url && (
             <div className="relative w-24 h-24 flex-shrink-0 bg-slate-100 rounded overflow-hidden">
-              <img
+              <Image
                 src={article.featured_image_url}
                 alt={article.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                fill
+                sizes="96px"
+                loading="lazy"
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
           )}

@@ -94,6 +94,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
+        {/* Google Search Console Verification */}
+        <meta name="google-site-verification" content="3BAN5-FdZRADxgwEaDAvjXWAit0gGyKzoa1mFBKnA9o" />
+
         <GoogleAnalytics />
         {/* Schema.org Organization */}
         <script

@@ -71,6 +71,7 @@ export default function NewsCard({
                   alt={article.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 300px"
+                  priority
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
@@ -140,6 +141,7 @@ export default function NewsCard({
                 alt={article.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 400px"
+                loading="lazy"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
@@ -206,6 +208,7 @@ export default function NewsCard({
                 alt={article.title}
                 fill
                 sizes="96px"
+                loading="lazy"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>

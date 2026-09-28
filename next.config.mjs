@@ -20,6 +20,19 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      // YouTube thumbnails
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+        port: '',
+        pathname: '/**',
+      },
       // News sources
       {
         protocol: 'https',
