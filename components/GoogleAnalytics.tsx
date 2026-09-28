@@ -71,7 +71,7 @@ export default function GoogleAnalytics() {
         id="google-analytics-events"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
-          __html: \`
+          __html: `
             // Scroll Depth Tracking (25%, 50%, 75%, 100%)
             (function() {
               let scrollDepths = { 25: false, 50: false, 75: false, 100: false };
@@ -155,7 +155,7 @@ export default function GoogleAnalytics() {
                 });
               }
             }, { passive: true });
-          \`,
+          `,
         }}
       />
     </>
