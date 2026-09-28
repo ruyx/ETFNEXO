@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const PEXELS_API_KEY = 'EIpu4dabXBeQewM3xuerGnk5g8xdqUKKJbboHynjTs71a1xKUxOPi54N';
+const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
+
+if (!PEXELS_API_KEY) {
+  throw new Error('PEXELS_API_KEY environment variable is not set');
+}
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;

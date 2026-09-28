@@ -1,22 +1,26 @@
+import DOMPurify from 'isomorphic-dompurify';
+
 /**
  * Convierte texto plano con saltos de línea a HTML con párrafos
+ * y sanitiza el HTML para prevenir XSS attacks
  *
  * El scraper devuelve contenido con:
  * - Párrafos separados por \n\n
  * - Líneas separadas por \n
  *
  * Esta función convierte eso a HTML semántico con <p> tags
+ * y sanitiza el resultado con DOMPurify
  */
 export function formatArticleContent(content: string | null | undefined): string {
   if (!content) return '';
 
-  // Si ya contiene tags HTML (detectar <p>, <div>, etc.), retornar tal cual
+  // Si ya contiene tags HTML (detectar <p>, <div>, etc.), sanitizar y retornar
   if (/<\/?(p|div|article|section|h[1-6]|ul|ol|li|blockquote)>/i.test(content)) {
-    return content;
+    return DOMPurify.sanitize(content);
   }
 
   // Texto plano: convertir a HTML
-  return content
+  const htmlContent = content
     // Normalizar saltos de línea (Windows -> Unix)
     .replace(/\r\n/g, '\n')
     // Dividir por párrafos (doble salto de línea)
@@ -35,4 +39,7 @@ export function formatArticleContent(content: string | null | undefined): string
       return `<p>${formatted}</p>`;
     })
     .join('\n');
+
+  // Sanitizar el HTML generado para prevenir XSS
+  return DOMPurify.sanitize(htmlContent);
 }
