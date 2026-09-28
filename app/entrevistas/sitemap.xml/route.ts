@@ -1,5 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const supabase = createAdminClient();
 
@@ -11,7 +13,7 @@ export async function GET() {
     .order('published_at', { ascending: false })
     .limit(500);
 
-  const urls = interviews?.map(interview => ({
+  const urls = (interviews as any)?.map((interview: any) => ({
     url: `https://etfnexo.com/entrevistas/${interview.slug}`,
     lastModified: interview.updated_at || interview.published_at,
     changeFrequency: 'monthly' as const,

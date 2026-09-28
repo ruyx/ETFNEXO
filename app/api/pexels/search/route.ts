@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
-
-if (!PEXELS_API_KEY) {
-  throw new Error('PEXELS_API_KEY environment variable is not set');
-}
-
 export async function GET(request: NextRequest) {
+  const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
+
+  if (!PEXELS_API_KEY) {
+    return NextResponse.json(
+      { error: 'PEXELS_API_KEY environment variable is not set' },
+      { status: 500 }
+    );
+  }
+
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get('query');
   const perPage = searchParams.get('per_page') || '12';

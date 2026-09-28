@@ -1,5 +1,3 @@
-import DOMPurify from 'isomorphic-dompurify';
-
 /**
  * Convierte texto plano con saltos de línea a HTML con párrafos
  * y sanitiza el HTML para prevenir XSS attacks
@@ -9,14 +7,14 @@ import DOMPurify from 'isomorphic-dompurify';
  * - Líneas separadas por \n
  *
  * Esta función convierte eso a HTML semántico con <p> tags
- * y sanitiza el resultado con DOMPurify
+ * y sanitiza el resultado removiendo scripts y eventos inline
  */
 export function formatArticleContent(content: string | null | undefined): string {
   if (!content) return '';
 
   // Si ya contiene tags HTML (detectar <p>, <div>, etc.), sanitizar y retornar
   if (/<\/?(p|div|article|section|h[1-6]|ul|ol|li|blockquote)>/i.test(content)) {
-    return DOMPurify.sanitize(content);
+    return sanitizeHTML(content);
   }
 
   // Texto plano: convertir a HTML
@@ -41,5 +39,26 @@ export function formatArticleContent(content: string | null | undefined): string
     .join('\n');
 
   // Sanitizar el HTML generado para prevenir XSS
-  return DOMPurify.sanitize(htmlContent);
+  return sanitizeHTML(htmlContent);
+}
+
+/**
+ * Sanitiza HTML removiendo scripts, eventos inline y tags peligrosos
+ * Versión ligera que funciona en SSR sin dependencias pesadas
+ */
+function sanitizeHTML(html: string): string {
+  return html
+    // Remover scripts
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    // Remover eventos inline (onclick, onerror, etc)
+    .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, '')
+    .replace(/\son\w+\s*=\s*[^\s>]*/gi, '')
+    // Remover javascript: en href/src
+    .replace(/javascript:/gi, '')
+    // Remover data: URIs (excepto imágenes)
+    .replace(/(<(?!img)[^>]+\s+(?:href|src)\s*=\s*["'])data:[^"']*["']/gi, '$1#')
+    // Remover iframes no autorizados
+    .replace(/<iframe(?![^>]*youtube\.com)[^>]*>.*?<\/iframe>/gi, '')
+    // Remover object/embed tags
+    .replace(/<(object|embed)[^>]*>.*?<\/\1>/gi, '');
 }
