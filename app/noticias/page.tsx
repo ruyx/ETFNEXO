@@ -92,7 +92,7 @@ export default function NoticiasPage() {
       <div className="bg-white min-h-screen">
         <Header />
 
-      <main>
+        <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-16 px-6">
           <div className="container max-w-4xl text-center">
@@ -209,10 +209,10 @@ export default function NoticiasPage() {
             </Link>
           </div>
         </section>
-      </main>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
     </>
   );
 }

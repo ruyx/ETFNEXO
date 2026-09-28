@@ -97,7 +97,7 @@ export default function EntrevistasPage() {
       <div className="bg-white min-h-screen">
         <Header />
 
-      <main>
+        <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900 text-white py-16 px-6">
           <div className="container max-w-4xl text-center">
@@ -214,10 +214,10 @@ export default function EntrevistasPage() {
             </Link>
           </div>
         </section>
-      </main>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
     </>
   );
 }
