@@ -20,27 +20,44 @@ export default function StickyNewsBanner({ placement }: StickyNewsBannerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let scrollTimeout: NodeJS.Timeout | null = null;
+
     const handleScroll = () => {
-      if (!containerRef.current || !bannerRef.current) return;
+      // Throttle: max 10fps (100ms between checks)
+      if (scrollTimeout) return;
 
-      const container = containerRef.current.parentElement;
-      if (!container) return;
+      scrollTimeout = setTimeout(() => {
+        if (!containerRef.current || !bannerRef.current) {
+          scrollTimeout = null;
+          return;
+        }
 
-      const containerRect = container.getBoundingClientRect();
-      const headerHeight = 72; // Altura del header (4.5rem)
-      const bannerHeight = bannerRef.current.offsetHeight;
+        const container = containerRef.current.parentElement;
+        if (!container) {
+          scrollTimeout = null;
+          return;
+        }
 
-      // Activar sticky cuando el top del container pasa el header
-      const shouldBeSticky = containerRect.top <= headerHeight &&
-                            containerRect.bottom > (headerHeight + bannerHeight + 100);
+        const containerRect = container.getBoundingClientRect();
+        const headerHeight = 72; // Altura del header (4.5rem)
+        const bannerHeight = bannerRef.current.offsetHeight;
 
-      setIsSticky(shouldBeSticky);
+        // Activar sticky cuando el top del container pasa el header
+        const shouldBeSticky = containerRect.top <= headerHeight &&
+                              containerRect.bottom > (headerHeight + bannerHeight + 100);
+
+        setIsSticky(shouldBeSticky);
+        scrollTimeout = null;
+      }, 100); // Throttle: 100ms (max 10 checks/second)
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // Check initial state
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+    };
   }, []);
 
   return (
