@@ -5,6 +5,12 @@ import GoogleAnalytics from '@/components/GoogleAnalytics'
 export const metadata: Metadata = {
   metadataBase: new URL('https://etfnexo.com'),
 
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5
+  },
+
   title: {
     default: 'ETF Nexo - Rankings, Noticias y Academia de ETFs',
     template: '%s | ETF Nexo'

@@ -100,10 +100,102 @@
 
 /* ==================== MOBILE MENU ==================== */
 .site-header__mobile-menu-button {
-  @apply md:hidden text-white p-2;
+  @apply md:hidden text-white;
+  /* Touch target: min 48x48px para móviles */
+  min-width: 48px;
+  min-height: 48px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-base);
+  border-radius: 8px;
+}
+
+.site-header__mobile-menu-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .site-header__mobile-menu-button svg {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 24px;
+  height: 24px;
+}
+
+/* Mobile Menu Backdrop */
+.site-header__mobile-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: calc(var(--z-sticky) + 1);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mobile Navigation Drawer */
+.site-header__mobile-nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  max-width: 85%;
+  background-color: var(--header-bg);
+  z-index: calc(var(--z-sticky) + 2);
+  padding: var(--spacing-8) var(--spacing-6);
+  padding-top: calc(var(--header-height) + var(--spacing-4));
+  overflow-y: auto;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.site-header__mobile-nav-link {
+  display: block;
+  padding: var(--spacing-4) var(--spacing-3);
+  color: var(--color-text-light);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-base);
+  /* Touch target: min 48px altura */
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.site-header__mobile-nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-white);
+  padding-left: var(--spacing-4);
+}
+
+.site-header__mobile-nav-link:last-child {
+  border-bottom: none;
+}
+
+/* Ocultar mobile menu en desktop */
+@media (min-width: 768px) {
+  .site-header__mobile-backdrop,
+  .site-header__mobile-nav {
+    display: none;
+  }
 }
