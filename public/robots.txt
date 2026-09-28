@@ -1,0 +1,42 @@
+# ETF Nexo - robots.txt
+# Optimizado para maximizar crawl budget e indexación
+
+User-agent: *
+
+# Permitir todo el contenido público
+Allow: /
+Allow: /noticias
+Allow: /noticias/*
+Allow: /entrevistas
+Allow: /entrevistas/*
+Allow: /academia
+Allow: /academia/*
+Allow: /rankings
+Allow: /rankings/*
+
+# Bloquear áreas privadas y assets innecesarios
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/
+Disallow: /perfil
+Disallow: /perfil/*
+Disallow: /_next/
+Disallow: /static/
+
+# Permitir crawling de assets públicos importantes
+Allow: /og-image-*.png
+Allow: /favicon.svg
+Allow: /logo.png
+
+# Sitemaps
+Sitemap: https://etfnexo.com/sitemap.xml
+Sitemap: https://etfnexo.com/sitemap-noticias.xml
+Sitemap: https://etfnexo.com/sitemap-entrevistas.xml
+Sitemap: https://etfnexo.com/sitemap-academia.xml
+
+# Crawl-delay para bots agresivos (opcional)
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10

@@ -70,7 +70,10 @@ export default function HomePage() {
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.pexels.com/photos/6802042/pexels-photo-6802042.jpeg?auto=compress&cs=tinysrgb&w=1920"
-            alt="Financial markets background"
+            alt="Análisis financiero de ETFs - Gráficos y datos de mercado"
+            width="1920"
+            height="1080"
+            loading="eager"
             className="w-full h-full object-cover"
           />
           {/* Overlay oscuro al 80% */}
@@ -80,7 +83,7 @@ export default function HomePage() {
         <div className="container py-20 px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              Información y Análisis de ETFs
+              Rankings de ETFs 2026, Noticias y Análisis para Inversores
             </h1>
             <p className="text-xl text-slate-300 mb-8 leading-relaxed">
               La plataforma de referencia para inversores que buscan información transparente y análisis objetivo sobre ETFs
