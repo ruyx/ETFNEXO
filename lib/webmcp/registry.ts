@@ -10,6 +10,8 @@ import { searchETFTool } from './tools/search-etf';
 import { explainTermTool } from './tools/explain-term';
 import { analyzePortfolioTool } from './tools/analyze-portfolio';
 import { compareETFsTool } from './tools/compare-etfs';
+import { checkRateLimit, cleanupExpiredLimits } from './utils/rate-limiter';
+import { createRateLimitError } from './utils/security';
 
 export class WebMCPRegistry {
   private tools = new Map<string, Tool>();
@@ -28,7 +30,10 @@ export class WebMCPRegistry {
 
     console.log('[WebMCP] Initializing registry...');
 
-    // 1. Verificar soporte de WebMCP
+    // 1. Limpiar rate limits expirados
+    cleanupExpiredLimits();
+
+    // 2. Verificar soporte de WebMCP
     this.isSupported = this.checkSupport();
 
     if (!this.isSupported) {
@@ -92,15 +97,21 @@ export class WebMCPRegistry {
         execute: async (args: any) => {
           console.log(`[WebMCP] Tool "${tool.name}" invoked by AI agent`);
 
-          // Validación de permisos
+          // 1. Verificar rate limit
+          const rateLimit = checkRateLimit(tool.name);
+          if (!rateLimit.allowed) {
+            throw createRateLimitError(rateLimit.resetAt);
+          }
+
+          // 2. Validación de permisos
           if (tool.requiresAuth && !this.isAuthenticated()) {
             throw new Error(`Tool "${tool.name}" requires authentication`);
           }
 
-          // Track invocación (analytics)
+          // 3. Track invocación (analytics)
           this.trackToolInvocation(tool.name, args);
 
-          // Ejecutar tool
+          // 4. Ejecutar tool
           const result = await tool.execute(args);
 
           return result;

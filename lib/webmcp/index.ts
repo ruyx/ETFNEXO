@@ -15,6 +15,27 @@ export { compareETFsTool } from './tools/compare-etfs';
 
 // Utils
 export { parseNaturalQuery, describeFilters, validateFilters } from './utils/nlp-parser';
+export {
+  parseAdvancedQuery,
+  validateAndNormalizeFilters,
+  describeFiltersAdvanced,
+  detectIntent
+} from './utils/nlp-parser-advanced';
+export {
+  checkRateLimit,
+  resetRateLimit,
+  getRateLimitStats,
+  cleanupExpiredLimits,
+  RATE_LIMITS,
+} from './utils/rate-limiter';
+export {
+  sanitizeString,
+  validateTicker,
+  validateTickers,
+  validateWeights,
+  validateSearchQuery,
+  validateTerm,
+} from './utils/security';
 
 // Hooks
 export { useWebMCP, useWebMCPSupport } from './hooks/useWebMCP';

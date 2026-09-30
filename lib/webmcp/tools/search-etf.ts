@@ -8,6 +8,11 @@
 import { createClient } from '@/lib/supabase/client';
 import type { Tool, SearchETFArgs, SearchETFResult } from '../types';
 import { parseNaturalQuery, describeFilters, validateFilters } from '../utils/nlp-parser';
+import {
+  parseAdvancedQuery,
+  validateAndNormalizeFilters,
+  describeFiltersAdvanced
+} from '../utils/nlp-parser-advanced';
 
 export const searchETFTool: Tool<SearchETFArgs, SearchETFResult> = {
   name: 'search-etf',
@@ -47,13 +52,15 @@ export const searchETFTool: Tool<SearchETFArgs, SearchETFResult> = {
 
     try {
       // 1. Parsear query en lenguaje natural → filtros estructurados
-      const filters = parseNaturalQuery(query);
-      console.log('[WebMCP] Parsed filters:', filters);
+      // Usar parser avanzado con fallback al básico
+      let rawFilters = parseAdvancedQuery(query);
+      console.log('[WebMCP] Advanced parsed filters:', rawFilters);
 
-      // 2. Validar filtros
-      const validation = validateFilters(filters);
-      if (!validation.valid) {
-        throw new Error(`Filtros inválidos: ${validation.errors.join(', ')}`);
+      // 2. Validar y normalizar filtros
+      const { filters, warnings } = validateAndNormalizeFilters(rawFilters);
+
+      if (warnings.length > 0) {
+        console.warn('[WebMCP] Filter warnings:', warnings);
       }
 
       // 3. Construir query a Supabase
