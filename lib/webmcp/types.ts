@@ -96,6 +96,78 @@ declare global {
   }
 }
 
+// Analyze Portfolio Tool Types
+export interface AnalyzePortfolioArgs {
+  tickers: string[];
+  weights?: number[];
+}
+
+export interface PortfolioMetrics {
+  totalETFs: number;
+  averageTER: number;
+  totalAUM: number;
+  averageScore: number;
+  regionExposure: Record<string, number>;
+  sectorExposure: Record<string, number>;
+  replicationMix: {
+    physical: number;
+    synthetic: number;
+    unknown: number;
+  };
+}
+
+export interface PortfolioRecommendation {
+  type: 'warning' | 'suggestion' | 'optimization';
+  priority: 'high' | 'medium' | 'low';
+  title: string;
+  description: string;
+  affectedETFs?: string[];
+}
+
+export interface AnalyzePortfolioResult {
+  metrics: PortfolioMetrics;
+  recommendations: PortfolioRecommendation[];
+  etfs: Array<{
+    ticker: string;
+    name: string;
+    weight: number;
+    ter: number;
+    score: number;
+    region?: string;
+    sector?: string;
+  }>;
+}
+
+// Compare ETFs Tool Types
+export interface CompareETFsArgs {
+  tickers: string[];
+  metrics?: string[];
+}
+
+export interface ETFComparison {
+  ticker: string;
+  name: string;
+  ter: number;
+  aum: number;
+  score: number;
+  region?: string;
+  sector?: string;
+  replicationMethod?: string;
+}
+
+export interface ComparisonWinners {
+  lowestTER?: string;
+  highestScore?: string;
+  largestAUM?: string;
+  bestReplication?: string;
+}
+
+export interface CompareETFsResult {
+  etfs: ETFComparison[];
+  winners: ComparisonWinners;
+  summary: string;
+}
+
 // Custom Events para comunicación entre tools y UI
 export interface WebMCPEventMap {
   'webmcp:search-results': CustomEvent<{
@@ -107,6 +179,16 @@ export interface WebMCPEventMap {
     term: string;
     definition: string;
     relatedArticles: ExplainTermResult['relatedArticles'];
+  }>;
+  'webmcp:portfolio-analyzed': CustomEvent<{
+    metrics: PortfolioMetrics;
+    recommendations: PortfolioRecommendation[];
+    etfs: AnalyzePortfolioResult['etfs'];
+  }>;
+  'webmcp:etfs-compared': CustomEvent<{
+    etfs: ETFComparison[];
+    winners: ComparisonWinners;
+    summary: string;
   }>;
   'webmcp:tool-invoked': CustomEvent<{
     toolName: string;

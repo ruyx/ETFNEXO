@@ -8,6 +8,8 @@
 import type { Tool } from './types';
 import { searchETFTool } from './tools/search-etf';
 import { explainTermTool } from './tools/explain-term';
+import { analyzePortfolioTool } from './tools/analyze-portfolio';
+import { compareETFsTool } from './tools/compare-etfs';
 
 export class WebMCPRegistry {
   private tools = new Map<string, Tool>();
@@ -45,6 +47,12 @@ export class WebMCPRegistry {
 
       await this.registerTool(explainTermTool);
       console.log('[WebMCP] ✓ explain-etf-term registered');
+
+      await this.registerTool(analyzePortfolioTool);
+      console.log('[WebMCP] ✓ analyze-portfolio registered');
+
+      await this.registerTool(compareETFsTool);
+      console.log('[WebMCP] ✓ compare-etfs registered');
 
       this.initialized = true;
       console.log(`[WebMCP] Registry initialized successfully (${this.tools.size} tools)`);

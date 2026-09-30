@@ -5,6 +5,8 @@ import CookieBanner from '@/components/CookieBanner'
 import { WebMCPProvider } from '@/components/webmcp/WebMCPProvider'
 import { SearchResultsPanel } from '@/components/webmcp/SearchResultsPanel'
 import { TermExplanationTooltip } from '@/components/webmcp/TermExplanationTooltip'
+import { PortfolioAnalysisPanel } from '@/components/webmcp/PortfolioAnalysisPanel'
+import { ETFComparisonPanel } from '@/components/webmcp/ETFComparisonPanel'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://etfnexo.com'),
@@ -132,6 +134,8 @@ export default function RootLayout({
           {/* WebMCP UI Components */}
           <SearchResultsPanel />
           <TermExplanationTooltip />
+          <PortfolioAnalysisPanel />
+          <ETFComparisonPanel />
         </WebMCPProvider>
       </body>
     </html>
