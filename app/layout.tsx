@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import './globals.css'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import CookieBanner from '@/components/CookieBanner'
+import { WebMCPProvider } from '@/components/webmcp/WebMCPProvider'
+import { SearchResultsPanel } from '@/components/webmcp/SearchResultsPanel'
+import { TermExplanationTooltip } from '@/components/webmcp/TermExplanationTooltip'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://etfnexo.com'),
@@ -122,8 +125,14 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        {children}
-        <CookieBanner />
+        <WebMCPProvider>
+          {children}
+          <CookieBanner />
+
+          {/* WebMCP UI Components */}
+          <SearchResultsPanel />
+          <TermExplanationTooltip />
+        </WebMCPProvider>
       </body>
     </html>
   )
