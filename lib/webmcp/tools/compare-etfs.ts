@@ -116,7 +116,7 @@ export const compareETFsTool: Tool<CompareETFsArgs, CompareETFsResult> = {
         etfsData.map((etf) => [etf.yahoo_ticker || etf.isin, etf])
       );
 
-      const comparisonETFs: ETFComparison[] = tickers
+      const comparisonETFs = tickers
         .map((ticker) => {
           const etf = etfsMap.get(ticker);
           if (!etf) {
@@ -132,7 +132,7 @@ export const compareETFsTool: Tool<CompareETFsArgs, CompareETFsResult> = {
             region: etf.region || undefined,
             sector: etf.sector || undefined,
             replicationMethod: etf.replication_method || undefined,
-          };
+          } as ETFComparison;
         })
         .filter((etf): etf is ETFComparison => etf !== null);
 
