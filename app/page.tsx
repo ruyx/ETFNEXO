@@ -1,32 +1,24 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import HeroSplit from '@/components/HeroSplit';
+import HeroNewsSlideshow from '@/components/HeroNewsSlideshow';
 import RankingSlider from '@/components/RankingSlider';
 import MarketTicker from '@/components/MarketTicker';
 import AdSlot from '@/components/AdSlot';
 import StickyNewsBanner from '@/components/StickyNewsBanner';
-import NewsCard, { NewsArticle } from '@/components/NewsCard';
+import NewsCard from '@/components/NewsCard';
 import Footer from '@/components/Footer';
+import { getLatestArticles } from '@/lib/news/get-latest-articles';
 
-export default function HomePage() {
-  const [recentArticles, setRecentArticles] = useState<NewsArticle[]>([]);
-  const [loading, setLoading] = useState(true);
+// La home se regenera cada 5 minutos (ISR): el carrusel del hero recoge las
+// noticias nuevas sin redeploy. Para forzarlo al publicar: POST /api/revalidate { path: '/' }.
+export const revalidate = 300;
 
-  useEffect(() => {
-    fetch('/api/v1/noticias?limit=12')
-      .then(res => res.json())
-      .then(data => {
-        setRecentArticles(data.data || []);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error loading articles:', err);
-        setLoading(false);
-      });
-  }, []);
+const HERO_SLIDES = 5;
+
+export default async function HomePage() {
+  const recentArticles = await getLatestArticles(12);
+  const heroArticles = recentArticles.slice(0, HERO_SLIDES);
 
   return (
     <>
@@ -65,78 +57,32 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Hero: contenido a la izquierda, foto fundida a la derecha */}
-      <HeroSplit
-        eyebrow="Rankings actualizados semanalmente"
-        title={<><span className="highlight">Rankings de ETFs 2026</span>, Noticias y Análisis para Inversores</>}
-        description="La plataforma de referencia para inversores que buscan información transparente y análisis objetivo sobre ETFs."
-        image={{
-          src: 'https://images.pexels.com/photos/8353820/pexels-photo-8353820.jpeg?auto=compress&cs=tinysrgb&w=1920',
-          alt: 'Equipo de inversores analizando gráficas de mercado en una reunión',
-        }}
-        primaryCta={{ href: '/rankings', label: 'Ver Rankings de ETFs' }}
-        secondaryCta={{ href: '/noticias', label: 'Últimas Noticias' }}
-      />
+      {/* Hero: carrusel con las últimas noticias (foto fundida a la derecha) */}
+      {heroArticles.length > 0 ? (
+        <HeroNewsSlideshow articles={heroArticles} />
+      ) : (
+        <HeroSplit
+          eyebrow="Rankings actualizados semanalmente"
+          title={<><span className="highlight">Rankings de ETFs 2026</span>, Noticias y Análisis para Inversores</>}
+          description="La plataforma de referencia para inversores que buscan información transparente y análisis objetivo sobre ETFs."
+          image={{
+            src: 'https://images.pexels.com/photos/8353820/pexels-photo-8353820.jpeg?auto=compress&cs=tinysrgb&w=1920',
+            alt: 'Equipo de inversores analizando gráficas de mercado en una reunión',
+          }}
+          primaryCta={{ href: '/rankings', label: 'Ver Rankings de ETFs' }}
+          secondaryCta={{ href: '/noticias', label: 'Últimas Noticias' }}
+        />
+      )}
 
       <main>
-        {/* Latest News Grid */}
+        {/* Noticias: el grid sigue directamente al hero */}
         <section className="section section--light px-6">
           <div className="container max-w-7xl">
-            <div className="flex items-center justify-between mb-12">
-              <div>
-                <h2 className="text-3xl font-bold text-slate-900 mb-2">Últimas Noticias</h2>
-                <p className="text-slate-600">Información actualizada sobre ETFs y mercados</p>
-              </div>
-              <Link
-                href="/noticias"
-                className="text-secondary-dark font-semibold hover:text-primary transition-colors inline-flex items-center"
-              >
-                Ver todas
-                <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-
-            {loading ? (
-              <div className="grid lg:grid-cols-3 gap-8">
-                {/* Two columns skeleton */}
-                <div className="lg:col-span-2">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {[1, 2, 3, 4, 5, 6].map(i => (
-                      <div key={i} className="animate-pulse bg-white rounded-lg overflow-hidden border border-slate-200">
-                        <div className="h-48 bg-slate-200"></div>
-                        <div className="p-5">
-                          <div className="h-4 bg-slate-200 rounded mb-2 w-3/4"></div>
-                          <div className="h-3 bg-slate-200 rounded mb-2 w-full"></div>
-                          <div className="h-3 bg-slate-200 rounded w-1/2"></div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                {/* Sidebar skeleton */}
-                <div className="lg:col-span-1">
-                  <div className="space-y-4">
-                    {[1, 2, 3, 4, 5, 6].map(i => (
-                      <div key={i} className="animate-pulse bg-white rounded-lg overflow-hidden border border-slate-200 p-4">
-                        <div className="flex gap-3">
-                          <div className="w-20 h-20 bg-slate-200 rounded flex-shrink-0"></div>
-                          <div className="flex-1 min-w-0">
-                            <div className="h-3 bg-slate-200 rounded mb-2 w-full"></div>
-                            <div className="h-3 bg-slate-200 rounded w-3/4"></div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ) : recentArticles.length > 0 ? (
+            {recentArticles.length > 0 ? (
               <div className="grid lg:grid-cols-3 gap-8">
                 {/* Primeras 6 noticias en DOS COLUMNAS (cards) */}
                 <div className="lg:col-span-2">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-6">Noticias Destacadas</h3>
+                  <h2 className="text-2xl font-bold text-slate-900 mb-6">Noticias Destacadas</h2>
                   <div className="grid md:grid-cols-2 gap-6">
                     {recentArticles.slice(0, 6).map((article) => (
                       <NewsCard key={article.id} article={article} variant="card" />
@@ -146,7 +92,7 @@ export default function HomePage() {
 
                 {/* Siguientes 6 noticias en TERCERA COLUMNA (lista) */}
                 <div className="lg:col-span-1">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-6">Más Noticias</h3>
+                  <h2 className="text-2xl font-bold text-slate-900 mb-6">Más Noticias</h2>
 
                   {/* Banner Sticky Destacado */}
                   <StickyNewsBanner placement="home_news_sidebar" />
