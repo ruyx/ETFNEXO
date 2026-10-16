@@ -104,7 +104,7 @@ export default function EntrevistasPage() {
           eyebrow="Expertos del sector"
           title={<><span className="highlight">Entrevistas</span> ETF Nexo</>}
           description="Conversaciones con expertos del sector financiero sobre ETFs, inversión y mercados. Conocimiento directo de los líderes de la industria."
-          image={{ src: 'https://images.pexels.com/photos/8872462/pexels-photo-8872462.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Dos personas conversando con micrófonos en una entrevista' }}
+          image={{ src: 'https://images.pexels.com/photos/3874035/pexels-photo-3874035.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Conversación entre dos profesionales en una cafetería' }}
           primaryCta={{ href: '/newsletter', label: 'Recibir la newsletter' }}
         />
 

@@ -99,7 +99,7 @@ export default function NoticiasPage() {
           eyebrow="Actualizado diariamente"
           title={<>Noticias sobre <span className="highlight">ETFs</span></>}
           description="Mantente informado con las últimas noticias del mundo de los fondos cotizados. Análisis de mercado, lanzamientos de productos y tendencias de inversión."
-          image={{ src: 'https://images.pexels.com/photos/3070171/pexels-photo-3070171.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Periódico de negocios y taza de café sobre una mesa' }}
+          image={{ src: 'https://images.pexels.com/photos/936137/pexels-photo-936137.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Ejecutivo leyendo un periódico de negocios' }}
           primaryCta={{ href: '/newsletter', label: 'Recibir la newsletter' }}
         />
 
