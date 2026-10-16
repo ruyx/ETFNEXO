@@ -55,9 +55,9 @@ export default function HomePage() {
       {/* Banner Superior - Debajo del ticker - Dark background */}
       <section className="py-4 px-6 bg-gradient-to-b from-slate-900 to-slate-800 border-b border-slate-700">
         <div className="container max-w-7xl">
+          {/* Altura fija: el banner home_top es 728x90 + etiqueta. Evita CLS al cargar. */}
           <div className="flex justify-center items-center" style={{
-            minHeight: '110px',
-            maxHeight: '250px',
+            height: '110px',
             overflow: 'hidden'
           }}>
             <AdSlot placement="home_top" />

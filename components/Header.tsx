@@ -1,68 +1,83 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import UserNav from './UserNav';
+
+const NAV_LINKS = [
+  { href: '/noticias', label: 'Noticias' },
+  { href: '/academia', label: 'Academia' },
+  { href: '/entrevistas', label: 'Entrevistas' },
+  { href: '/rankings', label: 'Rankings' },
+  { href: '/etfs', label: 'ETFs' },
+  { href: '/gestoras', label: 'Gestoras' },
+] as const;
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
+  const closeMobileMenu = () => setMobileMenuOpen(false);
 
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
-  };
+  // Cerrar el drawer con Escape
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') closeMobileMenu();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [mobileMenuOpen]);
+
+  const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
 
   return (
     <header className="site-header">
       <div className="site-header__container">
         <div className="flex items-center justify-between w-full">
           {/* Logo */}
-          <Link href="/" className="site-header__logo">
-            <img src="/logo-white.svg" alt="ETF Nexo" className="site-header__logo-image" />
+          <Link href="/" className="site-header__logo" aria-label="ETF Nexo, inicio">
+            <img src="/logo-white.svg" alt="ETF Nexo" className="site-header__logo-image" width={160} height={48} />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="site-header__nav">
-            <Link href="/noticias" className="site-header__nav-link">
-              Noticias
-            </Link>
-            <Link href="/academia" className="site-header__nav-link">
-              Academia
-            </Link>
-            <Link href="/entrevistas" className="site-header__nav-link">
-              Entrevistas
-            </Link>
-            <Link href="/rankings" className="site-header__nav-link">
-              Rankings
-            </Link>
-            <Link href="/etfs" className="site-header__nav-link">
-              ETFs
-            </Link>
-            <Link href="/gestoras" className="site-header__nav-link">
-              Gestoras
-            </Link>
+          {/* Navegación escritorio */}
+          <nav className="site-header__nav" aria-label="Principal">
+            {NAV_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`site-header__nav-link${isActive(href) ? ' site-header__nav-link--active' : ''}`}
+                aria-current={isActive(href) ? 'page' : undefined}
+              >
+                {label}
+              </Link>
+            ))}
           </nav>
 
-          {/* User Navigation */}
+          {/* CTA + usuario */}
           <div className="site-header__cta">
+            <Link href="/rankings" className="site-header__cta-button">
+              Ver Rankings
+            </Link>
             <UserNav />
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Botón menú móvil */}
           <button
+            type="button"
             className="site-header__mobile-menu-button"
-            aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
-            onClick={toggleMobileMenu}
+            aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="site-mobile-nav"
+            onClick={() => setMobileMenuOpen((open) => !open)}
           >
             {mobileMenuOpen ? (
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             )}
@@ -70,59 +85,29 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu Drawer */}
+      {/* Drawer móvil */}
       {mobileMenuOpen && (
         <>
-          {/* Backdrop */}
-          <div
-            className="site-header__mobile-backdrop"
-            onClick={closeMobileMenu}
-            aria-hidden="true"
-          />
+          <div className="site-header__mobile-backdrop" onClick={closeMobileMenu} aria-hidden="true" />
 
-          {/* Mobile Navigation */}
-          <nav className="site-header__mobile-nav">
-            <Link
-              href="/noticias"
-              className="site-header__mobile-nav-link"
-              onClick={closeMobileMenu}
-            >
-              Noticias
-            </Link>
-            <Link
-              href="/academia"
-              className="site-header__mobile-nav-link"
-              onClick={closeMobileMenu}
-            >
-              Academia
-            </Link>
-            <Link
-              href="/entrevistas"
-              className="site-header__mobile-nav-link"
-              onClick={closeMobileMenu}
-            >
-              Entrevistas
-            </Link>
+          <nav id="site-mobile-nav" className="site-header__mobile-nav" aria-label="Menú móvil">
+            {NAV_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="site-header__mobile-nav-link"
+                aria-current={isActive(href) ? 'page' : undefined}
+                onClick={closeMobileMenu}
+              >
+                {label}
+              </Link>
+            ))}
             <Link
               href="/rankings"
-              className="site-header__mobile-nav-link"
+              className="site-header__cta-button site-header__mobile-nav-cta"
               onClick={closeMobileMenu}
             >
-              Rankings
-            </Link>
-            <Link
-              href="/etfs"
-              className="site-header__mobile-nav-link"
-              onClick={closeMobileMenu}
-            >
-              ETFs
-            </Link>
-            <Link
-              href="/gestoras"
-              className="site-header__mobile-nav-link"
-              onClick={closeMobileMenu}
-            >
-              Gestoras
+              Ver Rankings
             </Link>
           </nav>
         </>

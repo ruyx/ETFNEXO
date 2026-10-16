@@ -1,90 +1,76 @@
 import Link from 'next/link';
 
-// Updated 2026-09-17 - Force rebuild for legal pages
+const FOOTER_COLUMNS = [
+  {
+    title: 'Noticias',
+    links: [
+      { href: '/noticias?categoria=etfs', label: 'ETFs' },
+      { href: '/noticias?categoria=gestoras', label: 'Gestoras' },
+      { href: '/noticias?categoria=mercados', label: 'Mercados' },
+      { href: '/noticias?categoria=regulación', label: 'Regulación' },
+    ],
+  },
+  {
+    title: 'Herramientas',
+    links: [
+      { href: '/rankings', label: 'Rankings' },
+      { href: '/etfs', label: 'Buscador ETFs' },
+      { href: '/academia', label: 'Academia' },
+      { href: '/newsletter', label: 'Newsletter' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { href: '/metodologia', label: 'Metodología' },
+      { href: '/terminos-y-privacidad', label: 'Términos y Privacidad' },
+      { href: '/disclaimer', label: 'Disclaimer' },
+    ],
+  },
+];
+
+const LINK_CLASS = 'text-sm text-white/70 hover:text-primary transition-colors';
+
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="py-12 px-6 bg-white border-t border-slate-200">
-      <div className="container max-w-7xl">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
-          {/* Brand */}
+    <footer className="bg-dark text-white/70 border-t border-white/[0.08]">
+      <div className="container max-w-7xl px-6 py-16">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] lg:gap-12 mb-12">
+          {/* Marca */}
           <div>
-            <div className="text-2xl font-bold text-slate-900 mb-4">
-              ETF<span className="text-blue-600">Nexo</span>
-            </div>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Información transparente y análisis independiente sobre ETFs para inversores inteligentes
+            <Link href="/" className="inline-block font-heading text-3xl font-bold text-white mb-4" aria-label="ETF Nexo, inicio">
+              ETF<span className="text-primary">Nexo</span>
+            </Link>
+            <p className="text-sm leading-relaxed max-w-xs">
+              Información transparente y análisis independiente sobre ETFs para inversores inteligentes.
             </p>
           </div>
 
-          {/* Noticias */}
-          <div>
-            <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">Noticias</h4>
-            <ul className="space-y-2">
-              {['ETFs', 'Gestoras', 'Mercados', 'Regulación'].map((item) => (
-                <li key={item}>
-                  <Link href={`/noticias?categoria=${item.toLowerCase()}`} className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
-                    {item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Herramientas */}
-          <div>
-            <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">Herramientas</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/rankings" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
-                  Rankings
-                </Link>
-              </li>
-              <li>
-                <Link href="/etfs" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
-                  Buscador ETFs
-                </Link>
-              </li>
-              <li>
-                <Link href="/etfs" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
-                  Comparador
-                </Link>
-              </li>
-              <li>
-                <Link href="/newsletter" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
-                  Newsletter
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">Legal</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/metodologia" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
-                  Metodología
-                </Link>
-              </li>
-              <li>
-                <Link href="/terminos-y-privacidad" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
-                  Términos y Privacidad
-                </Link>
-              </li>
-              <li>
-                <Link href="/disclaimer" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
-                  Disclaimer
-                </Link>
-              </li>
-            </ul>
-          </div>
+          {FOOTER_COLUMNS.map((column) => (
+            <div key={column.title}>
+              <h2 className="font-body text-sm font-semibold text-white uppercase tracking-wider mb-4">
+                {column.title}
+              </h2>
+              <ul className="space-y-3">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className={LINK_CLASS}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-slate-500">
-            © 2026 ETFNexo. Todos los derechos reservados.
+        <div className="pt-8 border-t border-white/[0.08] flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-white/50">
+            © {currentYear} ETFNexo. Todos los derechos reservados.
           </p>
-          <p className="text-xs text-slate-400 max-w-2xl text-center md:text-right">
+          <p className="text-xs text-white/40 max-w-2xl text-center md:text-right">
             ETF Nexo es una plataforma informativa. No prestamos servicios de inversión ni asesoramiento financiero regulado.
           </p>
         </div>
