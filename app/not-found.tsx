@@ -49,28 +49,28 @@ export default function NotFound() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/noticias"
-              className="text-sm text-secondary hover:text-primary hover:underline"
+              className="text-sm text-secondary-dark hover:text-primary hover:underline"
             >
               Noticias
             </Link>
             <span className="text-slate-300">•</span>
             <Link
               href="/entrevistas"
-              className="text-sm text-secondary hover:text-primary hover:underline"
+              className="text-sm text-secondary-dark hover:text-primary hover:underline"
             >
               Entrevistas
             </Link>
             <span className="text-slate-300">•</span>
             <Link
               href="/academia"
-              className="text-sm text-secondary hover:text-primary hover:underline"
+              className="text-sm text-secondary-dark hover:text-primary hover:underline"
             >
               Academia
             </Link>
             <span className="text-slate-300">•</span>
             <Link
               href="/etfs"
-              className="text-sm text-secondary hover:text-primary hover:underline"
+              className="text-sm text-secondary-dark hover:text-primary hover:underline"
             >
               ETFs
             </Link>

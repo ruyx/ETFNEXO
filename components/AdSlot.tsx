@@ -191,19 +191,23 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     }
   };
 
-  // Skeleton loader while loading
-  if (!mounted || loading || !ad) {
+  // Skeleton solo mientras carga. Si no hay anuncio activo no se pinta nada
+  // (antes quedaba el esqueleto vacío, que en contenedores flex colapsaba a
+  // una línea blanca de 1px).
+  if (!mounted || loading) {
     return (
       <div
         ref={adRef}
         className={`ad-slot ad-slot--skeleton ad-slot--${placement} ${className}`}
+        aria-hidden="true"
         style={{
+          width: '100%',
           minHeight: getPlacementHeight(placement),
-          backgroundColor: '#f1f5f9',
-          borderRadius: '12px',
+          backgroundColor: 'var(--bg-light)',
+          borderRadius: 'var(--radius-md)',
           overflow: 'hidden',
           position: 'relative',
-          border: '2px solid #e2e8f0'
+          border: '1px solid var(--border-light)'
         }}
       >
         {/* Shimmer effect */}
@@ -226,6 +230,10 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
         `}</style>
       </div>
     );
+  }
+
+  if (!ad) {
+    return null;
   }
 
   // Script ad

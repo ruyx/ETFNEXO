@@ -3,7 +3,7 @@
 **Fecha:** 16 de octubre de 2026
 **Origen:** `etfnexo-astro/src/styles/agora-design-system.css` (609 líneas) + `Header.astro` + `Footer.astro`
 **Destino:** `ruy` (Next.js 14, Tailwind 3, CSS por componentes)
-**Estado:** aprobado el 16 oct 2026 con las decisiones de la sección 7. Rama de trabajo: `feat/design-system-agora`.
+**Estado:** fases 1 a 5 implementadas el 16 oct 2026 en la rama `feat/design-system-agora` (ver sección 9). Pendiente: revisión visual del usuario en el preview de Vercel y merge a `main`.
 
 ---
 
@@ -207,3 +207,27 @@ Las 44 páginas de admin y sus 5.000 líneas de CSS (`admin.css`, `admin-extensi
 | Editar | 25 páginas públicas en `app/` |
 | Nuevo | `app/styles/base/sections.css` (ritmo de secciones y utilidades Agora) |
 | Actualizar | `design-system/MASTER.md` |
+
+## 9. Estado de ejecución (16 oct 2026)
+
+| Fase | Commit | Estado | Notas |
+|---|---|---|---|
+| 1 Tokens y fuentes | `d5ebe2f` | Hecha | `variables.css` define además 35 variables que el código usaba sin declarar (`--font-heading`, `--font-body`, `--color-neutral-*`). Fuentes autoalojadas con `next/font`, sin peticiones a Google Fonts. |
+| 2 Layout | `7112466` | Hecha | Header oscuro con 6 enlaces y CTA, footer oscuro, ticker con altura reservada, banner superior de la home con altura fija. |
+| 3 Componentes | `8bf4c12` | Hecha | Botones, tarjetas (imagen a sangre, hover con elevación), badges, banner de cookies, menú de usuario. |
+| 4 Páginas públicas | `3133650` | Hecha | Heros oscuros unificados en noticias, academia, entrevistas, rankings, ETFs y gestoras (antes azul, verde, morado y blanco). Home con palabra destacada y secciones alternas. |
+| Fix encabezados | `9b09793` | Hecha | Los h1-h6 heredan el color del contexto para seguir blancos en secciones oscuras. |
+| 5 Admin | pendiente de commit | Hecha | 25 hex sustituidos por tokens en `admin.css`, `admin-ads.css` y `login.css`. El admin reutiliza el Header público y su CSS ya era 95 % variables, así que hereda la paleta por los alias. No se ha podido revisar visualmente (requiere sesión). |
+| 6 QA | en curso | Parcial | Capturas locales de 8 páginas públicas en 1440 y 375 px con datos reales (reenvío de `/api/*` a producción). Lighthouse local en home y noticias. Falta la revisión visual del usuario en el preview protegido de Vercel. |
+
+### Verificación visual realizada
+
+El preview de Vercel está protegido por SSO y no es accesible desde la automatización. Se verificó en local compilando con valores ficticios de Supabase (solo para que arranque el middleware) y reenviando las llamadas `/api/*` a producción desde Puppeteer. Capturas en el scratchpad de la sesión (`shots/despues/`), referencia de producción en `shots/antes/`.
+
+Comprobado con estilos computados: títulos de hero en blanco (`rgb(255,255,255)`) y Playfair Display, botón primario `#FD6D0A` con texto blanco, encabezados de contenido en `#001529`.
+
+### Hallazgos durante la migración (fuera del alcance del diseño)
+
+- **AdSlot dejaba un esqueleto permanente cuando no hay anuncio activo** (p. ej. `home_after_ranking` devuelve `{"ads":[]}`). En contenedores flex colapsaba a una línea blanca de 1 px. Corregido: sin anuncio no renderiza nada.
+- **`/rankings` y `/etfs` renderizan los 811 ETFs de golpe**: páginas de 107.000 y 91.000 px de alto. Afecta a rendimiento y a la captura de pantalla móvil. Conviene paginar o virtualizar (mejora pendiente, no incluida aquí).
+- La clase `hover-lift` se usaba en todas las tarjetas pero no existía en ningún CSS. Eliminada.

@@ -125,7 +125,7 @@ export default function HomePage() {
               </div>
               <Link
                 href="/noticias"
-                className="text-secondary font-semibold hover:text-primary transition-colors inline-flex items-center"
+                className="text-secondary-dark font-semibold hover:text-primary transition-colors inline-flex items-center"
               >
                 Ver todas
                 <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

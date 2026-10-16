@@ -117,7 +117,7 @@ export default function NewsCard({
                   <ExternalLink className="w-3 h-3" />
                   <span>Fuente: <span className="font-medium text-slate-700">{article.source_name}</span></span>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-secondary font-medium group-hover:text-primary">
+                <div className="flex items-center gap-1.5 text-xs text-secondary-dark font-medium group-hover:text-primary">
                   Leer en {article.source_name}
                 </div>
               </div>
@@ -185,7 +185,7 @@ export default function NewsCard({
                 <ExternalLink className="w-3 h-3" />
                 <span>Fuente: <span className="font-medium text-slate-700">{article.source_name}</span></span>
               </div>
-              <div className="text-xs text-secondary font-medium group-hover:text-primary">
+              <div className="text-xs text-secondary-dark font-medium group-hover:text-primary">
                 Leer artículo completo en {article.source_name} →
               </div>
             </div>

@@ -29,7 +29,7 @@ const FOOTER_COLUMNS = [
   },
 ];
 
-const LINK_CLASS = 'text-sm text-white/70 hover:text-primary transition-colors';
+const LINK_CLASS = 'text-sm text-white/75 hover:text-primary transition-colors';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -67,10 +67,10 @@ export default function Footer() {
         </div>
 
         <div className="pt-8 border-t border-white/[0.08] flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-white/50">
+          <p className="text-sm text-white/70">
             © {currentYear} ETFNexo. Todos los derechos reservados.
           </p>
-          <p className="text-xs text-white/40 max-w-2xl text-center md:text-right">
+          <p className="text-xs text-white/60 max-w-2xl text-center md:text-right">
             ETF Nexo es una plataforma informativa. No prestamos servicios de inversión ni asesoramiento financiero regulado.
           </p>
         </div>

@@ -144,7 +144,7 @@
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-secondary text-base font-semibold rounded-btn transition-colors hover:text-primary hover:underline;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-secondary-dark text-base font-semibold rounded-btn transition-colors hover:text-primary hover:underline;
   }
 
   /* Badge */

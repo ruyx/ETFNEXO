@@ -239,13 +239,13 @@
 }
 
 .status-badge--published {
-  background-color: #D1FAE5; /* Green-100 */
-  color: #065F46; /* Green-800 */
+  background-color: var(--color-success-light); /* Green-100 */
+  color: var(--color-emerald-800); /* Green-800 */
 }
 
 .status-badge--draft {
-  background-color: #FEF3C7; /* Yellow-100 */
-  color: #92400E; /* Yellow-800 */
+  background-color: var(--color-warning-light); /* Yellow-100 */
+  color: var(--color-amber-800); /* Yellow-800 */
 }
 
 .status-badge--archived {
@@ -337,7 +337,7 @@
 }
 
 .admin-action-btn--publish:hover {
-  color: #059669; /* Green-600 */
+  color: var(--color-success-dark); /* Green-600 */
   background: var(--color-slate-200);
   border-color: var(--color-slate-300);
 }
@@ -349,7 +349,7 @@
 }
 
 .admin-action-btn--unpublish:hover {
-  color: #D97706; /* Amber-600 */
+  color: var(--color-amber-600); /* Amber-600 */
   background: var(--color-slate-200);
   border-color: var(--color-slate-300);
 }
@@ -361,7 +361,7 @@
 }
 
 .admin-action-btn--delete:hover {
-  color: #DC2626; /* Red-600 */
+  color: var(--color-red-600); /* Red-600 */
   background: var(--color-slate-200);
   border-color: var(--color-slate-300);
 }
@@ -485,10 +485,10 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-4);
-  background-color: #D1FAE5; /* Green-50 */
-  border: 1px solid #10B981; /* Green-500 */
+  background-color: var(--color-success-light); /* Green-50 */
+  border: 1px solid var(--color-success); /* Green-500 */
   border-radius: var(--btn-radius);
-  color: #065F46; /* Green-800 */
+  color: var(--color-emerald-800); /* Green-800 */
   margin-bottom: var(--spacing-6);
 }
 
@@ -500,7 +500,7 @@
 .admin-success-message__close {
   background: transparent;
   border: none;
-  color: #10B981; /* Green-500 */
+  color: var(--color-success); /* Green-500 */
   cursor: pointer;
   padding: var(--spacing-1);
   display: flex;
@@ -511,8 +511,8 @@
 }
 
 .admin-success-message__close:hover {
-  color: #059669; /* Green-600 */
-  background-color: #A7F3D0; /* Green-200 */
+  color: var(--color-success-dark); /* Green-600 */
+  background-color: var(--color-success-light); /* Green-200 */
 }
 
 /* ==================== FORM PAGE ==================== */
@@ -644,9 +644,9 @@
 }
 
 .admin-form-error {
-  background-color: #FEE2E2; /* Red-50 */
-  border: 1px solid #FCA5A5; /* Red-300 */
-  color: #DC2626; /* Red-600 */
+  background-color: var(--color-danger-light); /* Red-50 */
+  border: 1px solid var(--color-red-200); /* Red-300 */
+  color: var(--color-red-600); /* Red-600 */
   padding: var(--spacing-4);
   border-radius: var(--btn-radius);
   font-size: var(--font-size-sm);
@@ -1008,7 +1008,7 @@
   width: 20px;
   left: 3px;
   bottom: 1px;
-  background-color: #fff;
+  background-color: var(--color-neutral-0);
   transition: 0.3s;
   border-radius: 50%;
 }
