@@ -42,7 +42,7 @@ export default function RankingSlider() {
       <div className="w-full overflow-hidden py-8 bg-slate-50">
         <div className="flex gap-6 px-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="flex-none w-[420px] bg-white border border-slate-200 rounded-lg p-6 animate-pulse">
+            <div key={i} className="flex-none w-[420px] bg-light-white border border-slate-100 rounded-card p-6 animate-pulse">
               <div className="h-64 bg-slate-100 rounded"></div>
             </div>
           ))}
@@ -64,7 +64,7 @@ export default function RankingSlider() {
             <Link
               key={`${etf.id}-${index}`}
               href={`/etfs/${etf.isin}`}
-              className="flex-none w-[420px] bg-white border border-slate-200 rounded-lg p-6 hover:border-blue-400 hover:shadow-lg transition-all duration-200 hover:-translate-y-1"
+              className="flex-none w-[420px] bg-light-white border border-slate-100 rounded-card p-6 hover:border-primary/40 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               {/* Header with Rank and Score */}
               <div className="flex items-start justify-between pb-4 mb-4 border-b border-slate-200">
@@ -72,14 +72,14 @@ export default function RankingSlider() {
                   #{etf.rank}
                 </div>
                 <div className="flex flex-col items-end">
-                  <span className="text-3xl font-bold text-blue-600 leading-none">{etf.etfnexo_score.toFixed(1)}</span>
+                  <span className="text-3xl font-bold text-primary leading-none font-mono tabular-nums">{etf.etfnexo_score.toFixed(1)}</span>
                   <span className="text-xs text-slate-500 uppercase tracking-wide mt-1">ETFNexo Score</span>
                 </div>
               </div>
 
               {/* ETF Info */}
               <div className="mb-6">
-                <h3 className="text-xl font-bold text-slate-900 mb-2 leading-tight">{etf.name}</h3>
+                <h3 className="font-heading text-xl font-bold text-slate-900 mb-2 leading-tight">{etf.name}</h3>
                 <p className="text-sm text-slate-600 font-medium">{etf.yahoo_ticker}</p>
               </div>
 

@@ -84,16 +84,16 @@ export default function HomePage() {
 
         <div className="container py-20 px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              Rankings de ETFs 2026, Noticias y Análisis para Inversores
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight animate-fade-in-up">
+              <span className="highlight">Rankings de ETFs 2026</span>, Noticias y Análisis para Inversores
             </h1>
-            <p className="text-xl text-slate-300 mb-8 leading-relaxed">
+            <p className="text-xl text-white/80 mb-8 leading-relaxed animate-fade-in-up [animation-delay:100ms]">
               La plataforma de referencia para inversores que buscan información transparente y análisis objetivo sobre ETFs
             </p>
-            <div className="flex gap-4 justify-center">
+            <div className="flex flex-wrap gap-4 justify-center animate-fade-in-up [animation-delay:200ms]">
               <Link
                 href="/rankings"
-                className="inline-flex items-center px-6 py-3 bg-white text-slate-900 font-semibold rounded-lg hover:bg-slate-100 transition-all"
+                className="btn-primary"
               >
                 Ver Rankings de ETFs
                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,7 +102,7 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/noticias"
-                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all"
+                className="btn-secondary btn-secondary--on-dark"
               >
                 Últimas Noticias
                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -116,7 +116,7 @@ export default function HomePage() {
 
       <main>
         {/* Latest News Grid */}
-        <section className="py-16 px-6 bg-slate-50">
+        <section className="section section--light px-6">
           <div className="container max-w-7xl">
             <div className="flex items-center justify-between mb-12">
               <div>
@@ -125,7 +125,7 @@ export default function HomePage() {
               </div>
               <Link
                 href="/noticias"
-                className="text-blue-600 font-semibold hover:text-blue-700 inline-flex items-center"
+                className="text-secondary font-semibold hover:text-primary transition-colors inline-flex items-center"
               >
                 Ver todas
                 <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -197,10 +197,7 @@ export default function HomePage() {
             ) : (
               <div className="text-center py-12">
                 <p className="text-slate-600 mb-6">Próximamente noticias y análisis sobre ETFs</p>
-                <Link
-                  href="/rankings"
-                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all"
-                >
+                <Link href="/rankings" className="btn-primary">
                   Ver Rankings de ETFs
                 </Link>
               </div>
@@ -209,10 +206,10 @@ export default function HomePage() {
         </section>
 
         {/* Rankings Section - PRINCIPAL */}
-        <section className="relative py-20 bg-white border-b border-slate-200">
+        <section className="relative section section--white border-b border-slate-100">
           <div className="mb-16 text-center px-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full border border-blue-200 mb-6">
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary-50 text-primary-dark text-xs font-semibold rounded-full border border-primary-100 mb-6">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
               <span>Actualizado Semanalmente</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
@@ -229,7 +226,7 @@ export default function HomePage() {
           <div className="text-center mt-12 px-6">
             <Link
               href="/rankings"
-              className="inline-flex items-center justify-center px-8 py-4 bg-slate-900 text-white text-lg font-semibold rounded-lg hover:bg-slate-800 transition-all shadow-lg"
+              className="btn-primary text-lg px-10 py-4"
             >
               Ver Ranking Completo de 170+ ETFs
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -243,8 +240,7 @@ export default function HomePage() {
         <section className="py-4 px-6 bg-gradient-to-b from-slate-900 to-slate-800">
           <div className="container max-w-7xl">
             <div className="flex justify-center items-center" style={{
-              minHeight: '110px',
-              maxHeight: '250px',
+              height: '110px',
               overflow: 'hidden'
             }}>
               <AdSlot placement="home_after_ranking" />
@@ -253,17 +249,17 @@ export default function HomePage() {
         </section>
 
         {/* Newsletter CTA */}
-        <section className="py-16 px-6 bg-slate-900 text-white">
+        <section className="section section--dark px-6">
           <div className="container max-w-4xl text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Recibe Noticias y Análisis Semanales
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              Recibe Noticias y Análisis <span className="highlight">Semanales</span>
             </h2>
-            <p className="text-xl text-slate-300 mb-8">
+            <p className="text-xl mb-8">
               Únete a más de 500 inversores que reciben nuestro newsletter cada lunes
             </p>
             <Link
               href="/newsletter"
-              className="inline-flex items-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all shadow-lg"
+              className="btn-primary text-lg px-10 py-4"
             >
               Suscribirme Gratis
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

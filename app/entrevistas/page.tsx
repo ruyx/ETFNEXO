@@ -99,17 +99,17 @@ export default function EntrevistasPage() {
 
         <main>
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900 text-white py-16 px-6">
+        <section className="section section--dark px-6">
           <div className="container max-w-4xl text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-600/20 border border-purple-400/30 rounded-full text-xs font-semibold text-purple-300 mb-6">
-              <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/15 border border-primary/40 rounded-full text-xs font-semibold text-primary-light mb-6">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
               <span>Expertos del sector</span>
             </div>
 
             <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
               Entrevistas ETF Nexo
             </h1>
-            <p className="text-xl text-purple-100 leading-relaxed">
+            <p className="text-xl leading-relaxed">
               Conversaciones con expertos del sector financiero sobre ETFs, inversión y mercados.
               Conocimiento directo de los líderes de la industria.
             </p>
@@ -117,7 +117,7 @@ export default function EntrevistasPage() {
         </section>
 
         {/* Interviews Grid */}
-        <section className="py-16 px-6">
+        <section className="section section--light px-6">
           <div className="container max-w-7xl">
             {initialLoading ? (
               // Initial loading state
@@ -195,17 +195,17 @@ export default function EntrevistasPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 px-6 bg-slate-900 text-white">
+        <section className="section section--dark px-6">
           <div className="container max-w-4xl text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              ¿Buscas los mejores ETFs?
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              ¿Buscas los mejores <span className="highlight">ETFs</span>?
             </h2>
-            <p className="text-xl text-slate-300 mb-8">
+            <p className="text-xl mb-8">
               Descubre nuestro ranking completo de ETFs evaluados con nuestro algoritmo propietario ETFNexo Score
             </p>
             <Link
               href="/rankings"
-              className="inline-flex items-center px-8 py-4 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all shadow-lg"
+              className="btn-primary text-lg px-10 py-4"
             >
               Ver Rankings de ETFs
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

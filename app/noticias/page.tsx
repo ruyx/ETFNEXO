@@ -94,17 +94,17 @@ export default function NoticiasPage() {
 
         <main>
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-16 px-6">
+        <section className="section section--dark px-6">
           <div className="container max-w-4xl text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600/20 border border-blue-400/30 rounded-full text-xs font-semibold text-blue-300 mb-6">
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary/20 border border-secondary-light/30 rounded-full text-xs font-semibold text-secondary-light mb-6">
+              <div className="w-2 h-2 bg-secondary-light rounded-full animate-pulse"></div>
               <span>Actualizado diariamente</span>
             </div>
 
             <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
               Noticias sobre ETFs
             </h1>
-            <p className="text-xl text-slate-300 leading-relaxed">
+            <p className="text-xl leading-relaxed">
               Mantente informado con las últimas noticias del mundo de los fondos cotizados.
               Análisis de mercado, lanzamientos de productos y tendencias de inversión.
             </p>
@@ -112,7 +112,7 @@ export default function NoticiasPage() {
         </section>
 
         {/* News Grid */}
-        <section className="py-16 px-6">
+        <section className="section section--light px-6">
           <div className="container max-w-7xl">
             {initialLoading ? (
               // Initial loading state
@@ -146,7 +146,7 @@ export default function NoticiasPage() {
                 </p>
                 <Link
                   href="/rankings"
-                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all"
+                  className="btn-primary"
                 >
                   Ver Rankings de ETFs
                 </Link>
@@ -169,7 +169,7 @@ export default function NoticiasPage() {
                   <div ref={observerTarget} className="py-8">
                     {loading && (
                       <div className="flex items-center justify-center gap-3">
-                        <div className="w-6 h-6 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-6 h-6 border-[3px] border-primary border-t-transparent rounded-full animate-spin"></div>
                         <p className="text-slate-600 font-medium">Cargando más noticias...</p>
                       </div>
                     )}
@@ -190,17 +190,17 @@ export default function NoticiasPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 px-6 bg-slate-900 text-white">
+        <section className="section section--dark px-6">
           <div className="container max-w-4xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               ¿Buscas los mejores ETFs?
             </h2>
-            <p className="text-xl text-slate-300 mb-8">
+            <p className="text-xl mb-8">
               Descubre nuestro ranking completo de ETFs evaluados con nuestro algoritmo propietario ETFNexo Score
             </p>
             <Link
               href="/rankings"
-              className="inline-flex items-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all shadow-lg"
+              className="btn-primary text-lg px-10 py-4"
             >
               Ver Rankings de ETFs
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

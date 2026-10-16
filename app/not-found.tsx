@@ -5,11 +5,11 @@ import { Home, ArrowLeft } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-light flex items-center justify-center px-4">
       <div className="max-w-2xl w-full text-center">
         {/* 404 Number */}
         <div className="mb-8">
-          <h1 className="text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+          <h1 className="font-heading text-9xl font-bold text-primary">
             404
           </h1>
         </div>
@@ -28,7 +28,7 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+            className="btn-primary"
           >
             <Home className="w-5 h-5" />
             Ir al Inicio
@@ -36,7 +36,7 @@ export default function NotFound() {
 
           <button
             onClick={() => window.history.back()}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors border border-slate-200 shadow-sm hover:shadow-md"
+            className="btn-secondary"
           >
             <ArrowLeft className="w-5 h-5" />
             Volver Atrás
@@ -49,28 +49,28 @@ export default function NotFound() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/noticias"
-              className="text-sm text-blue-600 hover:text-blue-700 hover:underline"
+              className="text-sm text-secondary hover:text-primary hover:underline"
             >
               Noticias
             </Link>
             <span className="text-slate-300">•</span>
             <Link
               href="/entrevistas"
-              className="text-sm text-blue-600 hover:text-blue-700 hover:underline"
+              className="text-sm text-secondary hover:text-primary hover:underline"
             >
               Entrevistas
             </Link>
             <span className="text-slate-300">•</span>
             <Link
               href="/academia"
-              className="text-sm text-blue-600 hover:text-blue-700 hover:underline"
+              className="text-sm text-secondary hover:text-primary hover:underline"
             >
               Academia
             </Link>
             <span className="text-slate-300">•</span>
             <Link
               href="/etfs"
-              className="text-sm text-blue-600 hover:text-blue-700 hover:underline"
+              className="text-sm text-secondary hover:text-primary hover:underline"
             >
               ETFs
             </Link>
