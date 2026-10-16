@@ -65,11 +65,13 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Los encabezados heredan el color del contexto: azul marino sobre fondo
+     claro (body) y blanco dentro de secciones oscuras (text-white). */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: var(--font-weight-bold);
     line-height: var(--line-height-tight);
-    color: var(--text-primary);
+    color: inherit;
   }
 
   h1 { letter-spacing: -0.02em; }
