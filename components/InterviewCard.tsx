@@ -45,8 +45,8 @@ export default function InterviewCard({
   if (variant === 'featured') {
     return (
       <Link href={`/entrevistas/${interview.slug}`} className="block">
-        <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden">
-          <div className="grid md:grid-cols-[400px_1fr] gap-6">
+        <div className="card card--flush group cursor-pointer hover:border-primary/40">
+          <div className="grid md:grid-cols-[400px_1fr] gap-0 md:gap-6">
             {/* YouTube Thumbnail */}
             <div className="relative w-full h-64 md:h-full bg-slate-100 overflow-hidden">
               <Image
@@ -60,7 +60,7 @@ export default function InterviewCard({
             </div>
 
             {/* Content */}
-            <div className="flex flex-col justify-between py-2">
+            <div className="flex flex-col justify-between p-6 md:pl-0">
               <div>
                 {/* Category Badge */}
                 {interview.category_name && (
@@ -75,7 +75,7 @@ export default function InterviewCard({
                 )}
 
                 {/* Title */}
-                <h3 className="text-xl font-bold mb-3 line-clamp-2 text-slate-900">
+                <h3 className="font-heading text-2xl font-bold mb-3 line-clamp-2 text-slate-900 group-hover:text-primary transition-colors">
                   {interview.title}
                 </h3>
 
@@ -113,7 +113,7 @@ export default function InterviewCard({
   // Default variant (vertical card)
   return (
     <Link href={`/entrevistas/${interview.slug}`} className="block h-full">
-      <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden flex flex-col h-full">
+      <div className="card card--flush group cursor-pointer hover:border-primary/40 flex flex-col h-full">
         {/* YouTube Thumbnail */}
         <div className="relative w-full h-48 bg-slate-100 overflow-hidden">
           <Image
@@ -127,7 +127,7 @@ export default function InterviewCard({
         </div>
 
         {/* Content */}
-        <div className="p-5 flex flex-col flex-1">
+        <div className="p-6 flex flex-col flex-1">
           {/* Category Badge */}
           {interview.category_name && (
             <div className="mb-3">
@@ -141,7 +141,7 @@ export default function InterviewCard({
           )}
 
           {/* Title */}
-          <h3 className="text-base font-bold mb-2 line-clamp-2 text-slate-900 flex-1">
+          <h3 className="font-heading text-xl font-bold mb-2 line-clamp-2 text-slate-900 flex-1 group-hover:text-primary transition-colors">
             {interview.title}
           </h3>
 

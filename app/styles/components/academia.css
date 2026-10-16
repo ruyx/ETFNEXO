@@ -39,8 +39,8 @@
 
 /* Advanced - Error red */
 .difficulty-badge--advanced {
-  background-color: #FEE2E2;  /* red-100 */
-  color: #991B1B;  /* red-800 */
+  background-color: var(--color-danger-light);  /* red-100 */
+  color: var(--color-red-700);  /* red-800 */
   border-color: var(--color-error);
 }
 

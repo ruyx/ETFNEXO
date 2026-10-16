@@ -56,7 +56,7 @@ export default function ETFCard({
 
   return (
     <Link href={`/etfs/${etf.ticker}`} className="block">
-      <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300">
+      <div className="card group cursor-pointer hover:border-primary/40 p-5">
         <div className="flex items-center gap-4">
           {/* Rank Badge (compact) */}
           {rank && (

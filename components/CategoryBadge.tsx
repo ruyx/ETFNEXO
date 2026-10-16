@@ -9,7 +9,7 @@ export default function CategoryBadge({
 }: CategoryBadgeProps) {
   const variantStyles = {
     default: 'bg-slate-50 text-slate-600 border-slate-200',
-    primary: 'bg-blue-50 text-blue-700 border-blue-100',
+    primary: 'bg-secondary-50 text-secondary-dark border-secondary-100',
   }
 
   return (

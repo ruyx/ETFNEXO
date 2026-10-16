@@ -12,7 +12,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, var(--color-neutral-100) 25%, var(--border-medium) 50%, var(--color-neutral-100) 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s infinite;
 }
@@ -58,7 +58,7 @@
 }
 
 .btn-signup:hover {
-  background: #f0f0f0;
+  background: var(--color-neutral-100);
 }
 
 .user-nav-trigger {
@@ -134,25 +134,25 @@
 
 .user-nav-dropdown-header {
   padding: 20px 20px 16px 20px;
-  background: linear-gradient(to bottom, #fafafa, white);
+  background: linear-gradient(to bottom, var(--bg-white), white);
 }
 
 .user-nav-dropdown-name {
   font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--text-primary);
   margin-bottom: 2px;
   letter-spacing: -0.01em;
 }
 
 .user-nav-dropdown-email {
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .user-nav-dropdown-divider {
   height: 1px;
-  background: linear-gradient(to right, transparent, #e2e8f0, transparent);
+  background: linear-gradient(to right, transparent, var(--border-light), transparent);
   margin: 0;
 }
 
@@ -176,7 +176,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 .user-nav-dropdown-link {
@@ -184,7 +184,7 @@
   align-items: center;
   gap: 12px;
   padding: 10px 20px;
-  color: #334155;
+  color: var(--bg-dark-lighter);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
@@ -193,18 +193,18 @@
 }
 
 .user-nav-dropdown-link:hover {
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--bg-light);
+  color: var(--text-primary);
 }
 
 .user-nav-dropdown-link svg {
-  color: #64748b;
+  color: var(--text-secondary);
   flex-shrink: 0;
   transition: color 0.15s;
 }
 
 .user-nav-dropdown-link:hover svg {
-  color: #3b82f6;
+  color: var(--color-secondary);
 }
 
 .user-nav-dropdown-link span {
@@ -219,7 +219,7 @@
   padding: 12px 20px;
   background: none;
   border: none;
-  color: #ef4444;
+  color: var(--color-danger);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -228,18 +228,18 @@
 }
 
 .user-nav-dropdown-signout:hover {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--color-red-50);
+  color: var(--color-red-600);
 }
 
 .user-nav-dropdown-signout svg {
-  color: #ef4444;
+  color: var(--color-danger);
   flex-shrink: 0;
   transition: color 0.15s;
 }
 
 .user-nav-dropdown-signout:hover svg {
-  color: #dc2626;
+  color: var(--color-red-600);
 }
 
 .user-nav-dropdown-signout span {

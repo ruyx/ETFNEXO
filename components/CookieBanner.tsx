@@ -100,7 +100,7 @@ export default function CookieBanner() {
           left: 0;
           right: 0;
           bottom: 0;
-          background-color: rgba(0, 0, 0, 0.4);
+          background-color: rgba(0, 21, 41, 0.5);
           z-index: 9998;
           animation: fadeIn 0.3s ease-in-out;
         }
@@ -116,9 +116,9 @@ export default function CookieBanner() {
           left: 0;
           right: 0;
           z-index: 9999;
-          background: white;
-          border-top: 1px solid #e2e8f0;
-          box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+          background: var(--bg-dark);
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 -8px 24px rgba(0, 21, 41, 0.3);
           animation: slideUp 0.3s ease-out;
         }
 
@@ -151,13 +151,14 @@ export default function CookieBanner() {
         .cookie-banner__title {
           font-size: 1.125rem;
           font-weight: 700;
-          color: #1e293b;
+          color: var(--text-white);
+          font-family: var(--font-heading);
           margin-bottom: 0.5rem;
         }
 
         .cookie-banner__text {
           font-size: 0.875rem;
-          color: #64748b;
+          color: rgba(255, 255, 255, 0.7);
           line-height: 1.5;
           margin-bottom: 0.5rem;
         }
@@ -167,13 +168,13 @@ export default function CookieBanner() {
         }
 
         .cookie-banner__link {
-          color: #3b82f6;
+          color: var(--color-secondary-light);
           text-decoration: underline;
           transition: color 0.2s;
         }
 
         .cookie-banner__link:hover {
-          color: #2563eb;
+          color: var(--color-primary);
         }
 
         .cookie-banner__actions {
@@ -195,23 +196,24 @@ export default function CookieBanner() {
         }
 
         .cookie-banner__button--primary {
-          background-color: #3b82f6;
-          color: white;
+          background-color: var(--color-primary);
+          color: var(--text-white);
         }
 
         .cookie-banner__button--primary:hover {
-          background-color: #2563eb;
+          background-color: var(--color-primary-light);
+          box-shadow: var(--shadow-primary);
         }
 
         .cookie-banner__button--secondary {
-          background-color: white;
-          color: #64748b;
-          border: 1px solid #e2e8f0;
+          background-color: transparent;
+          color: rgba(255, 255, 255, 0.85);
+          border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .cookie-banner__button--secondary:hover {
-          background-color: #f8fafc;
-          border-color: #cbd5e1;
+          background-color: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 255, 255, 0.6);
         }
 
         /* Mobile: botones full width */

@@ -61,8 +61,8 @@ export default function NewsCard({
   if (variant === 'featured') {
     return (
       <Link href={articleUrl} className="block">
-        <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden">
-          <div className="grid md:grid-cols-[300px_1fr] gap-6">
+        <div className="card card--flush group cursor-pointer hover:border-primary/40">
+          <div className="grid md:grid-cols-[300px_1fr] gap-0 md:gap-6">
             {/* Featured Image */}
             {article.featured_image_url && (
               <div className="relative w-full h-48 md:h-full bg-slate-100 overflow-hidden">
@@ -78,7 +78,7 @@ export default function NewsCard({
             )}
 
             {/* Content */}
-            <div className="flex flex-col justify-between py-2">
+            <div className="flex flex-col justify-between p-6 md:pl-0">
               <div>
                 {/* Meta */}
                 <div className="flex items-center gap-3 mb-3">
@@ -101,7 +101,7 @@ export default function NewsCard({
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                <h3 className="font-heading text-2xl font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-primary transition-colors">
                   {article.title}
                 </h3>
 
@@ -117,7 +117,7 @@ export default function NewsCard({
                   <ExternalLink className="w-3 h-3" />
                   <span>Fuente: <span className="font-medium text-slate-700">{article.source_name}</span></span>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-blue-600 font-medium group-hover:text-blue-700">
+                <div className="flex items-center gap-1.5 text-xs text-secondary font-medium group-hover:text-primary">
                   Leer en {article.source_name}
                 </div>
               </div>
@@ -132,7 +132,7 @@ export default function NewsCard({
   if (variant === 'card') {
     return (
       <Link href={articleUrl} className="block h-full">
-        <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden flex flex-col h-full">
+        <div className="card card--flush group cursor-pointer hover:border-primary/40 flex flex-col h-full">
           {/* Featured Image */}
           {article.featured_image_url && (
             <div className="relative w-full h-48 bg-slate-100 overflow-hidden">
@@ -148,7 +148,7 @@ export default function NewsCard({
           )}
 
           {/* Content */}
-          <div className="p-5 flex flex-col flex-1">
+          <div className="p-6 flex flex-col flex-1">
             {/* Meta */}
             <div className="flex items-center gap-2 mb-3">
               {article.pinned && (
@@ -170,7 +170,7 @@ export default function NewsCard({
             </div>
 
             {/* Title */}
-            <h3 className="text-base font-bold text-slate-900 mb-2 line-clamp-3 group-hover:text-blue-600 transition-colors">
+            <h3 className="font-heading text-xl font-bold text-slate-900 mb-2 line-clamp-3 group-hover:text-primary transition-colors">
               {article.title}
             </h3>
 
@@ -185,7 +185,7 @@ export default function NewsCard({
                 <ExternalLink className="w-3 h-3" />
                 <span>Fuente: <span className="font-medium text-slate-700">{article.source_name}</span></span>
               </div>
-              <div className="text-xs text-blue-600 font-medium group-hover:text-blue-700">
+              <div className="text-xs text-secondary font-medium group-hover:text-primary">
                 Leer artículo completo en {article.source_name} →
               </div>
             </div>
@@ -198,7 +198,7 @@ export default function NewsCard({
   // Default variant (compact)
   return (
     <Link href={articleUrl} className="block">
-      <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden">
+      <div className="card card--flush group cursor-pointer hover:border-primary/40">
         <div className="flex gap-4">
           {/* Thumbnail */}
           {article.featured_image_url && (
@@ -218,7 +218,7 @@ export default function NewsCard({
           <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
             <div>
               {/* Title */}
-              <h3 className="text-sm font-semibold text-slate-900 mb-1.5 line-clamp-2 group-hover:text-blue-600 transition-colors">
+              <h3 className="text-sm font-semibold text-slate-900 mb-1.5 line-clamp-2 group-hover:text-primary transition-colors">
                 {article.title}
               </h3>
 

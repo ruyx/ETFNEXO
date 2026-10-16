@@ -57,8 +57,8 @@ export default function AcademyCard({
   if (variant === 'featured') {
     return (
       <Link href={`/academia/${article.slug}`} className="block">
-        <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden">
-          <div className="grid md:grid-cols-[300px_1fr] gap-6">
+        <div className="card card--flush group cursor-pointer hover:border-primary/40">
+          <div className="grid md:grid-cols-[300px_1fr] gap-0 md:gap-6">
             {/* Featured Image */}
             {article.featured_image_url && (
               <div className="relative w-full h-48 md:h-full bg-slate-100 overflow-hidden">
@@ -74,7 +74,7 @@ export default function AcademyCard({
             )}
 
             {/* Content */}
-            <div className="flex flex-col justify-between py-2">
+            <div className="flex flex-col justify-between p-6 md:pl-0">
               <div>
                 {/* Meta & Badges */}
                 <div className="flex items-center gap-2 mb-3 flex-wrap">
@@ -109,7 +109,7 @@ export default function AcademyCard({
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-bold mb-3 line-clamp-2 academy-title">
+                <h3 className="font-heading text-2xl font-bold mb-3 line-clamp-2 academy-title">
                   {article.title}
                 </h3>
 
@@ -140,7 +140,7 @@ export default function AcademyCard({
   if (variant === 'card') {
     return (
       <Link href={`/academia/${article.slug}`} className="block h-full">
-        <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden flex flex-col h-full">
+        <div className="card card--flush group cursor-pointer hover:border-primary/40 flex flex-col h-full">
           {/* Featured Image */}
           {article.featured_image_url && (
             <div className="relative w-full h-48 bg-slate-100 overflow-hidden">
@@ -156,7 +156,7 @@ export default function AcademyCard({
           )}
 
           {/* Content */}
-          <div className="p-5 flex flex-col flex-1">
+          <div className="p-6 flex flex-col flex-1">
             {/* Meta & Badges */}
             <div className="flex items-center gap-2 mb-3 flex-wrap">
               {article.pinned && (
@@ -186,7 +186,7 @@ export default function AcademyCard({
             </div>
 
             {/* Title */}
-            <h3 className="text-base font-bold mb-2 line-clamp-3 academy-title">
+            <h3 className="font-heading text-xl font-bold mb-2 line-clamp-3 academy-title">
               {article.title}
             </h3>
 
@@ -214,7 +214,7 @@ export default function AcademyCard({
   // Default variant (compact)
   return (
     <Link href={`/academia/${article.slug}`} className="block">
-      <div className="card hover-lift group cursor-pointer bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 overflow-hidden">
+      <div className="card card--flush group cursor-pointer hover:border-primary/40">
         <div className="flex gap-4">
           {/* Thumbnail */}
           {article.featured_image_url && (
