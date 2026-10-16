@@ -40,7 +40,7 @@ export default function Footer() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] lg:gap-12 mb-12">
           {/* Marca */}
           <div>
-            <Link href="/" className="inline-block font-heading text-3xl font-bold text-white mb-4" aria-label="ETF Nexo, inicio">
+            <Link href="/" className="inline-block font-heading text-3xl font-bold text-white mb-4">
               ETF<span className="text-primary">Nexo</span>
             </Link>
             <p className="text-sm leading-relaxed max-w-xs">

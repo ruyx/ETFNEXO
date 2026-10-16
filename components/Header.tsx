@@ -37,7 +37,7 @@ export default function Header() {
       <div className="site-header__container">
         <div className="flex items-center justify-between w-full">
           {/* Logo */}
-          <Link href="/" className="site-header__logo" aria-label="ETF Nexo, inicio">
+          <Link href="/" className="site-header__logo">
             <img src="/logo-white.svg" alt="ETF Nexo" className="site-header__logo-image" width={160} height={48} />
           </Link>
 

@@ -250,23 +250,41 @@
   gap: var(--spacing-2);
 }
 
+/* El botón mide 24x24 (objetivo táctil mínimo); el punto visible es el ::before */
 .hero-slideshow__dot {
-  width: 10px;
-  height: 10px;
+  position: relative;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: none;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.35);
+  background: transparent;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: width var(--transition-base);
 }
 
-.hero-slideshow__dot:hover {
+.hero-slideshow__dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 10px;
+  margin: 0 7px;
+  transform: translateY(-50%);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.35);
+  transition: background var(--transition-base);
+}
+
+.hero-slideshow__dot:hover::before {
   background: rgba(255, 255, 255, 0.7);
 }
 
 .hero-slideshow__dot.is-active {
-  width: 28px;
+  width: 42px;
+}
+
+.hero-slideshow__dot.is-active::before {
   background: var(--color-primary);
 }
 
