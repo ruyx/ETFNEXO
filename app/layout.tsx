@@ -1,4 +1,5 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
+import { Playfair_Display, Urbanist } from 'next/font/google'
 import './globals.css'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import CookieBanner from '@/components/CookieBanner'
@@ -8,14 +9,35 @@ import { TermExplanationTooltip } from '@/components/webmcp/TermExplanationToolt
 import { PortfolioAnalysisPanel } from '@/components/webmcp/PortfolioAnalysisPanel'
 import { ETFComparisonPanel } from '@/components/webmcp/ETFComparisonPanel'
 
+/**
+ * Tipografía del sistema de diseño "Agora".
+ * next/font autoaloja las fuentes (sin peticiones a Google en runtime) y
+ * expone variables CSS que consume app/styles/base/variables.css.
+ */
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-playfair',
+})
+
+const urbanist = Urbanist({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-urbanist',
+})
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#001529',
+}
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://etfnexo.com'),
-
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5
-  },
 
   title: {
     default: 'ETF Nexo - Rankings, Noticias y Academia de ETFs',
@@ -97,7 +119,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" className={`${playfair.variable} ${urbanist.variable}`}>
       <head>
         {/* Google Search Console Verification */}
         <meta name="google-site-verification" content="3BAN5-FdZRADxgwEaDAvjXWAit0gGyKzoa1mFBKnA9o" />
@@ -126,7 +148,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased">
+      <body className="antialiased font-body text-dark bg-light-white">
         <WebMCPProvider>
           {children}
           <CookieBanner />

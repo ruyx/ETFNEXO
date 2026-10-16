@@ -1,6 +1,5 @@
-/* ETF Nexo - Corporate Design System */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* ETF Nexo - Sistema de Diseño "Agora" */
+/* Fuentes: Playfair Display + Urbanist cargadas con next/font en app/layout.tsx */
 
 /* Importar variables y componentes */
 @import './styles/base/variables.css';
@@ -28,8 +27,7 @@
 
 @layer base {
   :root {
-    /* Typography */
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    /* Tipografía y tokens: ver app/styles/base/variables.css */
 
     /* Editorial Content Spacing */
     --content-spacing-sm: 1rem;
@@ -58,9 +56,27 @@
   }
 
   body {
-    font-family: var(--font-sans);
+    font-family: var(--font-body);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    color: var(--text-primary);
+    background: var(--bg-white);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    color: var(--text-primary);
+  }
+
+  h1 { letter-spacing: -0.02em; }
+  h2 { letter-spacing: -0.01em; }
+
+  a {
+    transition: color var(--transition-fast);
   }
 }
 
@@ -72,7 +88,11 @@
 
   /* Card */
   .card {
-    @apply bg-white border border-slate-200 rounded-lg p-6 shadow-sm;
+    @apply bg-light-white border border-slate-100 rounded-card p-8 shadow-md transition-all duration-300;
+  }
+
+  .card:hover {
+    @apply -translate-y-1 shadow-xl;
   }
 
   /* Typography */
@@ -110,20 +130,54 @@
 
   /* Buttons */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm;
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-primary text-white text-base font-semibold rounded-btn shadow-md transition-all duration-300 hover:bg-primary-light hover:-translate-y-0.5 hover:shadow-primary active:translate-y-0;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-white border-2 border-slate-300 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-50 transition-colors;
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-transparent border-2 border-dark text-dark text-base font-semibold rounded-btn transition-all duration-300 hover:bg-dark hover:text-white;
+  }
+
+  .btn-secondary--on-dark {
+    @apply border-white/40 text-white/90 hover:bg-white/10 hover:border-white/80 hover:text-white;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center px-6 py-3 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-100 transition-colors;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-secondary text-base font-semibold rounded-btn transition-colors hover:text-primary hover:underline;
   }
 
   /* Badge */
   .badge {
-    @apply inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full border border-blue-200;
+    @apply inline-flex items-center gap-2 px-3 py-1 bg-secondary-50 text-secondary-dark text-xs font-semibold rounded-full border border-blue-200;
+  }
+
+  /* Secciones (ritmo Agora: oscuro / claro / blanco) */
+  .section {
+    @apply py-section-sm md:py-section-md lg:py-section-lg;
+  }
+
+  .section--dark {
+    @apply bg-dark text-white;
+  }
+
+  .section--dark h1, .section--dark h2, .section--dark h3, .section--dark h4 {
+    @apply text-white;
+  }
+
+  .section--dark p {
+    @apply text-white/80;
+  }
+
+  .section--light {
+    @apply bg-light text-dark;
+  }
+
+  .section--white {
+    @apply bg-light-white text-dark;
+  }
+
+  /* Palabra destacada en títulos (hero) */
+  .highlight {
+    @apply text-primary italic;
   }
 
   /* Article Images - Standardized Sizes */
