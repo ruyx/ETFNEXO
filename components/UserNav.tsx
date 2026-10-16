@@ -16,7 +16,17 @@ export default function UserNav() {
   const router = useRouter()
 
   useEffect(() => {
-    const supabase = createClient()
+    // Sin NEXT_PUBLIC_SUPABASE_* (p. ej. Preview de Vercel sin variables)
+    // createBrowserClient lanza y tumbaba toda la página ("Application
+    // error"). En ese caso se muestra el estado sin sesión.
+    let supabase: ReturnType<typeof createClient>
+    try {
+      supabase = createClient()
+    } catch (err) {
+      console.error('[UserNav] No se pudo crear el cliente de Supabase:', err)
+      setLoading(false)
+      return
+    }
 
     const getUser = async () => {
       try {
