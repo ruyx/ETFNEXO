@@ -25,7 +25,7 @@ export default function RankingSlider() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/v1/rankings')
+    fetch('/api/v1/rankings?limit=10')
       .then(res => res.json())
       .then(data => {
         setRankings(data.data || []);
@@ -51,13 +51,15 @@ export default function RankingSlider() {
     );
   }
 
-  // Duplicate rankings for infinite loop effect
-  const duplicatedRankings = [...rankings, ...rankings, ...rankings];
+  // Duplicar UNA sola vez: .animate-scroll desplaza -50%, así que dos copias
+  // producen un bucle continuo. Sin limit=10 el API devolvía ~800 ETFs y el DOM
+  // superaba los 100.000 nodos (TBT de ~60 s en Lighthouse móvil).
+  const duplicatedRankings = [...rankings, ...rankings];
 
   return (
     <div className="w-full overflow-hidden relative py-8 bg-slate-50">
       <div className="overflow-hidden">
-        <div className="flex gap-6 px-4 animate-scroll hover:pause">
+        <div className="flex gap-6 px-4 animate-scroll">
           {duplicatedRankings.map((etf, index) => (
             <Link
               key={`${etf.id}-${index}`}

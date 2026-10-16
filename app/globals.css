@@ -289,6 +289,12 @@
     animation-play-state: paused;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .animate-scroll {
+      animation: none;
+    }
+  }
+
   /* Progress Bars - Reusable */
   .progress-bar {
     @apply h-2 bg-slate-200 rounded-full overflow-hidden;
