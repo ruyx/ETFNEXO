@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import Header from '@/components/Header';
+import HeroSplit from '@/components/HeroSplit';
 import RankingSlider from '@/components/RankingSlider';
 import MarketTicker from '@/components/MarketTicker';
 import AdSlot from '@/components/AdSlot';
@@ -65,54 +65,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Hero Editorial Section */}
-      <section className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.pexels.com/photos/6802042/pexels-photo-6802042.jpeg?auto=compress&cs=tinysrgb&w=1920"
-            alt="Análisis financiero de ETFs - Gráficos y datos de mercado"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-            quality={85}
-          />
-          {/* Overlay oscuro al 80% */}
-          <div className="absolute inset-0 bg-slate-900/80"></div>
-        </div>
-
-        <div className="container py-20 px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight animate-fade-in-up">
-              <span className="highlight">Rankings de ETFs 2026</span>, Noticias y Análisis para Inversores
-            </h1>
-            <p className="text-xl text-white/80 mb-8 leading-relaxed animate-fade-in-up [animation-delay:100ms]">
-              La plataforma de referencia para inversores que buscan información transparente y análisis objetivo sobre ETFs
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center animate-fade-in-up [animation-delay:200ms]">
-              <Link
-                href="/rankings"
-                className="btn-primary"
-              >
-                Ver Rankings de ETFs
-                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-              <Link
-                href="/noticias"
-                className="btn-secondary btn-secondary--on-dark"
-              >
-                Últimas Noticias
-                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Hero: contenido a la izquierda, foto fundida a la derecha */}
+      <HeroSplit
+        eyebrow="Rankings actualizados semanalmente"
+        title={<><span className="highlight">Rankings de ETFs 2026</span>, Noticias y Análisis para Inversores</>}
+        description="La plataforma de referencia para inversores que buscan información transparente y análisis objetivo sobre ETFs."
+        image={{
+          src: 'https://images.pexels.com/photos/8353820/pexels-photo-8353820.jpeg?auto=compress&cs=tinysrgb&w=1920',
+          alt: 'Equipo de inversores analizando gráficas de mercado en una reunión',
+        }}
+        primaryCta={{ href: '/rankings', label: 'Ver Rankings de ETFs' }}
+        secondaryCta={{ href: '/noticias', label: 'Últimas Noticias' }}
+      />
 
       <main>
         {/* Latest News Grid */}

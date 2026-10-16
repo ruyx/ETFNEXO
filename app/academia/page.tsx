@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import HeroSplit from '@/components/HeroSplit';
 import Footer from '@/components/Footer';
 import AcademyCard, { AcademyArticle } from '@/components/AcademyCard';
 
@@ -98,23 +99,14 @@ export default function AcademiaPage() {
         <Header />
 
         <main>
-        {/* Hero Section */}
-        <section className="section section--dark px-6">
-          <div className="container max-w-4xl text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/15 border border-primary/40 rounded-full text-xs font-semibold text-primary-light mb-6">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-              <span>Contenido educativo de calidad</span>
-            </div>
-
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-              Academia ETF Nexo
-            </h1>
-            <p className="text-xl leading-relaxed">
-              Aprende sobre ETFs con artículos educativos creados por expertos.
-              Desde conceptos básicos hasta estrategias avanzadas de inversión.
-            </p>
-          </div>
-        </section>
+        {/* Hero */}
+        <HeroSplit
+          eyebrow="Contenido educativo de calidad"
+          title={<><span className="highlight">Academia</span> ETF Nexo</>}
+          description="Aprende sobre ETFs con artículos educativos creados por expertos. Desde conceptos básicos hasta estrategias avanzadas de inversión."
+          image={{ src: 'https://images.pexels.com/photos/6549600/pexels-photo-6549600.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Persona tomando apuntes en un cuaderno junto a un libro y un portátil' }}
+          primaryCta={{ href: '/rankings', label: 'Ver Rankings de ETFs' }}
+        />
 
         {/* Articles Grid */}
         <section className="section section--light px-6">

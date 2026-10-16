@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
+import HeroSplit from '@/components/HeroSplit';
 import Footer from '@/components/Footer';
 import MarketTicker from '@/components/MarketTicker';
 import ProgressBar from '@/components/ProgressBar';
@@ -164,22 +165,12 @@ function RankingsContent() {
       <MarketTicker />
 
       {/* Hero */}
-      <section className="rankings-hero">
-        <div className="container">
-          <div>
-            <div className="rankings-hero__badge">
-              <svg fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-              </svg>
-              <span>Actualizado Diariamente</span>
-            </div>
-            <h1 className="rankings-hero__title">Rankings de ETFs</h1>
-            <p className="rankings-hero__description">
-              Análisis completo de {stats?.totalETFs || 0} ETFs con métricas de rendimiento, costes y liquidez
-            </p>
-          </div>
-        </div>
-      </section>
+      <HeroSplit
+        eyebrow="Actualizado diariamente"
+        title={<><span className="highlight">Rankings</span> de ETFs</>}
+        description={`Análisis completo de ${stats?.totalETFs || 0} ETFs con métricas de rendimiento, costes y liquidez.`}
+        image={{ src: 'https://images.pexels.com/photos/7947742/pexels-photo-7947742.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Informe bursátil con gráfica de velas' }}
+      />
 
       {/* Category Filters */}
       <section className="rankings-filters">

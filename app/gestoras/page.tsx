@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import HeroSplit from '@/components/HeroSplit';
 import Footer from '@/components/Footer';
 
 interface FundManager {
@@ -109,25 +110,13 @@ export default function GestorasPage() {
     <div>
       <Header />
       <main>
-        {/* Hero Section */}
-        <section className="gestoras-hero">
-          <div className="container">
-            <div className="gestoras-hero__container">
-              <div className="gestoras-hero__badge">
-                <div className="gestoras-hero__badge-dot"></div>
-                <span>Directorio Completo</span>
-              </div>
-
-              <h1 className="gestoras-hero__title">
-                Gestoras de ETFs
-              </h1>
-              <p className="gestoras-hero__description">
-                Descubre las principales gestoras de ETFs del mercado. Explora su catálogo de fondos,
-                activos bajo gestión y compara sus productos de inversión.
-              </p>
-            </div>
-          </div>
-        </section>
+        {/* Hero */}
+        <HeroSplit
+          eyebrow="Directorio completo"
+          title={<><span className="highlight">Gestoras</span> de ETFs</>}
+          description="Descubre las principales gestoras de ETFs del mercado. Explora su catálogo de fondos, activos bajo gestión y compara sus productos de inversión."
+          image={{ src: 'https://images.pexels.com/photos/1313534/pexels-photo-1313534.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Fachadas de cristal de edificios de oficinas' }}
+        />
 
         {/* Filters & Search */}
         <section className="gestoras-filters">

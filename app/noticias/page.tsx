@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import HeroSplit from '@/components/HeroSplit';
 import Footer from '@/components/Footer';
 import NewsCard, { NewsArticle } from '@/components/NewsCard';
 
@@ -93,23 +94,14 @@ export default function NoticiasPage() {
         <Header />
 
         <main>
-        {/* Hero Section */}
-        <section className="section section--dark px-6">
-          <div className="container max-w-4xl text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary/20 border border-secondary-light/30 rounded-full text-xs font-semibold text-secondary-light mb-6">
-              <div className="w-2 h-2 bg-secondary-light rounded-full animate-pulse"></div>
-              <span>Actualizado diariamente</span>
-            </div>
-
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-              Noticias sobre ETFs
-            </h1>
-            <p className="text-xl leading-relaxed">
-              Mantente informado con las últimas noticias del mundo de los fondos cotizados.
-              Análisis de mercado, lanzamientos de productos y tendencias de inversión.
-            </p>
-          </div>
-        </section>
+        {/* Hero */}
+        <HeroSplit
+          eyebrow="Actualizado diariamente"
+          title={<>Noticias sobre <span className="highlight">ETFs</span></>}
+          description="Mantente informado con las últimas noticias del mundo de los fondos cotizados. Análisis de mercado, lanzamientos de productos y tendencias de inversión."
+          image={{ src: 'https://images.pexels.com/photos/3070171/pexels-photo-3070171.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Periódico de negocios y taza de café sobre una mesa' }}
+          primaryCta={{ href: '/newsletter', label: 'Recibir la newsletter' }}
+        />
 
         {/* News Grid */}
         <section className="section section--light px-6">

@@ -7,6 +7,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import HeroSplit from '@/components/HeroSplit';
 import Footer from '@/components/Footer';
 import InterviewCard from '@/components/InterviewCard';
 import type { Interview } from '@/components/InterviewCard';
@@ -98,23 +99,14 @@ export default function EntrevistasPage() {
         <Header />
 
         <main>
-        {/* Hero Section */}
-        <section className="section section--dark px-6">
-          <div className="container max-w-4xl text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/15 border border-primary/40 rounded-full text-xs font-semibold text-primary-light mb-6">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-              <span>Expertos del sector</span>
-            </div>
-
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-              Entrevistas ETF Nexo
-            </h1>
-            <p className="text-xl leading-relaxed">
-              Conversaciones con expertos del sector financiero sobre ETFs, inversión y mercados.
-              Conocimiento directo de los líderes de la industria.
-            </p>
-          </div>
-        </section>
+        {/* Hero */}
+        <HeroSplit
+          eyebrow="Expertos del sector"
+          title={<><span className="highlight">Entrevistas</span> ETF Nexo</>}
+          description="Conversaciones con expertos del sector financiero sobre ETFs, inversión y mercados. Conocimiento directo de los líderes de la industria."
+          image={{ src: 'https://images.pexels.com/photos/8872462/pexels-photo-8872462.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Dos personas conversando con micrófonos en una entrevista' }}
+          primaryCta={{ href: '/newsletter', label: 'Recibir la newsletter' }}
+        />
 
         {/* Interviews Grid */}
         <section className="section section--light px-6">

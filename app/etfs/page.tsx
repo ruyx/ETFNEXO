@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import HeroSplit from '@/components/HeroSplit';
 import Footer from '@/components/Footer';
 
 interface ETF {
@@ -131,24 +132,12 @@ export default function ETFsPage() {
     <>
       <Header />
       <main className="etfs-page">
-        <section className="etfs-hero">
-          <div className="container">
-            <div className="etfs-hero__content">
-              <span className="etfs-hero__badge">
-                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                Explorador de ETFs
-              </span>
-              <h1 className="etfs-hero__title">
-                Descubre el ETF perfecto para tu cartera
-              </h1>
-              <p className="etfs-hero__description">
-                Explora nuestra base de datos completa de ETFs. Busca, filtra y compara para encontrar las mejores oportunidades de inversión.
-              </p>
-            </div>
-          </div>
-        </section>
+        <HeroSplit
+          eyebrow="Explorador de ETFs"
+          title={<>Descubre el ETF <span className="highlight">perfecto</span> para tu cartera</>}
+          description="Explora nuestra base de datos completa de ETFs. Busca, filtra y compara para encontrar las mejores oportunidades de inversión."
+          image={{ src: 'https://images.pexels.com/photos/5784807/pexels-photo-5784807.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Pantalla de trading con gráfica de cotización' }}
+        />
 
         <section className="etfs-filters">
           <div className="container">
