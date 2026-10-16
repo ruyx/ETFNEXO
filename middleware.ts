@@ -30,9 +30,21 @@ export async function middleware(request: NextRequest) {
     })))
   }
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  // Sin configuración de Supabase (p. ej. entorno Preview de Vercel sin las
+  // variables) no se puede refrescar la sesión. Antes createServerClient
+  // lanzaba y toda la web respondía 500 MIDDLEWARE_INVOCATION_FAILED.
+  // Se registra el error y se sirve la página sin sesión.
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('[Middleware] Faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY; se omite el refresco de sesión')
+    return supabaseResponse
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
