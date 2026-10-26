@@ -370,9 +370,12 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
 
   return (
     <>
-    <form onSubmit={(e) => handleSubmit(e, false)} className="admin-form admin-form--grid">
+    <form onSubmit={(e) => handleSubmit(e, false)} className="admin-form">
+      {/* Columnas del editor. El footer de acciones queda fuera para que el
+          sidebar sticky no pueda deslizarse encima de él */}
+      <div className="admin-form__layout">
       {/* SIDEBAR - Opciones de publicación */}
-      <div className="admin-form-sidebar" style={{ paddingBottom: '200px' }}>
+      <div className="admin-form-sidebar">
         {/* Publish Options */}
         <div className="admin-form-section--compact">
           <h2 className="admin-form-section__title">Publicación</h2>
@@ -1020,14 +1023,10 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
           </div>
         </div>
 
+      </div>
+
       {/* Action Bar */}
-      <div className="admin-form-actions" style={{
-        marginTop: 'var(--spacing-8)',
-        paddingTop: 'var(--spacing-6)',
-        borderTop: '2px solid var(--color-neutral-200)',
-        position: 'relative',
-        zIndex: 1
-      }}>
+      <div className="admin-form-actions admin-form__footer">
         <div className="admin-form-actions__group">
           <button
             type="button"

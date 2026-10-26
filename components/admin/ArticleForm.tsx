@@ -403,7 +403,10 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
 
   return (
     <>
-      <form onSubmit={(e) => handleSubmit(e, false)} className="admin-form admin-form--grid">
+      <form onSubmit={(e) => handleSubmit(e, false)} className="admin-form">
+      {/* Columnas del editor. El footer de acciones queda fuera para que el
+          sidebar sticky no pueda deslizarse encima de él */}
+      <div className="admin-form__layout">
       {/* SIDEBAR - Imagen destacada + Metadata + Opciones */}
       <div className="admin-form-sidebar">
         {/* Featured Image Card */}
@@ -1015,15 +1018,10 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
         </div>
       </div>
 
+      </div>
+
       {/* Form Actions - Full width */}
-      <div style={{
-        gridColumn: '1 / -1',
-        marginTop: 'var(--spacing-8)',
-        paddingTop: 'var(--spacing-6)',
-        borderTop: '2px solid var(--color-neutral-200)',
-        position: 'relative',
-        zIndex: 1
-      }}>
+      <div className="admin-form__footer">
         <div className="admin-form-actions">
           <button
             type="button"

@@ -389,7 +389,10 @@
 }
 
 /* ==================== FORM GRID LAYOUT ==================== */
-.admin-form--grid {
+/* .admin-form__layout: columnas del editor de contenidos, con el footer de
+   acciones como hermano fuera de la rejilla (ver .admin-form__footer) */
+.admin-form--grid,
+.admin-form__layout {
   display: grid;
   grid-template-columns: 320px 1fr;
   gap: var(--spacing-6);
@@ -397,9 +400,21 @@
 }
 
 @media (max-width: 1024px) {
-  .admin-form--grid {
+  .admin-form--grid,
+  .admin-form__layout {
     grid-template-columns: 1fr;
   }
+
+  /* En una columna el sidebar va encima del contenido: sticky lo taparía */
+  .admin-form-sidebar {
+    position: static;
+  }
+}
+
+/* Pie de acciones del editor: separado del bloque de columnas */
+.admin-form__footer {
+  padding-top: var(--spacing-6);
+  border-top: 2px solid var(--color-neutral-200);
 }
 
 .admin-form-sidebar {
