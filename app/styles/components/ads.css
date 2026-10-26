@@ -1,244 +1,236 @@
 /* ============================================
    ADS - Sistema de Publicidad
+   El tamaño de cada hueco sale del formato (lib/ads/placements.ts):
+   .ad-slot--leaderboard (728x90) y .ad-slot--rectangle (300x250).
+   El esqueleto y el anuncio cargado comparten caja, así no hay CLS.
    ============================================ */
 
 /* ==================== BASE ==================== */
 .ad-slot {
-  position: relative;
-  background-color: var(--color-white);
-  border: 1px solid var(--color-slate-200);
-  border-radius: var(--card-radius);
-  overflow: hidden;
-  margin: var(--spacing-4) 0;
+  /* Valores por defecto (leaderboard); los formatos los sobrescriben */
+  --ad-width: 728px;
+  --ad-ratio: 728 / 90;
+  --ad-label-color: var(--color-slate-500);
+  --ad-frame-bg: var(--color-white);
+  --ad-frame-border: var(--border-light);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  width: 100%;
+  max-width: var(--ad-width);
+  margin-inline: auto;
 }
 
-/* Label "Publicidad" */
 .ad-slot__label {
-  position: absolute;
-  top: var(--spacing-2);
-  right: var(--spacing-2);
-  font-size: var(--font-size-xs);
-  color: var(--color-slate-400);
+  align-self: flex-end;
+  min-height: 1rem; /* IMPORTANTE: min-height permite crecimiento dinámico */
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-  background-color: var(--color-white);
-  padding: var(--spacing-1) var(--spacing-2);
-  border-radius: 4px;
-  z-index: 1;
+  color: var(--ad-label-color);
 }
 
-/* ==================== IMAGE BANNER ==================== */
-.ad-slot--image {
-  padding: 0;
-}
-
-.ad-slot__image-container {
-  cursor: pointer;
-  transition: opacity var(--transition-base);
+/* Caja con la proporción exacta del formato */
+.ad-slot__frame {
   position: relative;
+  width: 100%;
+  aspect-ratio: var(--ad-ratio);
+  background-color: var(--ad-frame-bg);
+  /* Anillo en vez de border: no resta píxeles y la imagen encaja exacta */
+  box-shadow: 0 0 0 1px var(--ad-frame-border);
+  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
-.ad-slot__image-container:hover {
+/* ==================== FORMATOS ==================== */
+.ad-slot--leaderboard {
+  --ad-width: 728px;
+  --ad-ratio: 728 / 90;
+}
+
+.ad-slot--rectangle {
+  --ad-width: 300px;
+  --ad-ratio: 300 / 250;
+}
+
+/* ==================== IMAGEN ==================== */
+.ad-slot__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+  transition: opacity var(--transition-base);
+}
+
+.ad-slot__link:hover {
   opacity: 0.9;
 }
 
+.ad-slot__link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+/* contain: nunca recorta la creatividad si no respeta la proporción */
 .ad-slot__image {
-  width: 100%;
-  height: auto;
   display: block;
-  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-/* Tamaños según placement */
-.ad-slot--sidebar_top .ad-slot__image,
-.ad-slot--sidebar_bottom .ad-slot__image {
-  max-height: 250px;
+/* ==================== TEXTO ==================== */
+/* Los anuncios de texto pueden necesitar más alto que la proporción */
+.ad-slot--text .ad-slot__frame {
+  aspect-ratio: auto;
+  min-height: calc(var(--ad-width) / (var(--ad-ratio))); /* IMPORTANTE: min-height permite crecimiento dinámico */
+  background-color: var(--bg-light);
 }
 
-.ad-slot--article_top .ad-slot__image,
-.ad-slot--article_mid .ad-slot__image,
-.ad-slot--article_bottom .ad-slot__image {
-  max-height: 200px;
+.ad-slot__link--text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  padding: var(--spacing-3) var(--spacing-5);
 }
 
-.ad-slot--feed_inline .ad-slot__image {
-  max-height: 180px;
-}
-
-.ad-slot--header .ad-slot__image,
-.ad-slot--footer .ad-slot__image {
-  max-height: 90px;
-}
-
-/* ==================== TEXT BANNER ==================== */
-.ad-slot--text {
+.ad-slot--rectangle .ad-slot__link--text {
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
   padding: var(--spacing-6);
 }
 
-.ad-slot__text-container {
-  cursor: pointer;
-  transition: all var(--transition-base);
-  text-align: center;
-}
-
-.ad-slot__text-container:hover {
-  transform: translateY(-2px);
+.ad-slot__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  min-width: 0;
 }
 
 .ad-slot__title {
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  color: var(--color-slate-900);
-  margin: 0 0 var(--spacing-3) 0;
-  line-height: 1.3;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-snug);
+  color: var(--text-primary);
 }
 
 .ad-slot__description {
   font-size: var(--font-size-sm);
-  color: var(--color-slate-600);
-  margin: 0 0 var(--spacing-4) 0;
-  line-height: 1.5;
+  line-height: var(--line-height-normal);
+  color: var(--text-secondary);
 }
 
 .ad-slot__cta {
-  display: inline-block;
-  padding: var(--spacing-3) var(--spacing-6);
-  background-color: var(--color-primary);
-  color: var(--color-white);
+  flex: none;
+  padding: var(--spacing-2) var(--spacing-4);
   font-size: var(--font-size-sm);
-  font-weight: 600;
-  border: none;
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  color: var(--text-white);
+  background-color: var(--color-primary);
   border-radius: var(--btn-radius);
-  cursor: pointer;
-  transition: all var(--transition-base);
-  text-decoration: none;
+  transition: background-color var(--transition-base);
 }
 
-.ad-slot__cta:hover {
+.ad-slot__link--text:hover .ad-slot__cta {
   background-color: var(--color-primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
-/* ==================== SCRIPT ADS ==================== */
-.ad-slot--script {
-  padding: var(--spacing-4);
-  min-height: 100px;
+/* ==================== SCRIPT (AdSense, etc.) ==================== */
+/* El script decide su tamaño: reservamos el alto mínimo y le dejamos crecer */
+.ad-slot--script .ad-slot__frame {
+  aspect-ratio: auto;
+  min-height: calc(var(--ad-width) / (var(--ad-ratio))); /* IMPORTANTE: min-height permite crecimiento dinámico */
+  box-shadow: none;
+  background-color: transparent;
+  overflow: visible;
+}
+
+.ad-slot__script {
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
-/* ==================== VARIANTES POR PLACEMENT ==================== */
-
-/* Sidebar ads - Más compactos */
-.ad-slot--sidebar_top,
-.ad-slot--sidebar_bottom {
-  max-width: 300px;
-  margin-left: auto;
-  margin-right: auto;
+/* ==================== ESQUELETO ==================== */
+.ad-slot--skeleton {
+  --ad-skeleton-base: var(--bg-light);
+  --ad-skeleton-shine: var(--color-white);
 }
 
-/* Article ads - Ancho completo */
-.ad-slot--article_top,
-.ad-slot--article_mid,
-.ad-slot--article_bottom {
-  margin: var(--spacing-8) 0;
+.ad-slot--skeleton .ad-slot__label {
+  visibility: hidden;
 }
 
-/* Feed inline ads - Integrados en el feed */
-.ad-slot--feed_inline {
-  margin: var(--spacing-6) 0;
-}
-
-/* Header/Footer ads - Horizontales y delgados */
-.ad-slot--header,
-.ad-slot--footer {
-  margin: var(--spacing-2) 0;
-}
-
-.ad-slot--header .ad-slot__text-container,
-.ad-slot--footer .ad-slot__text-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  text-align: left;
-  gap: var(--spacing-4);
-}
-
-.ad-slot--header .ad-slot__title,
-.ad-slot--footer .ad-slot__title {
-  font-size: var(--font-size-base);
-  margin: 0;
-}
-
-.ad-slot--header .ad-slot__description,
-.ad-slot--footer .ad-slot__description {
-  margin: 0;
-  flex: 1;
-}
-
-.ad-slot--header .ad-slot__cta,
-.ad-slot--footer .ad-slot__cta {
-  padding: var(--spacing-2) var(--spacing-4);
-  white-space: nowrap;
-}
-
-/* ==================== ESTADOS ==================== */
-
-/* Loading state (opcional) */
-.ad-slot--loading {
+.ad-slot--skeleton .ad-slot__frame {
   background: linear-gradient(
     90deg,
-    var(--color-slate-100) 0%,
-    var(--color-slate-50) 50%,
-    var(--color-slate-100) 100%
+    var(--ad-skeleton-base) 0%,
+    var(--ad-skeleton-shine) 50%,
+    var(--ad-skeleton-base) 100%
   );
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: ad-shimmer 1.5s infinite linear;
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -100% 0;
-  }
-  100% {
-    background-position: 100% 0;
-  }
+@keyframes ad-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
 }
 
-/* Focus state para accesibilidad */
-.ad-slot__image-container:focus,
-.ad-slot__text-container:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-/* ==================== RESPONSIVE ==================== */
-
-@media (max-width: 768px) {
-  .ad-slot--sidebar_top,
-  .ad-slot--sidebar_bottom {
-    max-width: 100%;
-  }
-
-  .ad-slot--header .ad-slot__text-container,
-  .ad-slot--footer .ad-slot__text-container {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .ad-slot--header .ad-slot__description,
-  .ad-slot--footer .ad-slot__description {
-    display: none; /* Ocultar descripción en móvil para ads de header/footer */
+@media (prefers-reduced-motion: reduce) {
+  .ad-slot--skeleton .ad-slot__frame {
+    animation: none;
   }
 }
 
-/* ==================== DARK MODE (Futuro) ==================== */
-@media (prefers-color-scheme: dark) {
-  .ad-slot {
-    /* Variables para dark mode cuando se implemente */
-  }
+/* ==================== BANDA OSCURA ==================== */
+/* Franja a todo el ancho que aloja un leaderboard sobre fondo navy */
+.ad-band {
+  padding: var(--spacing-3) var(--spacing-6);
+  background: linear-gradient(to bottom, var(--color-slate-900), var(--color-slate-800));
+  border-bottom: 1px solid var(--bg-dark-lighter);
+}
+
+.ad-band .ad-slot {
+  --ad-label-color: var(--color-slate-400);
+  --ad-frame-bg: var(--bg-dark-alt);
+  --ad-frame-border: var(--bg-dark-lighter);
+  --ad-skeleton-base: var(--bg-dark-alt);
+  --ad-skeleton-shine: var(--bg-dark-lighter);
+}
+
+/* Variante que se queda pegada bajo el header (detalle de noticia/academia) */
+.ad-band--sticky {
+  position: sticky;
+  top: var(--header-height);
+  z-index: calc(var(--z-sticky) - 1);
+  padding-block: var(--spacing-2);
+  box-shadow: var(--shadow-md);
+}
+
+/* ==================== TARJETA LATERAL ==================== */
+/* Contenedor del rectangle en la columna de noticias (mismo borde que NewsCard) */
+.ad-card {
+  margin-bottom: var(--spacing-4);
+  padding: var(--spacing-3);
+  background: var(--color-white);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+}
+
+.ad-card .ad-slot__frame {
+  box-shadow: none;
+}
+
+/* Si no hay anuncio activo AdSlot no pinta nada: ocultamos el envoltorio vacío */
+.ad-band:not(:has(.ad-slot)),
+.ad-card:not(:has(.ad-slot)) {
+  display: none;
 }

@@ -8,6 +8,7 @@ import { MapPin, ExternalLink, Info } from 'lucide-react';
 import Link from 'next/link';
 import PlacementCard from './PlacementCard';
 import AdSenseGuide from './AdSenseGuide';
+import { getPlacementFormat } from '@/lib/ads/placements';
 
 interface PlacementInfo {
   id: string;
@@ -20,14 +21,20 @@ interface PlacementInfo {
   zone: 'sidebar' | 'article' | 'feed' | 'global';
 }
 
+// Tamaño exigido por AdSlot: la creatividad a 1x o a 2x (pantallas retina).
+function requiredSizes(placement: 'home_top' | 'home_news_sidebar') {
+  const { width, height } = getPlacementFormat(placement);
+  return [`${width}x${height}`, `${width * 2}x${height * 2} (retina)`];
+}
+
 const PLACEMENTS: Omit<PlacementInfo, 'activeAds'>[] = [
   {
     id: 'home_top',
     name: 'home_top',
     label: 'Home - Banner Superior Fixed',
-    description: 'Banner fijo encima del contenido principal (maximiza impresiones)',
-    recommendedSizes: ['728x90', '970x90', '970x250'],
-    adSenseSizes: ['728x90 (Leaderboard)', '970x90 (Large Leaderboard)', '970x250 (Billboard)'],
+    description: 'Banda bajo el ticker de la home. También se usa en home_after_ranking y article_top',
+    recommendedSizes: requiredSizes('home_top'),
+    adSenseSizes: ['728x90 (Leaderboard)'],
     zone: 'global'
   },
   {
@@ -35,8 +42,8 @@ const PLACEMENTS: Omit<PlacementInfo, 'activeAds'>[] = [
     name: 'home_news_sidebar',
     label: 'Home - Sidebar Noticias (Sticky)',
     description: 'Banner destacado en sidebar de noticias con sticky condicional',
-    recommendedSizes: ['300x250', '336x280', '300x600'],
-    adSenseSizes: ['300x250 (Medium Rectangle)', '336x280 (Large Rectangle)', '300x600 (Half Page)'],
+    recommendedSizes: requiredSizes('home_news_sidebar'),
+    adSenseSizes: ['300x250 (Medium Rectangle)'],
     zone: 'sidebar'
   }
 ];
