@@ -4,13 +4,15 @@
 
 import Link from 'next/link';
 import { Calendar, Eye, Pencil, ArrowUpFromLine, ArrowDownToLine, Trash2, Play } from 'lucide-react';
+import ContentStatusBadge from '@/components/admin/ContentStatusBadge';
+import type { ContentStatus } from '@/lib/content/publication';
 
 interface AdminInterviewCardProps {
   interview: {
     id: string;
     title: string;
     slug: string;
-    status: 'draft' | 'published' | 'archived';
+    status: ContentStatus;
     created_at: string;
     published_at: string | null;
     views_count: number;
@@ -35,26 +37,6 @@ export default function AdminInterviewCard({ interview, onPublishToggle, onDelet
       month: 'short',
       year: 'numeric'
     }).format(date);
-  };
-
-  const getStatusBadge = (status: string) => {
-    const classMap = {
-      published: 'status-badge--published',
-      draft: 'status-badge--draft',
-      archived: 'status-badge--archived'
-    };
-
-    const labels = {
-      published: 'Publicado',
-      draft: 'Borrador',
-      archived: 'Archivado'
-    };
-
-    return (
-      <span className={`status-badge ${classMap[status as keyof typeof classMap]}`}>
-        {labels[status as keyof typeof labels]}
-      </span>
-    );
   };
 
   // Image priority: Featured Image > YouTube Thumbnail
@@ -103,7 +85,7 @@ export default function AdminInterviewCard({ interview, onPublishToggle, onDelet
               </>
             )}
           </div>
-          {getStatusBadge(interview.status)}
+          <ContentStatusBadge status={interview.status} publishedAt={interview.published_at} />
         </div>
 
         {/* Title */}

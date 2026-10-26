@@ -6,13 +6,15 @@
 import Link from 'next/link';
 import { Calendar, Eye, Pencil, ArrowUpFromLine, ArrowDownToLine, Trash2, Clock, Signal } from 'lucide-react';
 import DifficultyBadge from '../DifficultyBadge';
+import ContentStatusBadge from '@/components/admin/ContentStatusBadge';
+import type { ContentStatus } from '@/lib/content/publication';
 
 interface AdminAcademyCardProps {
   article: {
     id: string;
     title: string;
     slug: string;
-    status: 'draft' | 'published' | 'archived';
+    status: ContentStatus;
     created_at: string;
     published_at: string | null;
     views_count: number;
@@ -41,26 +43,6 @@ export default function AdminAcademyCard({ article, onPublishToggle, onDelete }:
       month: 'short',
       year: 'numeric'
     }).format(date);
-  };
-
-  const getStatusBadge = (status: string) => {
-    const classMap = {
-      published: 'status-badge--published',
-      draft: 'status-badge--draft',
-      archived: 'status-badge--archived'
-    };
-
-    const labels = {
-      published: 'Publicado',
-      draft: 'Borrador',
-      archived: 'Archivado'
-    };
-
-    return (
-      <span className={`status-badge ${classMap[status as keyof typeof classMap]}`}>
-        {labels[status as keyof typeof labels]}
-      </span>
-    );
   };
 
   const authorName = article.author?.display_name || article.author?.name || 'Sin autor';
@@ -105,7 +87,7 @@ export default function AdminAcademyCard({ article, onPublishToggle, onDelete }:
               </>
             )}
           </div>
-          {getStatusBadge(article.status)}
+          <ContentStatusBadge status={article.status} publishedAt={article.published_at} />
         </div>
 
         {/* Title */}

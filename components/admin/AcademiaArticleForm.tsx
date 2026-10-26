@@ -11,6 +11,8 @@ import { Save, X, Eye, Upload, Image as ImageIcon, Plus, Trash2, HelpCircle, Sea
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import CategoryManager from '@/components/admin/CategoryManager';
+import PublishStatusField from '@/components/admin/PublishStatusField';
+import { fromLocalInputValue, toLocalInputValue, type ContentStatus } from '@/lib/content/publication';
 import { Sponsor, createEmptySponsor } from '@/types/sponsor';
 
 // Import Quill dynamically to avoid SSR issues
@@ -52,7 +54,8 @@ interface AcademiaArticleFormProps {
     meta_description?: string;
     featured_image_url?: string;
     featured_image_alt?: string;
-    status?: 'draft' | 'published' | 'archived';
+    status?: ContentStatus;
+    published_at?: string | null;
     faq?: FAQ[];
     difficulty_level?: 'beginner' | 'intermediate' | 'advanced';
     estimated_reading_time?: number;
@@ -83,7 +86,10 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
   const [metaDescription, setMetaDescription] = useState(initialData?.meta_description || '');
   const [featuredImageUrl, setFeaturedImageUrl] = useState(initialData?.featured_image_url || '');
   const [featuredImageAlt, setFeaturedImageAlt] = useState(initialData?.featured_image_alt || '');
-  const [status, setStatus] = useState<'draft' | 'published' | 'archived'>(initialData?.status || 'draft');
+  const [status, setStatus] = useState<ContentStatus>(initialData?.status || 'draft');
+  const [scheduledAt, setScheduledAt] = useState(
+    initialData?.status === 'scheduled' ? toLocalInputValue(initialData.published_at) : ''
+  );
   const [pinned, setPinned] = useState<boolean>((initialData as any)?.pinned || false);
   const [faqs, setFaqs] = useState<FAQ[]>(initialData?.faq || []);
 
@@ -328,6 +334,7 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
         featured_image_url: featuredImageUrl || undefined,
         featured_image_alt: featuredImageAlt || undefined,
         status: publishNow ? 'published' : status,
+        scheduled_at: fromLocalInputValue(scheduledAt),
         pinned,
         faq: faqs.filter(faq => faq.question.trim() && faq.answer.trim()),
 
@@ -440,21 +447,12 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
         <div className="admin-form-section--compact">
           <h2 className="admin-form-section__title">Publicación</h2>
 
-          <div className="admin-form-group">
-            <label htmlFor="status" className="admin-form-label">
-              Estado
-            </label>
-            <select
-              id="status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value as any)}
-              className="admin-form-select"
-            >
-              <option value="draft">Borrador</option>
-              <option value="published">Publicado</option>
-              <option value="archived">Archivado</option>
-            </select>
-          </div>
+          <PublishStatusField
+            status={status}
+            onStatusChange={setStatus}
+            scheduledAt={scheduledAt}
+            onScheduledAtChange={setScheduledAt}
+          />
 
           <div className="admin-form-group">
             <label className="admin-form-label admin-form-label--required">
@@ -984,7 +982,7 @@ export default function AcademiaArticleForm({ initialData, onSubmit, isEditing =
               className="btn btn-primary"
             >
               <Save className="w-4 h-4" />
-              {loading ? 'Guardando...' : isEditing ? 'Actualizar' : 'Guardar'}
+              {loading ? 'Guardando...' : status === 'scheduled' ? 'Programar' : isEditing ? 'Actualizar' : 'Guardar'}
             </button>
           </div>
         </div>

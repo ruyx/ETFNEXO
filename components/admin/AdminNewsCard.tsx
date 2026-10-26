@@ -5,13 +5,15 @@
 
 import Link from 'next/link';
 import { Calendar, Eye, Pencil, ArrowUpFromLine, ArrowDownToLine, Trash2 } from 'lucide-react';
+import ContentStatusBadge from '@/components/admin/ContentStatusBadge';
+import type { ContentStatus } from '@/lib/content/publication';
 
 interface AdminNewsCardProps {
   article: {
     id: string;
     title: string;
     slug: string;
-    status: 'draft' | 'published' | 'archived';
+    status: ContentStatus;
     author_name: string | null;
     created_at: string;
     published_at: string | null;
@@ -35,26 +37,6 @@ export default function AdminNewsCard({ article, onPublishToggle, onDelete }: Ad
       month: 'short',
       year: 'numeric'
     }).format(date);
-  };
-
-  const getStatusBadge = (status: string) => {
-    const classMap = {
-      published: 'status-badge--published',
-      draft: 'status-badge--draft',
-      archived: 'status-badge--archived'
-    };
-
-    const labels = {
-      published: 'Publicado',
-      draft: 'Borrador',
-      archived: 'Archivado'
-    };
-
-    return (
-      <span className={`status-badge ${classMap[status as keyof typeof classMap]}`}>
-        {labels[status as keyof typeof labels]}
-      </span>
-    );
   };
 
   return (
@@ -97,7 +79,7 @@ export default function AdminNewsCard({ article, onPublishToggle, onDelete }: Ad
               </>
             )}
           </div>
-          {getStatusBadge(article.status)}
+          <ContentStatusBadge status={article.status} publishedAt={article.published_at} />
         </div>
 
         {/* Title */}

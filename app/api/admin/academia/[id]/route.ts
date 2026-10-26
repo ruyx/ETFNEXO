@@ -4,6 +4,7 @@
  */
 
 import { NextRequest } from 'next/server';
+import { resolvePublication } from '@/lib/content/publication';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { requireEditor, requireAdmin, handleAuthError } from '@/lib/auth/check-admin';
 import { successResponse, errorResponse } from '@/lib/auth/api-response';
@@ -98,6 +99,8 @@ export async function PATCH(
       shares_count,
       tags,
       relatedEtfs,
+      scheduled_at,
+      published_at: _publishedAt, // se calcula abajo, no se acepta del cliente
       ...updateData
     } = body;
 
@@ -120,14 +123,21 @@ export async function PATCH(
       updateData.slug = slug;
     }
 
-    // Si se cambia el estado a 'published' y no tiene published_at, agregarlo
-    if (updateData.status === 'published' && !updateData.published_at) {
-      updateData.published_at = new Date().toISOString();
-    }
+    // Estado y fecha de publicación: conserva la fecha original al editar
+    // algo ya publicado y valida la fecha si se programa
+    if (updateData.status !== undefined) {
+      const { data: current } = await supabase
+        .from('academy_articles')
+        .select('status, published_at')
+        .eq('id' as any, params.id as any)
+        .single();
 
-    // Si se cambia de published a draft, limpiar published_at
-    if (updateData.status === 'draft' || updateData.status === 'archived') {
-      updateData.published_at = null;
+      const publication = resolvePublication({ status: updateData.status, scheduled_at }, current as any);
+      if (!publication.ok) {
+        return errorResponse(publication.error, 'VALIDATION_ERROR', 400);
+      }
+      updateData.status = publication.status;
+      updateData.published_at = publication.published_at;
     }
 
     // Actualizar updated_at

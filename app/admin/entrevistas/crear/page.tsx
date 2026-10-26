@@ -28,7 +28,7 @@ export default function CrearEntrevistaPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al crear la entrevista');
+        throw new Error(errorData.error || errorData.message || 'Error al crear la entrevista');
       }
 
       // Redirigir al listado con mensaje de éxito

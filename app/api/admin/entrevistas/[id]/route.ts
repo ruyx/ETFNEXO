@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { resolvePublication } from '@/lib/content/publication';
+import { denyUnlessRole } from '@/lib/auth/check-admin';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -15,6 +17,9 @@ export async function GET(
   request: NextRequest,
   { params }: RouteParams
 ) {
+  const denied = await denyUnlessRole(['admin', 'redactor']);
+  if (denied) return denied;
+
   try {
     const { id } = params;
     const supabase = createAdminClient();
@@ -46,9 +51,17 @@ export async function GET(
 
 // POST - Create new interview
 export async function POST(request: NextRequest) {
+  const denied = await denyUnlessRole(['admin', 'redactor']);
+  if (denied) return denied;
+
   try {
     const body = await request.json();
     const supabase = createAdminClient();
+
+    const publication = resolvePublication({ status: body.status ?? 'draft', scheduled_at: body.scheduled_at });
+    if (!publication.ok) {
+      return NextResponse.json({ error: publication.error }, { status: 400 });
+    }
 
     const { data, error } = await supabase
       .from('interviews')
@@ -61,8 +74,8 @@ export async function POST(request: NextRequest) {
         featured_image_alt: body.featured_image_alt,
         youtube_video_id: body.youtube_video_id,
         category_id: body.category_id,
-        status: body.status || 'draft',
-        published_at: body.status === 'published' ? new Date().toISOString() : null,
+        status: publication.status,
+        published_at: publication.published_at,
         faq: body.faq || [],
         meta_title: body.meta_title,
         meta_description: body.meta_description,
@@ -96,6 +109,9 @@ export async function PUT(
   request: NextRequest,
   { params }: RouteParams
 ) {
+  const denied = await denyUnlessRole(['admin', 'redactor']);
+  if (denied) return denied;
+
   try {
     const { id } = params;
     const body = await request.json();
@@ -110,7 +126,6 @@ export async function PUT(
       featured_image_alt: body.featured_image_alt,
       youtube_video_id: body.youtube_video_id,
       category_id: body.category_id,
-      status: body.status,
       faq: body.faq || [],
       meta_title: body.meta_title,
       meta_description: body.meta_description,
@@ -119,17 +134,21 @@ export async function PUT(
       updated_at: new Date().toISOString()
     };
 
-    // Set published_at if publishing for the first time
-    if (body.status === 'published') {
-      const { data: existing } = await supabase
+    // Estado y fecha de publicación: conserva la fecha original al editar
+    // algo ya publicado y valida la fecha si se programa
+    if (body.status !== undefined) {
+      const { data: current } = await supabase
         .from('interviews')
-        .select('published_at')
+        .select('status, published_at')
         .eq('id' as any, id as any)
         .single();
 
-      if (!existing || !(existing as any).published_at) {
-        updateData.published_at = new Date().toISOString();
+      const publication = resolvePublication({ status: body.status, scheduled_at: body.scheduled_at }, current as any);
+      if (!publication.ok) {
+        return NextResponse.json({ error: publication.error }, { status: 400 });
       }
+      updateData.status = publication.status;
+      updateData.published_at = publication.published_at;
     }
 
     const { data, error } = await supabase
@@ -163,6 +182,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: RouteParams
 ) {
+  const denied = await denyUnlessRole(['admin']);
+  if (denied) return denied;
+
   try {
     const { id } = params;
     const supabase = createAdminClient();

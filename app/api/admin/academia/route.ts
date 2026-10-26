@@ -4,6 +4,7 @@
  */
 
 import { NextRequest } from 'next/server';
+import { resolvePublication } from '@/lib/content/publication';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { requireEditor, handleAuthError } from '@/lib/auth/check-admin';
 import {
@@ -115,6 +116,12 @@ export async function POST(request: NextRequest) {
       return validationErrorResponse(missingFields);
     }
 
+    // Estado y fecha de publicación (incluida la programada)
+    const publication = resolvePublication({ status: body.status ?? 'draft', scheduled_at: body.scheduled_at });
+    if (!publication.ok) {
+      return errorResponse(publication.error, 'VALIDATION_ERROR', 400);
+    }
+
     // Generar slug único
     let slug = body.slug || generateSlug(body.title);
 
@@ -158,10 +165,8 @@ export async function POST(request: NextRequest) {
       prerequisites: body.prerequisites || null, // array de slugs
 
       // Estado
-      status: body.status || 'draft',
-
-      // Si se publica directamente, agregar fecha de publicación
-      published_at: body.status === 'published' ? new Date().toISOString() : null
+      status: publication.status,
+      published_at: publication.published_at
     };
 
     const { data: article, error } = await supabase

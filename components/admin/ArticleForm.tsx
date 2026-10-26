@@ -11,6 +11,8 @@ import { Save, X, Eye, Upload, Tag as TagIcon, Image as ImageIcon, Plus, Trash2,
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import CategoryManager from '@/components/admin/CategoryManager';
+import PublishStatusField from '@/components/admin/PublishStatusField';
+import { fromLocalInputValue, toLocalInputValue, type ContentStatus } from '@/lib/content/publication';
 import { Sponsor, createEmptySponsor } from '@/types/sponsor';
 
 // Import Quill dynamically to avoid SSR issues
@@ -67,7 +69,8 @@ interface ArticleFormProps {
     featured_image_alt?: string;
     source_name?: string;
     source_url?: string;
-    status?: 'draft' | 'published' | 'archived';
+    status?: ContentStatus;
+    published_at?: string | null;
     tags?: Tag[];
     relatedEtfs?: string[];
     faq?: FAQ[];
@@ -107,7 +110,10 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   const [featuredImageAlt, setFeaturedImageAlt] = useState(initialData?.featured_image_alt || '');
   const [sourceName, setSourceName] = useState(initialData?.source_name || '');
   const [sourceUrl, setSourceUrl] = useState(initialData?.source_url || '');
-  const [status, setStatus] = useState<'draft' | 'published' | 'archived'>(initialData?.status || 'draft');
+  const [status, setStatus] = useState<ContentStatus>(initialData?.status || 'draft');
+  const [scheduledAt, setScheduledAt] = useState(
+    initialData?.status === 'scheduled' ? toLocalInputValue(initialData.published_at) : ''
+  );
   const [pinned, setPinned] = useState<boolean>((initialData as any)?.pinned || false);
   const [faqs, setFaqs] = useState<FAQ[]>(initialData?.faq || []);
 
@@ -370,6 +376,7 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
         source_name: sourceName || undefined,
         source_url: sourceUrl || undefined,
         status: publishNow ? 'published' : status,
+        scheduled_at: fromLocalInputValue(scheduledAt),
         pinned,
         tags: selectedTags,
         faq: faqs.filter(faq => faq.question.trim() && faq.answer.trim()),
@@ -485,21 +492,12 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
         <div className="admin-form-section--compact">
           <h2 className="admin-form-section__title">Publicación</h2>
 
-          <div className="admin-form-group">
-            <label htmlFor="status" className="admin-form-label">
-              Estado
-            </label>
-            <select
-              id="status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value as any)}
-              className="admin-form-select"
-            >
-              <option value="draft">Borrador</option>
-              <option value="published">Publicado</option>
-              <option value="archived">Archivado</option>
-            </select>
-          </div>
+          <PublishStatusField
+            status={status}
+            onStatusChange={setStatus}
+            scheduledAt={scheduledAt}
+            onScheduledAtChange={setScheduledAt}
+          />
 
           <div className="admin-form-group">
             <label className="admin-form-label">
@@ -1071,7 +1069,7 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               className="btn btn-primary"
             >
               <Save className="w-4 h-4" />
-              {loading ? 'Guardando...' : isEditing ? 'Actualizar' : 'Guardar'}
+              {loading ? 'Guardando...' : status === 'scheduled' ? 'Programar' : isEditing ? 'Actualizar' : 'Guardar'}
             </button>
           </div>
         </div>

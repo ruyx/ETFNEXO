@@ -248,6 +248,11 @@
   color: var(--color-amber-800); /* Yellow-800 */
 }
 
+.status-badge--scheduled {
+  background-color: var(--color-info-light);
+  color: var(--color-blue-800);
+}
+
 .status-badge--archived {
   background-color: var(--color-slate-100);
   color: var(--color-slate-700);

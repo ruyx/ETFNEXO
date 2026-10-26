@@ -57,7 +57,7 @@ export default function EditNoticiaPage({ params }: EditNoticiaPageProps) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al actualizar el artículo');
+        throw new Error(errorData.error || errorData.message || 'Error al actualizar el artículo');
       }
 
       // Redirigir al listado con mensaje de éxito

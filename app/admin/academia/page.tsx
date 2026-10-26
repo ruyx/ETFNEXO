@@ -11,12 +11,13 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { X, Plus } from 'lucide-react';
 import AdminAcademyCard from '@/components/admin/AdminAcademyCard';
+import type { ContentStatus } from '@/lib/content/publication';
 
 interface Article {
   id: string;
   title: string;
   slug: string;
-  status: 'draft' | 'published' | 'archived';
+  status: ContentStatus;
   created_at: string;
   published_at: string | null;
   views_count: number;
@@ -37,7 +38,7 @@ interface Article {
 export default function AdminAcademiaPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'draft' | 'published' | 'archived'>('all');
+  const [filter, setFilter] = useState<'all' | ContentStatus>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -176,7 +177,7 @@ export default function AdminAcademiaPage() {
         <div className="admin-filters__content">
           {/* Filter Tabs */}
           <div className="admin-filters__tabs">
-            {(['all', 'published', 'draft', 'archived'] as const).map((f) => (
+            {(['all', 'published', 'scheduled', 'draft', 'archived'] as const).map((f) => (
               <button
                 key={f}
                 onClick={() => {
@@ -187,7 +188,7 @@ export default function AdminAcademiaPage() {
                   filter === f ? 'admin-filters__tab--active' : ''
                 }`}
               >
-                {f === 'all' ? 'Todos' : f === 'published' ? 'Publicados' : f === 'draft' ? 'Borradores' : 'Archivados'}
+                {f === 'all' ? 'Todos' : f === 'published' ? 'Publicados' : f === 'scheduled' ? 'Programados' : f === 'draft' ? 'Borradores' : 'Archivados'}
               </button>
             ))}
           </div>

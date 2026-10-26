@@ -11,6 +11,8 @@ import { Save, X, Eye, Youtube, Plus, Trash2, HelpCircle, Upload, Search, Loader
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import CategoryManager from '@/components/admin/CategoryManager';
+import PublishStatusField from '@/components/admin/PublishStatusField';
+import { fromLocalInputValue, toLocalInputValue, type ContentStatus } from '@/lib/content/publication';
 import { Sponsor, createEmptySponsor } from '@/types/sponsor';
 
 // Import Quill dynamically to avoid SSR issues
@@ -50,7 +52,10 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
   const [featuredImageUrl, setFeaturedImageUrl] = useState(initialData?.featured_image_url || '');
   const [featuredImageAlt, setFeaturedImageAlt] = useState(initialData?.featured_image_alt || '');
   const [categoryId, setCategoryId] = useState(initialData?.category_id || '');
-  const [status, setStatus] = useState(initialData?.status || 'draft');
+  const [status, setStatus] = useState<ContentStatus>(initialData?.status || 'draft');
+  const [scheduledAt, setScheduledAt] = useState(
+    initialData?.status === 'scheduled' ? toLocalInputValue(initialData.published_at) : ''
+  );
   const [metaTitle, setMetaTitle] = useState(initialData?.meta_title || '');
   const [metaDescription, setMetaDescription] = useState(initialData?.meta_description || '');
   const [authorId, setAuthorId] = useState(initialData?.author_id || '');
@@ -322,6 +327,7 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
         custom_iframe_code: videoProvider === 'custom' ? customIframeCode : null,
         category_id: categoryId || null,
         status: shouldPublish ? 'published' : status,
+        scheduled_at: fromLocalInputValue(scheduledAt),
         meta_title: metaTitle || title,
         meta_description: metaDescription || description,
         author_id: authorId || null,
@@ -347,14 +353,15 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
         });
 
         if (!response.ok) {
-          throw new Error('Error al guardar entrevista');
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Error al guardar entrevista');
         }
 
         router.push('/admin/entrevistas?created=true');
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Error al guardar la entrevista');
+      alert(error instanceof Error ? error.message : 'Error al guardar la entrevista');
       throw error; // Re-throw para que la página maneje el error
     } finally {
       setLoading(false);
@@ -370,21 +377,12 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
         <div className="admin-form-section--compact">
           <h2 className="admin-form-section__title">Publicación</h2>
 
-          <div className="admin-form-group">
-            <label htmlFor="status" className="admin-form-label">
-              Estado
-            </label>
-            <select
-              id="status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value as any)}
-              className="admin-form-select"
-            >
-              <option value="draft">Borrador</option>
-              <option value="published">Publicado</option>
-              <option value="archived">Archivado</option>
-            </select>
-          </div>
+          <PublishStatusField
+            status={status}
+            onStatusChange={setStatus}
+            scheduledAt={scheduledAt}
+            onScheduledAtChange={setScheduledAt}
+          />
 
           <CategoryManager
             categories={categories}
@@ -1060,7 +1058,7 @@ export default function InterviewForm({ initialData, isEditing = false, onSubmit
             className="btn btn-primary"
           >
             <Save className="w-4 h-4" />
-            {loading ? 'Guardando...' : isEditing ? 'Actualizar Entrevista' : 'Crear Entrevista'}
+            {loading ? 'Guardando...' : status === 'scheduled' ? 'Programar Entrevista' : isEditing ? 'Actualizar Entrevista' : 'Crear Entrevista'}
           </button>
         </div>
       </div>

@@ -27,7 +27,7 @@ export default function CrearNoticiaPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al crear el artículo');
+        throw new Error(errorData.error || errorData.message || 'Error al crear el artículo');
       }
 
       const result = await response.json();

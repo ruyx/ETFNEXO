@@ -53,6 +53,7 @@ export default function EditAcademiaPage({ params }: EditAcademiaPageProps) {
         featured_image_url: article.featured_image_url || '',
         featured_image_alt: article.featured_image_alt || '',
         status: article.status,
+        published_at: article.published_at,
         faq: article.faq || [],
         difficulty_level: article.difficulty_level || 'beginner',
         estimated_reading_time: article.estimated_reading_time || null,
@@ -77,7 +78,7 @@ export default function EditAcademiaPage({ params }: EditAcademiaPageProps) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al actualizar el artículo');
+        throw new Error(errorData.error || errorData.message || 'Error al actualizar el artículo');
       }
 
       const result = await response.json();
