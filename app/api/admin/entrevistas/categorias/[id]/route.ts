@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { denyUnlessRole } from '@/lib/auth/check-admin';
 
 export const dynamic = 'force-dynamic';
 
@@ -7,6 +8,9 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const denied = await denyUnlessRole(['admin', 'redactor']);
+  if (denied) return denied;
+
   try {
     const supabase = createAdminClient();
     const body = await request.json();
@@ -64,6 +68,9 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const denied = await denyUnlessRole(['admin']);
+  if (denied) return denied;
+
   try {
     const supabase = createAdminClient();
 

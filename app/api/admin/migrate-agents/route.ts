@@ -5,8 +5,12 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+import { denyUnlessRole } from '@/lib/auth/check-admin';
 
 export async function POST() {
+  const denied = await denyUnlessRole(['admin']);
+  if (denied) return denied;
+
   try {
     // Cliente con privilegios de service_role
     const supabase = createClient(

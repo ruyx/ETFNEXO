@@ -7,11 +7,15 @@
 
 import { createAdminClient } from '@/lib/supabase/admin';
 import { NextRequest, NextResponse } from 'next/server';
+import { denyUnlessRole } from '@/lib/auth/check-admin';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const denied = await denyUnlessRole(['admin', 'redactor']);
+  if (denied) return denied;
+
   try {
     const supabase = createAdminClient();
     const { id } = params;
@@ -57,6 +61,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const denied = await denyUnlessRole(['admin', 'redactor']);
+  if (denied) return denied;
+
   try {
     const supabase = createAdminClient();
     const body = await request.json();
@@ -115,6 +122,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const denied = await denyUnlessRole(['admin']);
+  if (denied) return denied;
+
   try {
     const supabase = createAdminClient();
     const { id } = params;

@@ -6,8 +6,12 @@
 import { NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { successResponse, errorResponse } from '@/lib/auth/api-response';
+import { denyUnlessRole } from '@/lib/auth/check-admin';
 
 export async function GET(request: NextRequest) {
+  const denied = await denyUnlessRole(['admin']);
+  if (denied) return denied;
+
   try {
     const supabase = createAdminClient();
 

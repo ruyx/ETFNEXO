@@ -5,11 +5,15 @@
 
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { denyUnlessRole } from '@/lib/auth/check-admin';
 
 const USER_ID = 'bccda4b6-4de4-4137-aa4f-882f5f70489d';
 const USER_EMAIL = 'ruy.dejesus4@gmail.com';
 
 export async function POST() {
+  const denied = await denyUnlessRole(['admin']);
+  if (denied) return denied;
+
   try {
     const supabase = createAdminClient();
 

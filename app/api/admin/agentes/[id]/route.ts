@@ -8,11 +8,15 @@
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { NextRequest, NextResponse } from 'next/server';
+import { denyUnlessRole } from '@/lib/auth/check-admin';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const denied = await denyUnlessRole(['admin', 'redactor']);
+  if (denied) return denied;
+
   try {
     const supabase = await createClient();
     const { id } = params;
@@ -58,6 +62,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const denied = await denyUnlessRole(['admin', 'redactor']);
+  if (denied) return denied;
+
   try {
     const supabase = createAdminClient();  // Use admin client to bypass RLS
     const body = await request.json();
@@ -123,6 +130,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const denied = await denyUnlessRole(['admin']);
+  if (denied) return denied;
+
   try {
     const supabase = createAdminClient();  // Use admin client to bypass RLS
     const { id } = params;

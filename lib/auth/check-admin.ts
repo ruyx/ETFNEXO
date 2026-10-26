@@ -203,3 +203,18 @@ export function handleAuthError(error: unknown): NextResponse {
     { status: 500 }
   );
 }
+
+/**
+ * Guard para el inicio de un handler: devuelve la respuesta 401/403 si el
+ * usuario no tiene alguno de los roles, o null si puede continuar.
+ *   const denied = await denyUnlessRole(['admin', 'redactor']);
+ *   if (denied) return denied;
+ */
+export async function denyUnlessRole(roles: UserRole[]): Promise<NextResponse | null> {
+  try {
+    await requireRole(roles);
+    return null;
+  } catch (error) {
+    return handleAuthError(error);
+  }
+}
