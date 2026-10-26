@@ -206,6 +206,27 @@
   --nx-skeleton-shine: var(--bg-dark-lighter);
 }
 
+/* Variante clara: banner bajo el hero de las secciones, sobre fondo blanco y
+   separado del hero (no forma parte de él) */
+.nx-band--plain {
+  padding-block: var(--spacing-8) 0;
+  background: var(--color-white);
+  border-bottom: 0;
+}
+
+/* Mismo fondo que .section--light cuando la lista que sigue lo usa */
+.nx-band--tinted {
+  background: var(--bg-light);
+}
+
+.nx-band--plain .nx-slot {
+  --nx-label-color: var(--color-slate-500);
+  --nx-frame-bg: var(--color-white);
+  --nx-frame-border: var(--border-light);
+  --nx-skeleton-base: var(--bg-light);
+  --nx-skeleton-shine: var(--color-white);
+}
+
 /* Variante que se queda pegada bajo el header (detalle de noticia/academia) */
 .nx-band--sticky {
   position: sticky;

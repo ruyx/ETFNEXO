@@ -120,7 +120,7 @@ export default function GestorasPage() {
         />
 
         {/* Banner bajo el hero (leaderboard 728x90) */}
-        <section className="nx-band">
+        <section className="nx-band nx-band--plain">
           <AdSlot placement="section_top" />
         </section>
 

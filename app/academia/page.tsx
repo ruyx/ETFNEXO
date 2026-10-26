@@ -110,7 +110,7 @@ export default function AcademiaPage() {
         />
 
         {/* Banner bajo el hero (leaderboard 728x90) */}
-        <section className="nx-band">
+        <section className="nx-band nx-band--plain nx-band--tinted">
           <AdSlot placement="section_top" />
         </section>
 
