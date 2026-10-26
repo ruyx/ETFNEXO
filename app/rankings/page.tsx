@@ -174,7 +174,7 @@ function RankingsContent() {
       />
 
       {/* Banner bajo el hero (leaderboard 728x90) */}
-      <section className="ad-band">
+      <section className="nx-band">
         <AdSlot placement="section_top" />
       </section>
 

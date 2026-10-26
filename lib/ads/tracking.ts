@@ -1,5 +1,5 @@
 /**
- * Utilidades compartidas por /api/ads/impression y /api/ads/click.
+ * Utilidades compartidas por /api/nx/view (impresiones) y /api/nx/go (clics).
  */
 
 import { isIP } from 'node:net';

@@ -36,7 +36,7 @@ function ScriptAd({ code }: { code: string }) {
     return () => el.replaceChildren();
   }, [code]);
 
-  return <div ref={ref} className="ad-slot__script" />;
+  return <div ref={ref} className="nx-slot__script" />;
 }
 
 export default function AdSlot({ placement, className = '' }: AdSlotProps) {
@@ -88,7 +88,7 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     const fetchAd = async () => {
       try {
         const pageUrl = window.location.pathname;
-        const apiUrl = `/api/ads/active?placement=${placement}&page_url=${encodeURIComponent(pageUrl)}`;
+        const apiUrl = `/api/nx/slot?slot=${placement}&path=${encodeURIComponent(pageUrl)}`;
 
         const response = await fetch(apiUrl);
         if (!response.ok) {
@@ -124,7 +124,7 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
           if (!viewabilityTimerRef.current) {
             viewabilityTimerRef.current = setTimeout(() => {
               // Track viewable impression
-              fetch('/api/ads/impression', {
+              fetch('/api/nx/view', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -165,7 +165,7 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   // mantiene la petición aunque la página cambie).
   const handleAdClick = () => {
     if (!ad) return;
-    fetch('/api/ads/click', {
+    fetch('/api/nx/go', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       keepalive: true,
@@ -203,30 +203,30 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
           alt={ad.image_alt || ad.name || 'Anuncio'}
           width={width}
           height={height}
-          className="ad-slot__image"
+          className="nx-slot__image"
           loading={ABOVE_FOLD_PLACEMENTS.includes(placement) ? 'eager' : 'lazy'}
           decoding="async"
         />
       );
       return linkProps ? (
-        <a className="ad-slot__link" {...linkProps}>{image}</a>
+        <a className="nx-slot__link" {...linkProps}>{image}</a>
       ) : image;
     }
 
     if (ad.type === 'text_banner') {
       const content = (
         <>
-          <span className="ad-slot__text">
-            <span className="ad-slot__title">{ad.title}</span>
-            {ad.description && <span className="ad-slot__description">{ad.description}</span>}
+          <span className="nx-slot__text">
+            <span className="nx-slot__title">{ad.title}</span>
+            {ad.description && <span className="nx-slot__description">{ad.description}</span>}
           </span>
-          <span className="ad-slot__cta">{ad.cta_text || 'Saber más'}</span>
+          <span className="nx-slot__cta">{ad.cta_text || 'Saber más'}</span>
         </>
       );
       return linkProps ? (
-        <a className="ad-slot__link ad-slot__link--text" {...linkProps}>{content}</a>
+        <a className="nx-slot__link nx-slot__link--text" {...linkProps}>{content}</a>
       ) : (
-        <div className="ad-slot__link ad-slot__link--text">{content}</div>
+        <div className="nx-slot__link nx-slot__link--text">{content}</div>
       );
     }
 
@@ -240,12 +240,12 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   return (
     <aside
       ref={adRef}
-      className={`ad-slot ad-slot--${format} ad-slot--${variant} ad-slot--${placement} ${className}`.trim()}
+      className={`nx-slot nx-slot--${format} nx-slot--${variant} nx-slot--${placement} ${className}`.trim()}
       aria-label="Publicidad"
       aria-busy={isLoading || undefined}
     >
-      <span className="ad-slot__label">Publicidad</span>
-      <div className="ad-slot__frame">{renderCreative()}</div>
+      <span className="nx-slot__label">Publicidad</span>
+      <div className="nx-slot__frame">{renderCreative()}</div>
     </aside>
   );
 }

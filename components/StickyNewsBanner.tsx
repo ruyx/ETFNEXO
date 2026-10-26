@@ -15,7 +15,7 @@ interface StickyNewsBannerProps {
 
 export default function StickyNewsBanner({ placement }: StickyNewsBannerProps) {
   return (
-    <div className="ad-card">
+    <div className="nx-card">
       <AdSlot placement={placement} />
     </div>
   );

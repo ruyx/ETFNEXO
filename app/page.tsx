@@ -45,7 +45,7 @@ export default async function HomePage() {
         <MarketTicker />
 
       {/* Banner superior bajo el ticker (leaderboard 728x90) */}
-      <section className="ad-band">
+      <section className="nx-band">
         <AdSlot placement="home_top" />
       </section>
 
@@ -139,7 +139,7 @@ export default async function HomePage() {
         </section>
 
         {/* Banner tras el ranking (leaderboard 728x90) */}
-        <section className="ad-band">
+        <section className="nx-band">
           <AdSlot placement="home_after_ranking" />
         </section>
 

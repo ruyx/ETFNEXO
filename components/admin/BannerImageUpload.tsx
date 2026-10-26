@@ -49,13 +49,9 @@ export default function BannerImageUpload({
     try {
       const supabase = createClient();
 
-      // Generate unique filename
+      // Nombre neutro: si lleva "banner" o "728x90" los bloqueadores lo cortan
       const fileExt = file.name.split('.').pop();
-      const safeCampaignName = (campaignName || 'banner')
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, '-')
-        .substring(0, 50);
-      const fileName = `${safeCampaignName}-${Date.now()}.${fileExt}`;
+      const fileName = `m-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${fileExt}`;
       const filePath = `media/${fileName}`;
 
       console.log('Uploading to Supabase Storage:', { fileName, filePath, fileSize: file.size });

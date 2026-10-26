@@ -1,28 +1,28 @@
 /* ============================================
    ADS - Sistema de Publicidad
    El tamaño de cada hueco sale del formato (lib/ads/placements.ts):
-   .ad-slot--leaderboard (728x90) y .ad-slot--rectangle (300x250).
+   .nx-slot--leaderboard (728x90) y .nx-slot--rectangle (300x250).
    El esqueleto y el anuncio cargado comparten caja, así no hay CLS.
    ============================================ */
 
 /* ==================== BASE ==================== */
-.ad-slot {
+.nx-slot {
   /* Valores por defecto (leaderboard); los formatos los sobrescriben */
-  --ad-width: 728px;
-  --ad-ratio: 728 / 90;
-  --ad-label-color: var(--color-slate-500);
-  --ad-frame-bg: var(--color-white);
-  --ad-frame-border: var(--border-light);
+  --nx-width: 728px;
+  --nx-ratio: 728 / 90;
+  --nx-label-color: var(--color-slate-500);
+  --nx-frame-bg: var(--color-white);
+  --nx-frame-border: var(--border-light);
 
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1);
   width: 100%;
-  max-width: var(--ad-width);
+  max-width: var(--nx-width);
   margin-inline: auto;
 }
 
-.ad-slot__label {
+.nx-slot__label {
   align-self: flex-end;
   min-height: 1rem; /* IMPORTANTE: min-height permite crecimiento dinámico */
   font-size: 0.6875rem;
@@ -30,34 +30,34 @@
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--letter-spacing-wide);
   text-transform: uppercase;
-  color: var(--ad-label-color);
+  color: var(--nx-label-color);
 }
 
 /* Caja con la proporción exacta del formato */
-.ad-slot__frame {
+.nx-slot__frame {
   position: relative;
   width: 100%;
-  aspect-ratio: var(--ad-ratio);
-  background-color: var(--ad-frame-bg);
+  aspect-ratio: var(--nx-ratio);
+  background-color: var(--nx-frame-bg);
   /* Anillo en vez de border: no resta píxeles y la imagen encaja exacta */
-  box-shadow: 0 0 0 1px var(--ad-frame-border);
+  box-shadow: 0 0 0 1px var(--nx-frame-border);
   border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
 /* ==================== FORMATOS ==================== */
-.ad-slot--leaderboard {
-  --ad-width: 728px;
-  --ad-ratio: 728 / 90;
+.nx-slot--leaderboard {
+  --nx-width: 728px;
+  --nx-ratio: 728 / 90;
 }
 
-.ad-slot--rectangle {
-  --ad-width: 300px;
-  --ad-ratio: 300 / 250;
+.nx-slot--rectangle {
+  --nx-width: 300px;
+  --nx-ratio: 300 / 250;
 }
 
 /* ==================== IMAGEN ==================== */
-.ad-slot__link {
+.nx-slot__link {
   display: block;
   width: 100%;
   height: 100%;
@@ -66,17 +66,17 @@
   transition: opacity var(--transition-base);
 }
 
-.ad-slot__link:hover {
+.nx-slot__link:hover {
   opacity: 0.9;
 }
 
-.ad-slot__link:focus-visible {
+.nx-slot__link:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: -2px;
 }
 
 /* contain: nunca recorta la creatividad si no respeta la proporción */
-.ad-slot__image {
+.nx-slot__image {
   display: block;
   width: 100%;
   height: 100%;
@@ -85,13 +85,13 @@
 
 /* ==================== TEXTO ==================== */
 /* Los anuncios de texto pueden necesitar más alto que la proporción */
-.ad-slot--text .ad-slot__frame {
+.nx-slot--text .nx-slot__frame {
   aspect-ratio: auto;
-  min-height: calc(var(--ad-width) / (var(--ad-ratio))); /* IMPORTANTE: min-height permite crecimiento dinámico */
+  min-height: calc(var(--nx-width) / (var(--nx-ratio))); /* IMPORTANTE: min-height permite crecimiento dinámico */
   background-color: var(--bg-light);
 }
 
-.ad-slot__link--text {
+.nx-slot__link--text {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -99,21 +99,21 @@
   padding: var(--spacing-3) var(--spacing-5);
 }
 
-.ad-slot--rectangle .ad-slot__link--text {
+.nx-slot--rectangle .nx-slot__link--text {
   flex-direction: column;
   justify-content: center;
   text-align: center;
   padding: var(--spacing-6);
 }
 
-.ad-slot__text {
+.nx-slot__text {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1);
   min-width: 0;
 }
 
-.ad-slot__title {
+.nx-slot__title {
   font-family: var(--font-heading);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-bold);
@@ -121,13 +121,13 @@
   color: var(--text-primary);
 }
 
-.ad-slot__description {
+.nx-slot__description {
   font-size: var(--font-size-sm);
   line-height: var(--line-height-normal);
   color: var(--text-secondary);
 }
 
-.ad-slot__cta {
+.nx-slot__cta {
   flex: none;
   padding: var(--spacing-2) var(--spacing-4);
   font-size: var(--font-size-sm);
@@ -139,75 +139,75 @@
   transition: background-color var(--transition-base);
 }
 
-.ad-slot__link--text:hover .ad-slot__cta {
+.nx-slot__link--text:hover .nx-slot__cta {
   background-color: var(--color-primary-dark);
 }
 
 /* ==================== SCRIPT (AdSense, etc.) ==================== */
 /* El script decide su tamaño: reservamos el alto mínimo y le dejamos crecer */
-.ad-slot--script .ad-slot__frame {
+.nx-slot--script .nx-slot__frame {
   aspect-ratio: auto;
-  min-height: calc(var(--ad-width) / (var(--ad-ratio))); /* IMPORTANTE: min-height permite crecimiento dinámico */
+  min-height: calc(var(--nx-width) / (var(--nx-ratio))); /* IMPORTANTE: min-height permite crecimiento dinámico */
   box-shadow: none;
   background-color: transparent;
   overflow: visible;
 }
 
-.ad-slot__script {
+.nx-slot__script {
   display: flex;
   justify-content: center;
 }
 
 /* ==================== ESQUELETO ==================== */
-.ad-slot--skeleton {
-  --ad-skeleton-base: var(--bg-light);
-  --ad-skeleton-shine: var(--color-white);
+.nx-slot--skeleton {
+  --nx-skeleton-base: var(--bg-light);
+  --nx-skeleton-shine: var(--color-white);
 }
 
-.ad-slot--skeleton .ad-slot__label {
+.nx-slot--skeleton .nx-slot__label {
   visibility: hidden;
 }
 
-.ad-slot--skeleton .ad-slot__frame {
+.nx-slot--skeleton .nx-slot__frame {
   background: linear-gradient(
     90deg,
-    var(--ad-skeleton-base) 0%,
-    var(--ad-skeleton-shine) 50%,
-    var(--ad-skeleton-base) 100%
+    var(--nx-skeleton-base) 0%,
+    var(--nx-skeleton-shine) 50%,
+    var(--nx-skeleton-base) 100%
   );
   background-size: 200% 100%;
-  animation: ad-shimmer 1.5s infinite linear;
+  animation: nx-shimmer 1.5s infinite linear;
 }
 
-@keyframes ad-shimmer {
+@keyframes nx-shimmer {
   from { background-position: 100% 0; }
   to { background-position: -100% 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ad-slot--skeleton .ad-slot__frame {
+  .nx-slot--skeleton .nx-slot__frame {
     animation: none;
   }
 }
 
 /* ==================== BANDA OSCURA ==================== */
 /* Franja a todo el ancho que aloja un leaderboard sobre fondo navy */
-.ad-band {
+.nx-band {
   padding: var(--spacing-3) var(--spacing-6);
   background: linear-gradient(to bottom, var(--color-slate-900), var(--color-slate-800));
   border-bottom: 1px solid var(--bg-dark-lighter);
 }
 
-.ad-band .ad-slot {
-  --ad-label-color: var(--color-slate-400);
-  --ad-frame-bg: var(--bg-dark-alt);
-  --ad-frame-border: var(--bg-dark-lighter);
-  --ad-skeleton-base: var(--bg-dark-alt);
-  --ad-skeleton-shine: var(--bg-dark-lighter);
+.nx-band .nx-slot {
+  --nx-label-color: var(--color-slate-400);
+  --nx-frame-bg: var(--bg-dark-alt);
+  --nx-frame-border: var(--bg-dark-lighter);
+  --nx-skeleton-base: var(--bg-dark-alt);
+  --nx-skeleton-shine: var(--bg-dark-lighter);
 }
 
 /* Variante que se queda pegada bajo el header (detalle de noticia/academia) */
-.ad-band--sticky {
+.nx-band--sticky {
   position: sticky;
   top: var(--header-height);
   z-index: calc(var(--z-sticky) - 1);
@@ -217,7 +217,7 @@
 
 /* ==================== TARJETA LATERAL ==================== */
 /* Contenedor del rectangle en la columna de noticias (mismo borde que NewsCard) */
-.ad-card {
+.nx-card {
   margin-bottom: var(--spacing-4);
   padding: var(--spacing-3);
   background: var(--color-white);
@@ -225,12 +225,12 @@
   border-radius: var(--radius-sm);
 }
 
-.ad-card .ad-slot__frame {
+.nx-card .nx-slot__frame {
   box-shadow: none;
 }
 
 /* Si no hay anuncio activo AdSlot no pinta nada: ocultamos el envoltorio vacío */
-.ad-band:not(:has(.ad-slot)),
-.ad-card:not(:has(.ad-slot)) {
+.nx-band:not(:has(.nx-slot)),
+.nx-card:not(:has(.nx-slot)) {
   display: none;
 }
