@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import HeroSplit from '@/components/HeroSplit';
+import AdSlot from '@/components/AdSlot';
 import Footer from '@/components/Footer';
 
 interface ETF {
@@ -138,6 +139,11 @@ export default function ETFsPage() {
           description="Explora nuestra base de datos completa de ETFs. Busca, filtra y compara para encontrar las mejores oportunidades de inversión."
           image={{ src: 'https://images.pexels.com/photos/5784807/pexels-photo-5784807.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Pantalla de trading con gráfica de cotización' }}
         />
+
+        {/* Banner bajo el hero (leaderboard 728x90) */}
+        <section className="ad-band">
+          <AdSlot placement="section_top" />
+        </section>
 
         <section className="etfs-filters">
           <div className="container">

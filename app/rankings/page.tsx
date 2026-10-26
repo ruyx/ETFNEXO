@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import HeroSplit from '@/components/HeroSplit';
+import AdSlot from '@/components/AdSlot';
 import Footer from '@/components/Footer';
 import MarketTicker from '@/components/MarketTicker';
 import ProgressBar from '@/components/ProgressBar';
@@ -171,6 +172,11 @@ function RankingsContent() {
         description={`Análisis completo de ${stats?.totalETFs || 0} ETFs con métricas de rendimiento, costes y liquidez.`}
         image={{ src: 'https://images.pexels.com/photos/7947742/pexels-photo-7947742.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Informe bursátil con gráfica de velas' }}
       />
+
+      {/* Banner bajo el hero (leaderboard 728x90) */}
+      <section className="ad-band">
+        <AdSlot placement="section_top" />
+      </section>
 
       {/* Category Filters */}
       <section className="rankings-filters">

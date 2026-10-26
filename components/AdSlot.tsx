@@ -23,6 +23,22 @@ interface AdSlotProps {
   className?: string;
 }
 
+// Anuncios de terceros (AdSense, etc.). Con innerHTML el navegador no ejecuta
+// los <script>; un fragmento creado con createContextualFragment sí lo hace.
+// El código lo introduce un admin desde el panel: es contenido de confianza.
+function ScriptAd({ code }: { code: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.replaceChildren(document.createRange().createContextualFragment(code));
+    return () => el.replaceChildren();
+  }, [code]);
+
+  return <div ref={ref} className="ad-slot__script" />;
+}
+
 export default function AdSlot({ placement, className = '' }: AdSlotProps) {
   const [ad, setAd] = useState<Ad | null>(null);
   const [loading, setLoading] = useState(true);
@@ -140,6 +156,7 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
       observer.disconnect();
       if (viewabilityTimerRef.current) {
         clearTimeout(viewabilityTimerRef.current);
+        viewabilityTimerRef.current = null;
       }
     };
   }, [ad, viewabilityTracked]);
@@ -176,12 +193,7 @@ export default function AdSlot({ placement, className = '' }: AdSlotProps) {
     if (!ad) return null;
 
     if (ad.type === 'script') {
-      return (
-        <div
-          className="ad-slot__script"
-          dangerouslySetInnerHTML={{ __html: ad.script_code || '' }}
-        />
-      );
+      return <ScriptAd code={ad.script_code || ''} />;
     }
 
     if (ad.type === 'image_banner') {

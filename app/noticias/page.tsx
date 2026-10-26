@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import HeroSplit from '@/components/HeroSplit';
+import AdSlot from '@/components/AdSlot';
 import Footer from '@/components/Footer';
 import NewsCard, { NewsArticle } from '@/components/NewsCard';
 
@@ -102,6 +103,11 @@ export default function NoticiasPage() {
           image={{ src: 'https://images.pexels.com/photos/936137/pexels-photo-936137.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Ejecutivo leyendo un periódico de negocios' }}
           primaryCta={{ href: '/newsletter', label: 'Recibir la newsletter' }}
         />
+
+        {/* Banner bajo el hero (leaderboard 728x90) */}
+        <section className="ad-band">
+          <AdSlot placement="section_top" />
+        </section>
 
         {/* News Grid */}
         <section className="section section--light px-6">

@@ -8,6 +8,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import HeroSplit from '@/components/HeroSplit';
+import AdSlot from '@/components/AdSlot';
 import Footer from '@/components/Footer';
 import InterviewCard from '@/components/InterviewCard';
 import type { Interview } from '@/components/InterviewCard';
@@ -107,6 +108,11 @@ export default function EntrevistasPage() {
           image={{ src: 'https://images.pexels.com/photos/3874035/pexels-photo-3874035.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Conversación entre dos profesionales en una cafetería' }}
           primaryCta={{ href: '/newsletter', label: 'Recibir la newsletter' }}
         />
+
+        {/* Banner bajo el hero (leaderboard 728x90) */}
+        <section className="ad-band">
+          <AdSlot placement="section_top" />
+        </section>
 
         {/* Interviews Grid */}
         <section className="section section--light px-6">

@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { requireAdmin } from '@/lib/auth/check-admin';
+import { AD_PLACEMENTS } from '@/lib/ads/placements';
 
 // GET - Obtener detalle de campaña
 export async function GET(
@@ -111,16 +112,7 @@ export async function PUT(
     }
 
     // Validar que placement sea uno de los valores permitidos
-    const validPlacements = [
-      // Home
-      'home_top', 'home_news_sidebar', 'home_after_ranking',
-      // Artículos
-      'article_top', 'article_mid', 'article_bottom',
-      // Sidebar
-      'sidebar_top', 'sidebar_mid', 'sidebar_bottom',
-      // Global
-      'header', 'footer', 'feed_inline'
-    ];
+    const validPlacements: string[] = AD_PLACEMENTS;
 
     if (!validPlacements.includes(placement)) {
       return NextResponse.json(

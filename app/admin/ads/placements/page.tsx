@@ -8,7 +8,7 @@ import { MapPin, ExternalLink, Info } from 'lucide-react';
 import Link from 'next/link';
 import PlacementCard from './PlacementCard';
 import AdSenseGuide from './AdSenseGuide';
-import { getPlacementFormat } from '@/lib/ads/placements';
+import { getPlacementFormat, type AdPlacement } from '@/lib/ads/placements';
 
 interface PlacementInfo {
   id: string;
@@ -22,7 +22,7 @@ interface PlacementInfo {
 }
 
 // Tamaño exigido por AdSlot: la creatividad a 1x o a 2x (pantallas retina).
-function requiredSizes(placement: 'home_top' | 'home_news_sidebar') {
+function requiredSizes(placement: AdPlacement) {
   const { width, height } = getPlacementFormat(placement);
   return [`${width}x${height}`, `${width * 2}x${height * 2} (retina)`];
 }
@@ -34,6 +34,15 @@ const PLACEMENTS: Omit<PlacementInfo, 'activeAds'>[] = [
     label: 'Home - Banner Superior Fixed',
     description: 'Banda bajo el ticker de la home. También se usa en home_after_ranking y article_top',
     recommendedSizes: requiredSizes('home_top'),
+    adSenseSizes: ['728x90 (Leaderboard)'],
+    zone: 'global'
+  },
+  {
+    id: 'section_top',
+    name: 'section_top',
+    label: 'Secciones - Bajo el hero',
+    description: 'Banda entre el hero y el listado en Noticias, Academia, Entrevistas, Rankings, ETFs y Gestoras. Usa "Páginas objetivo" (p. ej. /noticias) para vender una sola sección',
+    recommendedSizes: requiredSizes('section_top'),
     adSenseSizes: ['728x90 (Leaderboard)'],
     zone: 'global'
   },

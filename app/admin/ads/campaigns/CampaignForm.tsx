@@ -36,6 +36,7 @@ interface Campaign {
   max_clicks?: number;
   start_date?: string;
   end_date?: string;
+  target_pages?: string[] | null;
   status: string;
 }
 
@@ -69,8 +70,12 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
     max_clicks: campaign?.max_clicks,
     start_date: campaign?.start_date || '',
     end_date: campaign?.end_date || '',
+    target_pages: campaign?.target_pages ?? null,
     status: campaign?.status || 'draft'
   });
+
+  // Texto libre del campo; el array se deriva al escribir (si no, la coma se perdería)
+  const [targetPagesText, setTargetPagesText] = useState((campaign?.target_pages || []).join(', '));
 
   // Handler para cambios de imagen - usa forma funcional para evitar stale closures
   const handleImageChange = (url: string) => {
@@ -264,6 +269,9 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                       <option value="home_top">Home - Banner Superior Fixed</option>
                       <option value="home_news_sidebar">Home - Sidebar Noticias (Sticky)</option>
                       <option value="home_after_ranking">Home - Después del Ranking</option>
+                    </optgroup>
+                    <optgroup label="Secciones">
+                      <option value="section_top">Secciones - Bajo el hero (Noticias, Academia, Entrevistas, Rankings, ETFs, Gestoras)</option>
                     </optgroup>
                     <optgroup label="Artículos">
                       <option value="article_top">Artículo - Banner Superior Fixed</option>
@@ -482,6 +490,27 @@ export default function CampaignForm({ campaign, advertisers, mode }: CampaignFo
                     Mayor número = mayor prioridad
                   </p>
                 </div>
+              </div>
+
+              <div className="admin-form-group">
+                <label htmlFor="target_pages" className="admin-form-label">
+                  Páginas objetivo
+                </label>
+                <input
+                  type="text"
+                  id="target_pages"
+                  value={targetPagesText}
+                  onChange={(e) => {
+                    setTargetPagesText(e.target.value);
+                    const pages = e.target.value.split(',').map((p) => p.trim()).filter(Boolean);
+                    setFormData({ ...formData, target_pages: pages.length > 0 ? pages : null });
+                  }}
+                  className="admin-form-input"
+                  placeholder="Vacío = todas las páginas. Ej: /noticias, /academia"
+                />
+                <p className="admin-form-help">
+                  Rutas separadas por comas. El anuncio solo sale en las páginas cuya URL contenga alguna de ellas.
+                </p>
               </div>
 
               <div className="admin-form-row">

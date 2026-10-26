@@ -1,125 +1,102 @@
-// @ts-nocheck
 // ============================================
 // API Público - Obtener Anuncios Activos
 // ============================================
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { isAdPlacement } from '@/lib/ads/placements';
 
 // Force dynamic rendering for this route
 export const dynamic = 'force-dynamic';
 
+// Solo lo que necesita el cliente para pintar el anuncio
+const PUBLIC_COLUMNS =
+  'id, name, type, image_url, image_alt, title, description, cta_text, script_code, link_url, target, placement';
+const RULE_COLUMNS = 'priority, target_pages, max_impressions, max_clicks, impressions_count, clicks_count';
+
+interface AdRow {
+  type: string;
+  script_code: string | null;
+  priority: number | null;
+  target_pages: unknown;
+  max_impressions: number | null;
+  max_clicks: number | null;
+  impressions_count: number | null;
+  clicks_count: number | null;
+  [key: string]: unknown;
+}
+
+function matchesPage(ad: AdRow, pageUrl: string | null): boolean {
+  // Sin target_pages se muestra en todas las páginas
+  if (!pageUrl || !Array.isArray(ad.target_pages) || ad.target_pages.length === 0) return true;
+  return ad.target_pages.some(
+    (pattern) => typeof pattern === 'string' && (pattern === '*' || pageUrl.includes(pattern))
+  );
+}
+
+function withinLimits(ad: AdRow): boolean {
+  if (ad.max_impressions !== null && (ad.impressions_count ?? 0) >= ad.max_impressions) return false;
+  if (ad.max_clicks !== null && (ad.clicks_count ?? 0) >= ad.max_clicks) return false;
+  return true;
+}
+
+// Rotación ponderada: varios anunciantes comparten ubicación y cada uno sale
+// en proporción a su prioridad (prioridad 10 sale el doble que prioridad 5).
+function pickWeighted(ads: AdRow[]): AdRow {
+  const weights = ads.map((ad) => Math.max(ad.priority ?? 0, 1));
+  let roll = Math.random() * weights.reduce((sum, w) => sum + w, 0);
+  for (let i = 0; i < ads.length; i++) {
+    roll -= weights[i];
+    if (roll < 0) return ads[i];
+  }
+  return ads[ads.length - 1];
+}
+
 // GET /api/ads/active?placement=sidebar_top&page_url=/noticias/...
 export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const placement = searchParams.get('placement');
+  const pageUrl = searchParams.get('page_url');
+
+  if (!isAdPlacement(placement)) {
+    return NextResponse.json({ error: 'placement no válido' }, { status: 400 });
+  }
+
   try {
     const supabase = createAdminClient();
-    const { searchParams } = new URL(request.url);
-
-    const placement = searchParams.get('placement');
-    const page_url = searchParams.get('page_url');
-
-    if (!placement) {
-      return NextResponse.json(
-        { error: 'El parámetro placement es requerido' },
-        { status: 400 }
-      );
-    }
-
     const now = new Date().toISOString();
 
-    // Query para obtener anuncios activos
-    let query = supabase
-      .from('ads')
-      .select('*')
-      .eq('placement' as any, placement as any)
-      .eq('status' as any, 'active' as any)
+    const { data, error } = await (supabase.from('ads') as any)
+      .select(`${PUBLIC_COLUMNS}, ${RULE_COLUMNS}`)
+      .eq('placement', placement)
+      .eq('status', 'active')
       .or(`start_date.is.null,start_date.lte.${now}`)
       .or(`end_date.is.null,end_date.gte.${now}`)
-      .order('priority', { ascending: false })
-      .limit(5); // Máximo 5 anuncios por placement
-
-    const { data: ads, error } = await query;
+      .limit(50);
 
     if (error) {
-      console.error('Error fetching active ads:', error);
-      return NextResponse.json(
-        { error: 'Error al obtener anuncios', details: error.message },
-        { status: 500 }
-      );
+      console.error('[ads] Error fetching active ads:', error);
+      return NextResponse.json({ error: 'Error al obtener anuncios' }, { status: 500 });
     }
 
-    if (!ads || ads.length === 0) {
-      return NextResponse.json({ ads: [] });
+    const eligible = ((data || []) as AdRow[]).filter((ad) => matchesPage(ad, pageUrl) && withinLimits(ad));
+    if (eligible.length === 0) {
+      return NextResponse.json({ ad: null, total_available: 0 });
     }
 
-    // Filtrar por página si se especifica target_pages
-    let filteredAds = ads;
-    if (page_url) {
-      filteredAds = ads.filter(ad => {
-        // Si no tiene target_pages, se muestra en todas las páginas
-        if (!ad.target_pages || !Array.isArray(ad.target_pages)) {
-          return true;
-        }
+    const {
+      priority, target_pages, max_impressions, max_clicks, impressions_count, clicks_count,
+      script_code, ...rest
+    } = pickWeighted(eligible);
+    // El código de script solo viaja en los anuncios de tipo script
+    const publicAd = rest.type === 'script' ? { ...rest, script_code } : rest;
 
-        // Verificar si la URL actual coincide con algún patrón
-        return ad.target_pages.some((pattern) => {
-          // Validar que el patrón sea un string
-          if (typeof pattern !== 'string') return false;
-          if (pattern === '*') return true;
-          if (page_url.includes(pattern)) return true;
-          return false;
-        });
-      });
-    }
-
-    // Verificar límites (max_impressions, max_clicks)
-    filteredAds = filteredAds.filter(ad => {
-      // Verificar max_impressions
-      if (ad.max_impressions !== null && (ad.impressions_count ?? 0) >= ad.max_impressions) {
-        return false;
-      }
-
-      // Verificar max_clicks
-      if (ad.max_clicks !== null && (ad.clicks_count ?? 0) >= ad.max_clicks) {
-        return false;
-      }
-
-      return true;
-    });
-
-    // Seleccionar un anuncio aleatorio de los disponibles (con peso por prioridad)
-    if (filteredAds.length > 0) {
-      // Ordenar por prioridad y tomar el primero (o aleatorio según preferencia)
-      const selectedAd = filteredAds[0];
-
-      // Limpiar campos sensibles antes de enviar al cliente
-      const {
-        target_pages,
-        target_categories,
-        max_impressions,
-        max_clicks,
-        impressions_count,
-        clicks_count,
-        ...publicAdData
-      } = selectedAd;
-
-      // Solo incluir script_code para ads de tipo script
-      if (selectedAd.type !== 'script') {
-        delete (publicAdData as any).script_code;
-      }
-
-      return NextResponse.json({
-        ad: publicAdData,
-        total_available: filteredAds.length
-      });
-    }
-
-    return NextResponse.json({ ads: [], total_available: 0 });
-
-  } catch (error: any) {
-    console.error('Error in GET /api/ads/active:', error);
     return NextResponse.json(
-      { error: 'Error inesperado', details: error.message },
-      { status: 500 }
+      { ad: publicAd, total_available: eligible.length },
+      // Cada visita debe poder rotar: nada de caché compartida
+      { headers: { 'Cache-Control': 'private, no-store' } }
     );
+  } catch (error) {
+    console.error('[ads] Error in GET /api/ads/active:', error);
+    return NextResponse.json({ error: 'Error inesperado' }, { status: 500 });
   }
 }

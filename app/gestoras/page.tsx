@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import HeroSplit from '@/components/HeroSplit';
+import AdSlot from '@/components/AdSlot';
 import Footer from '@/components/Footer';
 
 interface FundManager {
@@ -117,6 +118,11 @@ export default function GestorasPage() {
           description="Descubre las principales gestoras de ETFs del mercado. Explora su catálogo de fondos, activos bajo gestión y compara sus productos de inversión."
           image={{ src: 'https://images.pexels.com/photos/1313534/pexels-photo-1313534.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Fachadas de cristal de edificios de oficinas' }}
         />
+
+        {/* Banner bajo el hero (leaderboard 728x90) */}
+        <section className="ad-band">
+          <AdSlot placement="section_top" />
+        </section>
 
         {/* Filters & Search */}
         <section className="gestoras-filters">

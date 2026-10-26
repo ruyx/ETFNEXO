@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import HeroSplit from '@/components/HeroSplit';
+import AdSlot from '@/components/AdSlot';
 import Footer from '@/components/Footer';
 import AcademyCard, { AcademyArticle } from '@/components/AcademyCard';
 
@@ -107,6 +108,11 @@ export default function AcademiaPage() {
           image={{ src: 'https://images.pexels.com/photos/6549600/pexels-photo-6549600.jpeg?auto=compress&cs=tinysrgb&w=1920', alt: 'Persona tomando apuntes en un cuaderno junto a un libro y un portátil' }}
           primaryCta={{ href: '/rankings', label: 'Ver Rankings de ETFs' }}
         />
+
+        {/* Banner bajo el hero (leaderboard 728x90) */}
+        <section className="ad-band">
+          <AdSlot placement="section_top" />
+        </section>
 
         {/* Articles Grid */}
         <section className="section section--light px-6">

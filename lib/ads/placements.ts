@@ -8,6 +8,7 @@
 
 export type AdPlacement =
   | 'sidebar_top'
+  | 'sidebar_mid'
   | 'sidebar_bottom'
   | 'article_top'
   | 'article_mid'
@@ -17,7 +18,8 @@ export type AdPlacement =
   | 'footer'
   | 'home_top'
   | 'home_after_ranking'
-  | 'home_news_sidebar';
+  | 'home_news_sidebar'
+  | 'section_top';
 
 export type AdFormat = 'leaderboard' | 'rectangle';
 
@@ -35,13 +37,21 @@ export const PLACEMENT_FORMAT: Record<AdPlacement, AdFormat> = {
   feed_inline: 'leaderboard',
   header: 'leaderboard',
   footer: 'leaderboard',
+  section_top: 'leaderboard',
   sidebar_top: 'rectangle',
+  sidebar_mid: 'rectangle',
   sidebar_bottom: 'rectangle',
   home_news_sidebar: 'rectangle',
 };
 
 // Se cargan nada más montar; el resto espera a acercarse al viewport.
 export const ABOVE_FOLD_PLACEMENTS: readonly AdPlacement[] = ['article_top', 'home_top', 'header'];
+
+export const AD_PLACEMENTS = Object.keys(PLACEMENT_FORMAT) as AdPlacement[];
+
+export function isAdPlacement(value: unknown): value is AdPlacement {
+  return typeof value === 'string' && value in PLACEMENT_FORMAT;
+}
 
 export function getPlacementFormat(placement: AdPlacement) {
   const format = PLACEMENT_FORMAT[placement];
