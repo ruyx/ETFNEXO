@@ -110,7 +110,7 @@ export default function NoticiasPage() {
         </section>
 
         {/* News Grid */}
-        <section className="section section--light px-6">
+        <section className="section section--light section--listing px-6">
           <div className="container max-w-7xl">
             {initialLoading ? (
               // Initial loading state

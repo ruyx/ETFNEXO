@@ -115,7 +115,7 @@ export default function EntrevistasPage() {
         </section>
 
         {/* Interviews Grid */}
-        <section className="section section--light px-6">
+        <section className="section section--light section--listing px-6">
           <div className="container max-w-7xl">
             {initialLoading ? (
               // Initial loading state
