@@ -128,7 +128,7 @@ export default async function HomePage() {
           <div className="text-center mt-12 px-6">
             <Link
               href="/rankings"
-              className="btn-primary text-lg px-10 py-4"
+              className="btn-primary btn-primary--lg"
             >
               Ver Ranking Completo de 170+ ETFs
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,7 +154,7 @@ export default async function HomePage() {
             </p>
             <Link
               href="/newsletter"
-              className="btn-primary text-lg px-10 py-4"
+              className="btn-primary btn-primary--lg"
             >
               Suscribirme Gratis
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

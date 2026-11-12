@@ -40,6 +40,44 @@
   box-shadow: var(--shadow-md);
 }
 
+/* Icono y texto siempre en la misma fila, en todas las variantes (también
+   cuando se usan sin .btn). El icono no se encoge para hacer sitio al texto. */
+.btn-primary,
+.btn-secondary,
+.btn-ghost {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.btn svg,
+.btn-primary svg,
+.btn-secondary svg,
+.btn-ghost svg {
+  flex-shrink: 0;
+}
+
+/* CTA grande: más compacto en móvil para que quepa en una fila.
+   Doble clase para ganar a .btn-primary de @layer components (globals.css) */
+.btn-primary.btn-primary--lg {
+  padding: var(--spacing-3) var(--spacing-6);
+  font-size: var(--font-size-base);
+}
+
+@media (min-width: 640px) {
+  .btn-primary.btn-primary--lg {
+    padding: var(--spacing-4) var(--spacing-10);
+    font-size: var(--font-size-lg);
+  }
+}
+
+/* Pantallas muy estrechas: antes que salirse, el texto puede partirse
+   (el icono sigue en la misma fila, a tamaño completo) */
+@media (max-width: 359px) {
+  .btn-primary.btn-primary--lg {
+    white-space: normal;
+  }
+}
+
 /* Secundario: outline sobre fondo claro */
 .btn-secondary {
   background-color: transparent;

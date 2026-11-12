@@ -203,7 +203,7 @@ export default function EntrevistasPage() {
             </p>
             <Link
               href="/rankings"
-              className="btn-primary text-lg px-10 py-4"
+              className="btn-primary btn-primary--lg"
             >
               Ver Rankings de ETFs
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
