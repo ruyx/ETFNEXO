@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { denyUnlessRole } from '@/lib/auth/check-admin';
+import { MAX_UPLOAD_BYTES } from '@/lib/upload-image';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -23,7 +24,7 @@ export async function POST(request: NextRequest) {
 
     if (!file) {
       return NextResponse.json(
-        { error: 'No file provided' },
+        { error: 'No se ha recibido ninguna imagen' },
         { status: 400 }
       );
     }
@@ -31,16 +32,16 @@ export async function POST(request: NextRequest) {
     // Validate file type
     if (!Object.prototype.hasOwnProperty.call(EXTENSION_BY_TYPE, file.type)) {
       return NextResponse.json(
-        { error: 'Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed.' },
+        { error: 'Formato no admitido. Usa JPG, PNG, WebP o GIF.' },
         { status: 400 }
       );
     }
 
-    // Validate file size (5MB max)
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    if (file.size > maxSize) {
+    // Vercel corta las peticiones de más de 4,5 MB antes de llegar aquí;
+    // el cliente (lib/upload-image.ts) reduce las fotos por debajo de este límite
+    if (file.size > MAX_UPLOAD_BYTES) {
       return NextResponse.json(
-        { error: 'File too large. Maximum size is 5MB.' },
+        { error: 'La imagen es demasiado pesada. El máximo es 4 MB.' },
         { status: 400 }
       );
     }

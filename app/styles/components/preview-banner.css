@@ -1,0 +1,32 @@
+/* Aviso de vista previa (modo borrador) en noticias, academia y entrevistas */
+.preview-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2) var(--spacing-4);
+  min-height: 44px; /* IMPORTANTE: min-height permite crecimiento dinámico */
+  padding: var(--spacing-2) var(--spacing-4);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  color: var(--color-neutral-900);
+  background: var(--color-warning-light);
+  border-bottom: 1px solid var(--color-warning);
+}
+
+.preview-banner__text {
+  text-align: center;
+}
+
+.preview-banner__exit {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.preview-banner__exit:hover,
+.preview-banner__exit:focus-visible {
+  color: var(--color-primary-dark);
+}

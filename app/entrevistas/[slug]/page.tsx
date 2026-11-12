@@ -1,12 +1,14 @@
 // @ts-nocheck
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { draftMode } from 'next/headers';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ArticleFAQ from '@/components/ArticleFAQ';
 import { Calendar, Eye, ArrowLeft } from 'lucide-react';
 import { createAdminClient } from '@/lib/supabase/admin';
+import PreviewBanner from '@/components/PreviewBanner';
 
 // Revalidate every 5 minutes to ensure fresh content from database
 export const revalidate = 300;
@@ -15,16 +17,23 @@ interface PageProps {
   params: { slug: string };
 }
 
+// En modo borrador (solo editores, vía /api/preview) se muestra también
+// el contenido no publicado; el público solo ve lo publicado.
 async function getInterview(slug: string) {
+  const isPreview = draftMode().isEnabled;
   try {
     const supabase = createAdminClient();
 
-    const { data: interview, error } = await supabase
+    let query = supabase
       .from('interviews_with_metadata')
       .select('*')
-      .eq('slug' as any, slug as any)
-      .eq('status' as any, 'published' as any)
-      .single();
+      .eq('slug' as any, slug as any);
+
+    if (!isPreview) {
+      query = query.eq('status' as any, 'published' as any);
+    }
+
+    const { data: interview, error } = await query.single();
 
     if (error || !interview) {
       return null;
@@ -99,6 +108,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function EntrevistaDetailPage({ params }: PageProps) {
   const interview = await getInterview(params.slug);
+  const isPreview = draftMode().isEnabled;
 
   if (!interview) {
     notFound();
@@ -133,6 +143,9 @@ export default async function EntrevistaDetailPage({ params }: PageProps) {
   return (
     <>
       <Header />
+      {isPreview && (
+        <PreviewBanner section="entrevistas" slug={params.slug} status={interview.status} />
+      )}
 
       {/* Schema.org VideoObject */}
       {interview.youtube_video_id && (

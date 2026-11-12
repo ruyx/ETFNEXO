@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Calendar, Eye, Pencil, ArrowUpFromLine, ArrowDownToLine, Trash2, Play } from 'lucide-react';
 import ContentStatusBadge from '@/components/admin/ContentStatusBadge';
 import type { ContentStatus } from '@/lib/content/publication';
+import { contentViewHref } from '@/lib/content/preview';
 
 interface AdminInterviewCardProps {
   interview: {
@@ -112,10 +113,10 @@ export default function AdminInterviewCard({ interview, onPublishToggle, onDelet
         {/* Actions */}
         <div className="flex gap-2 pt-4 border-t border-slate-100">
           <Link
-            href={`/entrevistas/${interview.slug}`}
+            href={contentViewHref('entrevistas', interview.slug, interview.status)}
             target="_blank"
             className="admin-action-btn admin-action-btn--view flex-1 justify-center"
-            title="Ver entrevista"
+            title={interview.status === 'published' ? 'Ver entrevista' : 'Vista previa'}
           >
             <Eye className="w-4 h-4" />
             <span className="text-xs">Ver</span>

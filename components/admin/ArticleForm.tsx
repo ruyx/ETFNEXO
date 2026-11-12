@@ -14,6 +14,7 @@ import CategoryManager from '@/components/admin/CategoryManager';
 import PublishStatusField from '@/components/admin/PublishStatusField';
 import { fromLocalInputValue, toLocalInputValue, type ContentStatus } from '@/lib/content/publication';
 import { Sponsor, createEmptySponsor } from '@/types/sponsor';
+import { uploadImage } from '@/lib/upload-image';
 
 // Import Quill dynamically to avoid SSR issues
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -275,20 +276,7 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
     }
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('/api/upload/image', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to upload logo');
-      }
-
-      const data = await response.json();
+      const data = await uploadImage(file);
       updateSponsorField(index, 'logo_url', data.url);
     } catch (err: any) {
       alert(err.message || 'Error al subir el logo');
@@ -302,20 +290,7 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
 
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('/api/upload/image', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to upload image');
-      }
-
-      const data = await response.json();
+      const data = await uploadImage(file);
       setFeaturedImageUrl(data.url);
       setFeaturedImageAlt(file.name.replace(/\.[^/.]+$/, ''));
     } catch (err: any) {

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { draftMode } from 'next/headers';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -8,6 +9,7 @@ import AdSlot from '@/components/AdSlot';
 import FixedTopBanner from '@/components/FixedTopBanner';
 import ArticleDetailWithFAQ from '@/components/ArticleDetailWithFAQ';
 import { createAdminClient } from '@/lib/supabase/admin';
+import PreviewBanner from '@/components/PreviewBanner';
 import { formatArticleContent } from '@/lib/format-article-content';
 
 // Revalidate every 5 minutes to ensure fresh content from database
@@ -18,16 +20,23 @@ interface PageProps {
 }
 
 // Fetch article data directly from Supabase
+// En modo borrador (solo editores, vía /api/preview) se muestra también
+// el contenido no publicado; el público solo ve lo publicado.
 async function getArticle(slug: string) {
+  const isPreview = draftMode().isEnabled;
   try {
     const supabase = createAdminClient();
 
-    const { data: article, error } = await supabase
+    let query = supabase
       .from('news_articles_with_metadata')
       .select('*')
-      .eq('slug' as any, slug as any)
-      .eq('status' as any, 'published' as any)
-      .single();
+      .eq('slug' as any, slug as any);
+
+    if (!isPreview) {
+      query = query.eq('status' as any, 'published' as any);
+    }
+
+    const { data: article, error } = await query.single();
 
     if (error || !article) {
       console.error(`Failed to fetch article ${slug}:`, error);
@@ -129,6 +138,7 @@ function isUrl(str: string): boolean {
 
 export default async function NoticiaDetailPage({ params }: PageProps) {
   const article = await getArticle(params.slug);
+  const isPreview = draftMode().isEnabled;
 
   if (!article) {
     notFound();
@@ -178,6 +188,9 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
   return (
     <>
       <Header />
+      {isPreview && (
+        <PreviewBanner section="noticias" slug={params.slug} status={article.status} />
+      )}
 
       {/* Schema.org NewsArticle */}
       <script

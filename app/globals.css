@@ -21,6 +21,7 @@
 @import './styles/components/sponsor-badge.css';
 @import './styles/components/academia.css';
 @import './styles/components/legal.css';
+@import './styles/components/preview-banner.css';
 
 @tailwind base;
 @tailwind components;

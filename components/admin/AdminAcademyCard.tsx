@@ -8,6 +8,7 @@ import { Calendar, Eye, Pencil, ArrowUpFromLine, ArrowDownToLine, Trash2, Clock,
 import DifficultyBadge from '../DifficultyBadge';
 import ContentStatusBadge from '@/components/admin/ContentStatusBadge';
 import type { ContentStatus } from '@/lib/content/publication';
+import { contentViewHref } from '@/lib/content/preview';
 
 interface AdminAcademyCardProps {
   article: {
@@ -121,10 +122,10 @@ export default function AdminAcademyCard({ article, onPublishToggle, onDelete }:
         {/* Actions */}
         <div className="flex gap-2 pt-4 border-t border-slate-100">
           <Link
-            href={`/academia/${article.slug}`}
+            href={contentViewHref('academia', article.slug, article.status)}
             target="_blank"
             className="admin-action-btn admin-action-btn--view flex-1 justify-center"
-            title="Ver artículo"
+            title={article.status === 'published' ? 'Ver artículo' : 'Vista previa'}
           >
             <Eye className="w-4 h-4" />
             <span className="text-xs">Ver</span>
