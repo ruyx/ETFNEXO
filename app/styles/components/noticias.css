@@ -587,6 +587,20 @@ a.article-detail__author-link:hover .article-detail__author-name {
   transition: color var(--transition-base);
 }
 
+/* Nombre + «Cargo · Empresa» (autores externos) */
+.article-detail__author-text {
+  display: flex;
+  flex-direction: column;
+  min-height: 1.25rem; /* IMPORTANTE: min-height permite crecimiento dinámico */
+  line-height: var(--line-height-snug);
+}
+
+.article-detail__author-tagline {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-slate-500);
+}
+
 .article-detail__author-link:hover {
   color: var(--color-orange-500);
   text-decoration: underline;

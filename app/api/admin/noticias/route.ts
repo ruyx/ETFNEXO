@@ -144,6 +144,8 @@ export async function POST(request: NextRequest) {
       author_id: body.author_id || null, // ID del agente de IA
       author_name: body.author_name || authUser.profile.full_name || 'Redacción ETF Nexo',
       author_email: body.author_email || authUser.user.email || null,
+      // Solo se envía si hay autor externo (columna de la migración 20261112000001)
+      ...(body.external_author_id ? { external_author_id: body.external_author_id } : {}),
 
       // SEO
       meta_title: body.meta_title || body.title,

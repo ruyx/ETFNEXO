@@ -10,6 +10,7 @@ import FixedTopBanner from '@/components/FixedTopBanner';
 import ArticleDetailWithFAQ from '@/components/ArticleDetailWithFAQ';
 import { createAdminClient } from '@/lib/supabase/admin';
 import PreviewBanner from '@/components/PreviewBanner';
+import { externalAuthorTagline } from '@/lib/content/external-author';
 import { formatArticleContent } from '@/lib/format-article-content';
 
 // Revalidate every 5 minutes to ensure fresh content from database
@@ -43,11 +44,27 @@ async function getArticle(slug: string) {
       return null;
     }
 
-    return article;
+    return { ...article, external_author: await getExternalAuthor(supabase, article.id) };
   } catch (error) {
     console.error('Error fetching article:', error);
     return null;
   }
+}
+
+// Autor externo que firma la noticia. La vista no incluye la relación, así
+// que se consulta aparte; si falla, la noticia se muestra con author_name.
+async function getExternalAuthor(supabase, articleId: string) {
+  const { data, error } = await supabase
+    .from('news_articles')
+    .select('external_author:external_authors(name, position, company, linkedin_url, website_url)')
+    .eq('id' as any, articleId as any)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Error fetching external author:', error);
+    return null;
+  }
+  return data?.external_author ?? null;
 }
 
 
@@ -77,7 +94,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       canonical: `https://etfnexo.com/noticias/${params.slug}`
     },
 
-    authors: article.agent_name ? [{ name: article.agent_name }] : undefined,
+    authors: article.external_author
+      ? [{ name: article.external_author.name, url: article.external_author.linkedin_url || article.external_author.website_url || undefined }]
+      : article.agent_name ? [{ name: article.agent_name }] : undefined,
 
     openGraph: {
       type: 'article',
@@ -86,7 +105,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `https://etfnexo.com/noticias/${params.slug}`,
       publishedTime: article.published_at || article.source_published_at || undefined,
       modifiedTime: article.updated_at || undefined,
-      authors: article.agent_name ? [article.agent_name] : undefined,
+      authors: article.external_author ? [article.external_author.name] : article.agent_name ? [article.agent_name] : undefined,
       section: article.category_name || 'Noticias',
       tags: article.tags?.map((tag: any) => tag.name) || [],
       images: article.featured_image_url ? [
@@ -154,24 +173,19 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
       })
     : 'Fecha no disponible';
 
-  // Debug: ver qué datos tenemos del autor
-  console.log('Author data:', {
-    agent_name: article.agent_name,
-    agent_slug: article.agent_slug,
-    agent_avatar: article.agent_avatar,
-    author_name: article.author_name,
-    author_id: article.author_id,
-    source_name: article.source_name
-  });
-
-  // Determinar autor real (agente AI o usuario)
-  const displayAuthorName = article.agent_name || article.author_name || article.source_name || 'ETF Nexo';
+  // Determinar autor real (autor externo, agente AI o usuario)
+  const externalAuthor = article.external_author;
+  const displayAuthorName = externalAuthor?.name || article.agent_name || article.author_name || article.source_name || 'ETF Nexo';
+  const authorTagline = externalAuthor ? externalAuthorTagline(externalAuthor) : null;
+  const externalAuthorLink = externalAuthor ? externalAuthor.linkedin_url || externalAuthor.website_url : null;
   const authorSlug = article.agent_slug || null;
   const authorAvatar = article.agent_avatar || null;
   const authorBio = article.agent_bio || null;
 
   // Link a perfil del autor o fuente externa
-  const authorLink = authorSlug
+  const authorLink = externalAuthorLink
+    ? externalAuthorLink
+    : authorSlug
     ? `/autores/${authorSlug}`
     : article.source_url || (article.author_name && isUrl(article.author_name) ? article.author_name : null);
 
@@ -204,11 +218,22 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
             image: article.featured_image_url || 'https://etfnexo.com/og-image-default-noticia.png',
             datePublished: dateToFormat,
             dateModified: article.updated_at || dateToFormat,
-            author: {
-              '@type': article.agent_name ? 'Person' : 'Organization',
-              name: displayAuthorName,
-              url: article.agent_slug ? `https://etfnexo.com/autores/${article.agent_slug}` : 'https://etfnexo.com'
-            },
+            author: externalAuthor
+              ? {
+                  '@type': 'Person',
+                  name: externalAuthor.name,
+                  ...(externalAuthor.position ? { jobTitle: externalAuthor.position } : {}),
+                  ...(externalAuthor.company ? { worksFor: { '@type': 'Organization', name: externalAuthor.company } } : {}),
+                  ...(externalAuthorLink ? { url: externalAuthorLink } : {}),
+                  ...([externalAuthor.linkedin_url, externalAuthor.website_url].filter(Boolean).length
+                    ? { sameAs: [externalAuthor.linkedin_url, externalAuthor.website_url].filter(Boolean) }
+                    : {})
+                }
+              : {
+                  '@type': article.agent_name ? 'Person' : 'Organization',
+                  name: displayAuthorName,
+                  url: article.agent_slug ? `https://etfnexo.com/autores/${article.agent_slug}` : 'https://etfnexo.com'
+                },
             publisher: {
               '@type': 'Organization',
               name: 'ETF Nexo',
@@ -343,7 +368,10 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
                             </span>
                           )}
                         </div>
-                        <span className="article-detail__author-name">{displayAuthorName}</span>
+                        <span className="article-detail__author-text">
+                          <span className="article-detail__author-name">{displayAuthorName}</span>
+                          {authorTagline && <span className="article-detail__author-tagline">{authorTagline}</span>}
+                        </span>
                       </Link>
                     ) : (
                       <div className="article-detail__author-link">
@@ -352,7 +380,10 @@ export default async function NoticiaDetailPage({ params }: PageProps) {
                             {getInitials(displayAuthorName)}
                           </span>
                         </div>
-                        <span className="article-detail__author-name">{displayAuthorName}</span>
+                        <span className="article-detail__author-text">
+                          <span className="article-detail__author-name">{displayAuthorName}</span>
+                          {authorTagline && <span className="article-detail__author-tagline">{authorTagline}</span>}
+                        </span>
                       </div>
                     )}
                   </div>

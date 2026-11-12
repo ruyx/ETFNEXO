@@ -15,6 +15,13 @@ import PublishStatusField from '@/components/admin/PublishStatusField';
 import { fromLocalInputValue, toLocalInputValue, type ContentStatus } from '@/lib/content/publication';
 import { Sponsor, createEmptySponsor } from '@/types/sponsor';
 import { uploadImage } from '@/lib/upload-image';
+import ExternalAuthorFields, { saveExternalAuthor } from '@/components/admin/ExternalAuthorFields';
+import {
+  EMPTY_EXTERNAL_AUTHOR,
+  externalAuthorTagline,
+  type ExternalAuthor,
+  type ExternalAuthorInput,
+} from '@/lib/content/external-author';
 
 // Import Quill dynamically to avoid SSR issues
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -64,6 +71,7 @@ interface ArticleFormProps {
     author_id?: string;
     author_name?: string;
     author_email?: string;
+    external_author_id?: string | null;
     meta_title?: string;
     meta_description?: string;
     featured_image_url?: string;
@@ -93,8 +101,14 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
   // Agentes y usuario actual
   const [availableAgents, setAvailableAgents] = useState<Agent[]>([]);
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
-  const [authorType, setAuthorType] = useState<'ai_agent' | 'current_user'>('current_user');
+  const [authorType, setAuthorType] = useState<'ai_agent' | 'current_user' | 'external'>('current_user');
   const [selectedAgentId, setSelectedAgentId] = useState<string>('');
+
+  // Autor externo: entidades que envían noticias firmadas a su nombre
+  const [externalAuthors, setExternalAuthors] = useState<ExternalAuthor[]>([]);
+  const [loadingExternalAuthors, setLoadingExternalAuthors] = useState(true);
+  const [selectedExternalId, setSelectedExternalId] = useState<string>('');
+  const [externalDraft, setExternalDraft] = useState<ExternalAuthorInput>({ ...EMPTY_EXTERNAL_AUTHOR });
 
   // Form state
   const [title, setTitle] = useState(initialData?.title || '');
@@ -207,11 +221,42 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
 
   // Initialize author type when editing article with AI agent author
   useEffect(() => {
-    if (initialData?.author_id) {
+    if (initialData?.external_author_id) {
+      setAuthorType('external');
+      setSelectedExternalId(initialData.external_author_id);
+    } else if (initialData?.author_id) {
       setAuthorType('ai_agent');
       setSelectedAgentId(initialData.author_id);
     }
   }, [initialData]);
+
+  // Autores externos guardados (independiente del resto de datos: si falla,
+  // el formulario sigue funcionando con las otras dos opciones)
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const response = await fetch('/api/admin/autores-externos');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const body = await response.json();
+        const authors: ExternalAuthor[] = body.data?.authors ?? [];
+        if (cancelled) return;
+        setExternalAuthors(authors);
+        const current = authors.find((author) => author.id === initialData?.external_author_id);
+        if (current) {
+          const { id: _id, ...input } = current;
+          setExternalDraft(input);
+        }
+      } catch (err) {
+        console.error('Error loading external authors:', err);
+      } finally {
+        if (!cancelled) setLoadingExternalAuthors(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [initialData?.external_author_id]);
 
   // Function to reload categories after CRUD operations
   const loadCategories = async () => {
@@ -358,7 +403,18 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
         sponsors: sponsors.filter(s => s.company_name.trim().length > 0)
       };
 
-      // Determinar autor según tipo seleccionado
+      // Determinar autor según tipo seleccionado. external_author_id solo se
+      // envía cuando hace falta (autor externo, o quitarlo si lo tenía)
+      if (authorType === 'external') {
+        const author = await saveExternalAuthor(selectedExternalId, externalDraft, externalAuthors);
+        articleData.external_author_id = author.id;
+        articleData.author_id = null;
+        articleData.author_name = author.name;
+        articleData.author_email = author.email;
+      } else if (initialData?.external_author_id) {
+        articleData.external_author_id = null;
+      }
+
       if (authorType === 'ai_agent' && selectedAgentId) {
         articleData.author_id = selectedAgentId;
         articleData.author_name = null;
@@ -682,8 +738,33 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
               >
                 Agente AI
               </button>
+              <button
+                type="button"
+                onClick={() => setAuthorType('external')}
+                className={`admin-tag-button ${
+                  authorType === 'external'
+                    ? 'admin-tag-button--selected'
+                    : 'admin-tag-button--unselected'
+                }`}
+              >
+                Autor externo
+              </button>
             </div>
           </div>
+
+          {authorType === 'external' && (
+            <ExternalAuthorFields
+              authors={externalAuthors}
+              loading={loadingExternalAuthors}
+              selectedId={selectedExternalId}
+              draft={externalDraft}
+              onSelect={(id, draft) => {
+                setSelectedExternalId(id);
+                setExternalDraft(draft);
+              }}
+              onDraftChange={setExternalDraft}
+            />
+          )}
 
           {authorType === 'ai_agent' && (
             <div className="admin-form-group">
@@ -731,6 +812,16 @@ export default function ArticleForm({ initialData, onSubmit, isEditing = false }
                   </>
                 ) : <p className="admin-form-help">Selecciona un agente</p>;
               })()
+            ) : authorType === 'external' && externalDraft.name.trim() ? (
+              <>
+                <p className="article-form-author-preview__name">{externalDraft.name}</p>
+                {externalAuthorTagline(externalDraft) && (
+                  <p className="article-form-author-preview__signature">{externalAuthorTagline(externalDraft)}</p>
+                )}
+                {externalDraft.email && (
+                  <p className="article-form-author-preview__email">{externalDraft.email}</p>
+                )}
+              </>
             ) : (
               <p className="admin-form-help">Selecciona un autor</p>
             )}
